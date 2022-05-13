@@ -38,10 +38,11 @@ func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> B
     do {
         // Create private key info
         let extendedKeyInfo = try bdkManager.generateExtendedKey(wordCount: nil, password: nil)
-        // Save backup
-        //backupManager.savePrivateKey(extendedKeyInfo: extendedKeyInfo)
         // Create descriptor and load wallet
-        let descriptor = bdkManager.createDescriptor(descriptorType: DescriptorType.singleKey_wpkh84, extendedKeyInfo: extendedKeyInfo)
+        let descriptor = bdkManager.createDescriptorFromXprv(descriptorType: DescriptorType.singleKey_wpkh84, xprv: extendedKeyInfo.xprv)
+        // Save backup
+        backupManager.savePrivateKey(extendedKeyInfo: extendedKeyInfo, descriptor: descriptor)
+        // Load wallet in bdkManager, this will trigger a view switch
         bdkManager.loadWallet(descriptor: descriptor)
         return true
     } catch let error {

@@ -14,7 +14,7 @@ import KeychainAccess
 
 public class BackupManager: ObservableObject {
     // Public variables
-    @Published public var extendedKeyInfo: ExtendedKeyInfo?
+    @Published public var keyInfo: KeyBackup?
     
     // Private variables
     private let keychain: Keychain
@@ -27,19 +27,20 @@ public class BackupManager: ObservableObject {
             .label(appName)
             .synchronizable(enableCloudBackup)
             .accessibility(.whenUnlocked)
-        self.extendedKeyInfo = self.getPrivateKey()
+        self.keyInfo = self.getPrivateKey()
     }
     
-    public func getPrivateKey() -> ExtendedKeyInfo? {
+    public func getPrivateKey() -> KeyBackup? {
         // Check keychain for private key info saved as encrypted json
-        let encryptedJsonData = try? keychain.getData("encryptedKeyInfo")
+        let encryptedJsonData = try? keychain.getData("KeyBackup")
         if encryptedJsonData != nil {
             do {
                 let sealedBox = try AES.GCM.SealedBox(combined: encryptedJsonData!)
                 let decryptedData = try AES.GCM.open(sealedBox, using: symmetricKey)
                 let decryptedJson = String(data: decryptedData, encoding: .utf8)
-                let extendedKeyInfo = try JSONDecoder().decode(ExtendedKeyInfo.self, from: decryptedJson!.data(using: .utf8)!)
-                return extendedKeyInfo
+                let keyBackup = try JSONDecoder().decode(KeyBackup.self, from: decryptedJson!.data(using: .utf8)!)
+                print(keyBackup.mnemonic)
+                return keyBackup
             } catch let error {
                 print(error)
                 return nil
@@ -49,16 +50,30 @@ public class BackupManager: ObservableObject {
         }
     }
 
-    public func savePrivateKey(extendedKeyInfo: ExtendedKeyInfo) {
-        // Convert ExtendedKeyInfo to json string
-        if let json = try? JSONEncoder().encode(extendedKeyInfo) {
+    public func savePrivateKey(extendedKeyInfo: ExtendedKeyInfo, descriptor: String) {
+        // Convert ExtendedKeyInfo to KeyBackup, to enable import without mnemonic in the future
+        let keyBackup = KeyBackup(mnemonic: extendedKeyInfo.mnemonic, xprv: extendedKeyInfo.xprv, descriptor: descriptor)
+        // Convert KeyBackup to json string
+        if let json = try? JSONEncoder().encode(keyBackup) {
             do {
                 let encryptedContent = try AES.GCM.seal(json, using: self.symmetricKey).combined
-                keychain[data: "encryptedKeyInfo"] = encryptedContent
+                keychain[data: "KeyBackup"] = encryptedContent
             } catch let error {
                 print(error)
             }
         }
+    }
+}
+
+public struct KeyBackup: Codable {
+    public var mnemonic: String
+    public var xprv: String
+    public var descriptor: String
+
+    public init(mnemonic: String, xprv: String, descriptor: String ) {
+        self.mnemonic = mnemonic
+        self.xprv = xprv
+        self.descriptor = descriptor
     }
 }
 
