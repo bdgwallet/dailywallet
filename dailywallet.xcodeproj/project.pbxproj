@@ -11,6 +11,7 @@
 		6541A526282E69600051B2B0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A525282E69600051B2B0 /* ContentView.swift */; };
 		6541A528282E69620051B2B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6541A527282E69620051B2B0 /* Assets.xcassets */; };
 		6541A52B282E69620051B2B0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6541A52A282E69620051B2B0 /* Preview Assets.xcassets */; };
+		6541A538282E6F190051B2B0 /* BDKManager in Frameworks */ = {isa = PBXBuildFile; productRef = 6541A537282E6F190051B2B0 /* BDKManager */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6541A538282E6F190051B2B0 /* BDKManager in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,6 +113,9 @@
 			dependencies = (
 			);
 			name = dailywallet;
+			packageProductDependencies = (
+				6541A537282E6F190051B2B0 /* BDKManager */,
+			);
 			productName = dailywallet;
 			productReference = 6541A520282E69600051B2B0 /* Daily Wallet.app */;
 			productType = "com.apple.product-type.application";
@@ -139,6 +144,9 @@
 				Base,
 			);
 			mainGroup = 6541A517282E69600051B2B0;
+			packageReferences = (
+				6541A536282E6F190051B2B0 /* XCRemoteSwiftPackageReference "bdkmanager-swift" */,
+			);
 			productRefGroup = 6541A521282E69600051B2B0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -367,6 +375,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6541A536282E6F190051B2B0 /* XCRemoteSwiftPackageReference "bdkmanager-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bdgwallet/bdkmanager-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6541A537282E6F190051B2B0 /* BDKManager */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6541A536282E6F190051B2B0 /* XCRemoteSwiftPackageReference "bdkmanager-swift" */;
+			productName = BDKManager;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6541A518282E69600051B2B0 /* Project object */;
 }
