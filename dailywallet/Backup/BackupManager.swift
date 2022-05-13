@@ -39,7 +39,6 @@ public class BackupManager: ObservableObject {
                 let decryptedData = try AES.GCM.open(sealedBox, using: symmetricKey)
                 let decryptedJson = String(data: decryptedData, encoding: .utf8)
                 let keyBackup = try JSONDecoder().decode(KeyBackup.self, from: decryptedJson!.data(using: .utf8)!)
-                print(keyBackup.mnemonic)
                 return keyBackup
             } catch let error {
                 print(error)
@@ -52,7 +51,7 @@ public class BackupManager: ObservableObject {
 
     public func savePrivateKey(extendedKeyInfo: ExtendedKeyInfo, descriptor: String) {
         // Convert ExtendedKeyInfo to KeyBackup, to enable import without mnemonic in the future
-        let keyBackup = KeyBackup(mnemonic: extendedKeyInfo.mnemonic, xprv: extendedKeyInfo.xprv, descriptor: descriptor)
+        let keyBackup = KeyBackup(mnemonic: extendedKeyInfo.mnemonic, descriptor: descriptor)
         // Convert KeyBackup to json string
         if let json = try? JSONEncoder().encode(keyBackup) {
             do {
@@ -66,13 +65,11 @@ public class BackupManager: ObservableObject {
 }
 
 public struct KeyBackup: Codable {
-    public var mnemonic: String
-    public var xprv: String
+    public var mnemonic: String?
     public var descriptor: String
 
-    public init(mnemonic: String, xprv: String, descriptor: String ) {
+    public init(mnemonic: String, descriptor: String ) {
         self.mnemonic = mnemonic
-        self.xprv = xprv
         self.descriptor = descriptor
     }
 }
