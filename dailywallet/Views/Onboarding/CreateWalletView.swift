@@ -15,7 +15,8 @@ struct CreateWalletView: View {
     var body: some View {
         VStack {
             Spacer()
-            Text("Informational text")
+            Text("This will generate a new bitcoin wallet.\nYour keys, your coins.\n\nBech32, BIP84")
+                .multilineTextAlignment(.center)
             Spacer()
             VStack (spacing: 32) {
                 Button("Confirm") {
