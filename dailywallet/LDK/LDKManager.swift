@@ -10,8 +10,8 @@ import LDKFramework
 
 public class LDKManager: ObservableObject {
     // Public variables
-    @Published public var peerManager: PeerManager? // TODO: Should not be optional
-    @Published public var channelManager: ChannelManager? // TODO: Should not be optional
+    @Published public var peerManager: PeerManager
+    @Published public var channelManager: ChannelManager
     
     // Private variables
     private var feeEstimator = LDKFeeEstimator()
@@ -23,9 +23,7 @@ public class LDKManager: ObservableObject {
     // Public functions
     // Initialize an LDKManager instance
     init(network: LDKNetwork, latestBlockHeight: UInt32, latestBlockHash: String) { // TODO: add parameters: private key info?
-        let filterOption = Option_FilterZ(value: filter)
-        let chainMonitor = ChainMonitor(chain_source: filterOption, broadcaster: broadcaster, logger: logger, feeest: feeEstimator, persister: persister)
-
+        // Should be passed into init
         var keyData = Data(count: 32)
         keyData.withUnsafeMutableBytes {
             // returns 0 on success
@@ -33,6 +31,11 @@ public class LDKManager: ObservableObject {
             assert(didCopySucceed == 0)
         }
         let seed = [UInt8](keyData)
+        //
+        
+        let filterOption = Option_FilterZ(value: filter)
+        let chainMonitor = ChainMonitor(chain_source: filterOption, broadcaster: broadcaster, logger: logger, feeest: feeEstimator, persister: persister)
+        
         let timestamp_seconds = UInt64(NSDate().timeIntervalSince1970)
         let timestamp_nanos = UInt32.init(truncating: NSNumber(value: timestamp_seconds * 1000 * 1000))
         let keysManager = KeysManager(seed: seed, starting_time_secs: timestamp_seconds, starting_time_nanos: timestamp_nanos)
@@ -54,12 +57,11 @@ public class LDKManager: ObservableObject {
             logger: logger
         )
         let channelManager = channelManagerConstructor.channelManager
-
         let networkGraph = NetworkGraph(genesis_hash: [UInt8](Data(base64Encoded: "AAAAAAAZ1micCFrhZYMek0/3Y65GoqbBcrPxtgqM4m8=")!))
-
         let serializedChannelManager: [UInt8] = channelManager.write()
-
-        let peerManager = channelManagerConstructor.peerManager
+        
+        self.channelManager = channelManager
+        self.peerManager = channelManagerConstructor.peerManager
     }
     
     // Private functions
