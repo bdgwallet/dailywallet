@@ -42,7 +42,8 @@ func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> B
         // Create descriptor and load wallet
         let descriptor = bdkManager.createDescriptorFromXprv(descriptorType: DescriptorType.singleKey_wpkh84, xprv: extendedKeyInfo.xprv)
         // Save backup
-        backupManager.savePrivateKey(extendedKeyInfo: extendedKeyInfo, descriptor: descriptor)
+        let keyBackup = KeyBackup(mnemonic: extendedKeyInfo.mnemonic, descriptor: descriptor)
+        backupManager.savePrivateKey(keyBackup: keyBackup)
         // Load wallet in bdkManager, this will trigger a view switch
         bdkManager.loadWallet(descriptor: descriptor)
         return true

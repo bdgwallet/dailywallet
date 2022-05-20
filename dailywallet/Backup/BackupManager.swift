@@ -8,7 +8,6 @@
 import Foundation
 
 import Foundation
-import BitcoinDevKit
 import CryptoKit
 import KeychainAccess
 
@@ -49,9 +48,7 @@ public class BackupManager: ObservableObject {
         }
     }
 
-    public func savePrivateKey(extendedKeyInfo: ExtendedKeyInfo, descriptor: String) {
-        // Convert ExtendedKeyInfo to KeyBackup, to enable import without mnemonic in the future
-        let keyBackup = KeyBackup(mnemonic: extendedKeyInfo.mnemonic, descriptor: descriptor)
+    public func savePrivateKey(keyBackup: KeyBackup) {
         // Convert KeyBackup to json string
         if let json = try? JSONEncoder().encode(keyBackup) {
             do {
