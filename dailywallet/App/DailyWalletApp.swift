@@ -8,6 +8,7 @@
 import SwiftUI
 import BDKManager
 import BitcoinDevKit
+import LDKFramework
 
 @main
 struct DailyWalletApp: App {
@@ -20,6 +21,10 @@ struct DailyWalletApp: App {
         let syncSource = SyncSource(type: SyncSourceType.esplora, customUrl: nil) // set esplora or electrum, can take customUrl
         let database = Database(type: DatabaseType.memory, path: nil, treeName: nil) // set memory or disk, optional path and tree parameters
         bdkManager = BDKManager.init(network: network, syncSource: syncSource, database: database)
+        
+        // Initialize LDKManager
+        let ldkNetwork = LDKNetwork_Testnet // set LDKNetwork_Bitcoin, LDKNetwork_Testnet, LDKNetwork_Signet or LDKNetwork_Regtest
+        let ldkManager = LDKManager.init(network: ldkNetwork, latestBlockHeight: <#T##UInt32#>, latestBlockHash: <#T##String#>)
         
         // Initialize BackupManager
         let encryptionKey = "d5a423f64b607ea7c65b311d855dc48f36114b227bd0c7a3d403f6158a9e4412" // Use your own unique 256-bit / 64 character string
