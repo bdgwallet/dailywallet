@@ -7,6 +7,7 @@
 
 import Foundation
 import LDKFramework
+import BDKManager
 
 public class LDKManager: ObservableObject {
     // Public variables
@@ -23,15 +24,13 @@ public class LDKManager: ObservableObject {
     // Public functions
     // Initialize an LDKManager instance
     init(network: LDKNetwork, latestBlockHeight: UInt32, latestBlockHash: String) { // TODO: add parameters: private key info?
-        // Should be passed into init
-        var keyData = Data(count: 32)
+        var keyData = Data(count: 32) // Should be passed into init instead of generated here
         keyData.withUnsafeMutableBytes {
             // returns 0 on success
             let didCopySucceed = SecRandomCopyBytes(kSecRandomDefault, 32, $0.baseAddress!)
             assert(didCopySucceed == 0)
         }
         let seed = [UInt8](keyData)
-        //
         
         let filterOption = Option_FilterZ(value: filter)
         let chainMonitor = ChainMonitor(chain_source: filterOption, broadcaster: broadcaster, logger: logger, feeest: feeEstimator, persister: persister)
@@ -95,15 +94,17 @@ class LDKFeeEstimator: FeeEstimator {
 }
 
 class LDKLogger: Logger {
-    func log(record: String?) {
-        print("record: \(String(describing: record))")
+    override func log(record: Record) {
+        if record.get_level() == LDKLevel_Gossip { return }
+        let recordString = "\(record.get_args())"
+        print("LDKManager: \(recordString)")
     }
 }
 
 class LDKBroadcasterInterface: BroadcasterInterface {
     override func broadcast_transaction(tx: [UInt8]) {
         // TODO: insert code to broadcast transaction
-        // see https://github.com/lightningdevkit/ldk-swift/blob/main/xcode/DirectBindingsApp/DirectBindingsApp/app-batteries/RegtestBroadcasterInterface.swift
+        // This should send a transaction to BDK for broadcasting
     }
 }
 

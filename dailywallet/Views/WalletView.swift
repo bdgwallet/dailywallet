@@ -7,10 +7,23 @@
 
 import SwiftUI
 import BDKManager
+import LDKFramework
+import BlockSocket
 
 struct WalletView: View {
     @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var backupManager: BackupManager
+    let blockSocket = BlockSocket.init(source: BlockSocketSource.blockchain_com)
+    
+    @State var blockHeight: UInt32?
+    
+    init () {
+        let value = blockSocket.$latestBlockHeight.sink { (latestBlockHeight) in
+            if latestBlockHeight != nil {
+                print("Blockheight" + latestBlockHeight!.description)
+            }
+        }
+    }
     
     var body: some View {
         VStack (spacing: 50){
@@ -27,8 +40,35 @@ struct WalletView: View {
         }.task {
             bdkManager.sync() // to sync once
             //bdkManager.startSyncRegularly(interval: 120) // to sync every 120 seconds
+            
         }.onDisappear {
             //bdkManager.stopSyncRegularly() // if startSyncRegularly was used
+        }.onReceive(self.blockSocket.$latestBlockHeight) { flag in
+            let cancellable = blockSocket.$latestBlockHeight.sink (
+                receiveCompletion: { completion in
+                    // Called once, when the publisher was completed.
+                    switch completion {
+                        case .failure(let error):
+                            print(error)
+                        case .finished:
+                            print("Success")
+                        }
+                },
+                receiveValue: { value in
+                    // Can be called multiple times, each time that a
+                    // new value was emitted by the publisher.
+                    print(value)
+                }
+            )
+        }
+    }
+    
+    private func setupLDKManager() {
+        // Initialize LDKManager
+        let ldkNetwork = LDKNetwork_Testnet // set LDKNetwork_Bitcoin, LDKNetwork_Testnet, LDKNetwork_Signet or LDKNetwork_Regtest
+        if blockSocket.latestBlockHeight != nil {
+            print("LatestBlockHeight: " + self.blockSocket.latestBlockHeight!.description)
+            let ldkManager = LDKManager.init(network: ldkNetwork, latestBlockHeight: blockSocket.latestBlockHeight!, latestBlockHash: blockSocket.latestBlockHash!)
         }
     }
 }

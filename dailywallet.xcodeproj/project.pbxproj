@@ -21,6 +21,7 @@
 		6541A5512837E84E0051B2B0 /* LDKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A5502837E84E0051B2B0 /* LDKManager.swift */; };
 		6541A5542837E91F0051B2B0 /* LDKFramework.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6541A5532837E91F0051B2B0 /* LDKFramework.xcframework */; };
 		6541A5552837E91F0051B2B0 /* LDKFramework.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6541A5532837E91F0051B2B0 /* LDKFramework.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		65C336C528410A2C0087B77D /* BlockSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 65C336C428410A2C0087B77D /* BlockSocket */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -62,6 +63,7 @@
 				6541A53E282E70C20051B2B0 /* KeychainAccess in Frameworks */,
 				6541A538282E6F190051B2B0 /* BDKManager in Frameworks */,
 				6541A5542837E91F0051B2B0 /* LDKFramework.xcframework in Frameworks */,
+				65C336C528410A2C0087B77D /* BlockSocket in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,6 +190,7 @@
 			packageProductDependencies = (
 				6541A537282E6F190051B2B0 /* BDKManager */,
 				6541A53D282E70C20051B2B0 /* KeychainAccess */,
+				65C336C428410A2C0087B77D /* BlockSocket */,
 			);
 			productName = dailywallet;
 			productReference = 6541A520282E69600051B2B0 /* Daily Wallet.app */;
@@ -220,6 +223,7 @@
 			packageReferences = (
 				6541A536282E6F190051B2B0 /* XCRemoteSwiftPackageReference "bdkmanager-swift" */,
 				6541A53C282E70C20051B2B0 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */,
 			);
 			productRefGroup = 6541A521282E69600051B2B0 /* Products */;
 			projectDirPath = "";
@@ -385,6 +389,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"dailywallet/Preview Content\"";
+				DEVELOPMENT_TEAM = 8DAB7BVU34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -413,6 +418,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"dailywallet/Preview Content\"";
+				DEVELOPMENT_TEAM = 8DAB7BVU34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -473,6 +479,14 @@
 				version = 4.2.2;
 			};
 		};
+		65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bdgwallet/blocksocket-swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -485,6 +499,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6541A53C282E70C20051B2B0 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		65C336C428410A2C0087B77D /* BlockSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */;
+			productName = BlockSocket;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
