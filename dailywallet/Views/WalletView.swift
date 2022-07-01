@@ -36,7 +36,7 @@ struct WalletView: View {
             default:
                 Text("Balance: Not synced")
             }
-            Text(bdkManager.wallet?.getNewAddress() ?? "-")
+            Text("Hello Wallet")//Text(bdkManager.wallet?.getAddress(addressIndex: AddressIndex.new).address ?? "-")
         }.task {
             bdkManager.sync() // to sync once
             //bdkManager.startSyncRegularly(interval: 120) // to sync every 120 seconds
