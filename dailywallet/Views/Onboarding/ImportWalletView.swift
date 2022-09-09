@@ -41,7 +41,6 @@ struct ImportWalletView: View {
                 }.padding(32)
             }
         }
-        .navigationTitle("Import wallet")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

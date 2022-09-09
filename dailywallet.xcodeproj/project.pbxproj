@@ -20,6 +20,7 @@
 		6541A546282E71B60051B2B0 /* AdvancedCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A543282E71B60051B2B0 /* AdvancedCreateView.swift */; };
 		6541A5512837E84E0051B2B0 /* LDKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A5502837E84E0051B2B0 /* LDKManager.swift */; };
 		658FA38528CB5C2500196EF9 /* LDKFramework.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 658FA38428CB5C2500196EF9 /* LDKFramework.xcframework */; };
+		658FA38828CB5CEF00196EF9 /* WalletUI in Frameworks */ = {isa = PBXBuildFile; productRef = 658FA38728CB5CEF00196EF9 /* WalletUI */; };
 		65C336C528410A2C0087B77D /* BlockSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 65C336C428410A2C0087B77D /* BlockSocket */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 				6541A53E282E70C20051B2B0 /* KeychainAccess in Frameworks */,
 				6541A538282E6F190051B2B0 /* BDKManager in Frameworks */,
 				65C336C528410A2C0087B77D /* BlockSocket in Frameworks */,
+				658FA38828CB5CEF00196EF9 /* WalletUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +191,7 @@
 				6541A537282E6F190051B2B0 /* BDKManager */,
 				6541A53D282E70C20051B2B0 /* KeychainAccess */,
 				65C336C428410A2C0087B77D /* BlockSocket */,
+				658FA38728CB5CEF00196EF9 /* WalletUI */,
 			);
 			productName = dailywallet;
 			productReference = 6541A520282E69600051B2B0 /* Daily Wallet.app */;
@@ -222,6 +225,7 @@
 				6541A536282E6F190051B2B0 /* XCRemoteSwiftPackageReference "bdkmanager-swift" */,
 				6541A53C282E70C20051B2B0 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */,
+				658FA38628CB5CEF00196EF9 /* XCRemoteSwiftPackageReference "WalletUI" */,
 			);
 			productRefGroup = 6541A521282E69600051B2B0 /* Products */;
 			projectDirPath = "";
@@ -477,6 +481,14 @@
 				version = 4.2.2;
 			};
 		};
+		658FA38628CB5CEF00196EF9 /* XCRemoteSwiftPackageReference "WalletUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bdgwallet/WalletUI";
+			requirement = {
+				branch = buttonstyles;
+				kind = branch;
+			};
+		};
 		65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bdgwallet/blocksocket-swift";
@@ -497,6 +509,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6541A53C282E70C20051B2B0 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		658FA38728CB5CEF00196EF9 /* WalletUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 658FA38628CB5CEF00196EF9 /* XCRemoteSwiftPackageReference "WalletUI" */;
+			productName = WalletUI;
 		};
 		65C336C428410A2C0087B77D /* BlockSocket */ = {
 			isa = XCSwiftPackageProductDependency;

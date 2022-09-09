@@ -7,30 +7,55 @@
 
 import SwiftUI
 import BDKManager
+import WalletUI
 
 struct CreateWalletView: View {
     @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var backupManager: BackupManager
     
+    @State private var navigateTo: NavigateTo? = NavigateTo.none
+    @State private var confirmationOne = false
+    @State private var confirmationTwo = false
+    
     var body: some View {
         VStack {
             Spacer()
-            Text("This will generate a new bitcoin wallet.\nYour keys, your coins.\n\nBech32, BIP84")
-                .multilineTextAlignment(.center)
+            VStack {
+                HStack {
+                    BitcoinImage(named: "wallet-filled")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.bitcoinGreen)
+                }.frame(width: 100, height: 100, alignment: .center)
+                Text("Two things you must understand")
+                    .font(.largeTitle.bold())
+                    .multilineTextAlignment(.center)
+            }
             Spacer()
-            VStack (spacing: 32) {
-                Button("Confirm") {
+            Toggle("With bitcoin, you are your own bank. No-one else has access to your private keys.", isOn: $confirmationOne)
+                .padding()
+            Toggle("If you lose access to this app, and the backup we will help you create, your bitcoin cannot be recovered.", isOn: $confirmationTwo)
+                .padding()
+//            List {
+//                Toggle("With bitcoin, you are your own bank. No-one else has access to your private keys.", isOn: $showGreeting)
+//                Toggle("If you lose access to this app. and the backup we will help you create, your bitcoin cannot be recovered.", isOn: $showGreeting)
+//            }
+            Spacer()
+            VStack (spacing: 16) {
+                Button("Continue") {
                     if !createPrivateKey(bdkManager: bdkManager, backupManager: backupManager) {
                         // Show error message
                         print("Error creating or backing up private key")
                     }
+                }.buttonStyle(BitcoinFilled())
+                    .disabled(confirmationOne == false || confirmationTwo == false)
+                NavigationLink(destination: AdvancedCreateView(), tag: NavigateTo.createWalletAdvanced, selection: $navigateTo) {
+                    Button("Advanced settings") {
+                        self.navigateTo = .restoreWallet
+                    }.buttonStyle(BitcoinPlain())
                 }
-                NavigationLink(destination: AdvancedCreateView()) {
-                    Text("Advanced settings")
-                }
-            }.padding(32)
+            }
         }
-        .navigationTitle("Create wallet")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
