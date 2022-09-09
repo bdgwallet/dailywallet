@@ -56,7 +56,7 @@ public class LDKManager: ObservableObject {
             logger: logger
         )
         let channelManager = channelManagerConstructor.channelManager
-        let networkGraph = NetworkGraph(genesis_hash: [UInt8](Data(base64Encoded: "AAAAAAAZ1micCFrhZYMek0/3Y65GoqbBcrPxtgqM4m8=")!), logger: logger)
+        let networkGraph = NetworkGraph(genesis_hash: [UInt8](Data(base64Encoded: "AAAAAAAZ1micCFrhZYMek0/3Y65GoqbBcrPxtgqM4m8=")!))
         let serializedChannelManager: [UInt8] = channelManager.write()
         
         self.channelManager = channelManager
