@@ -30,11 +30,6 @@ struct DailyWalletApp: App {
             // If they do, get descriptor and load wallet in bdkManager
             bdkManager.loadWallet(descriptor: backupManager.keyInfo!.descriptor)
         }
-        
-//        let navBarAppearance = UINavigationBar.appearance()
-//        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.red]
-//        navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.red]
-//        navBarAppearance.tintColor = UIColor.black
     }
     
     var body: some Scene {
@@ -44,7 +39,7 @@ struct DailyWalletApp: App {
                     .environmentObject(bdkManager)
                     .environmentObject(backupManager)
             } else {
-                WalletView()
+                HomeView()
                     .environmentObject(bdkManager)
                     .environmentObject(backupManager)
             }

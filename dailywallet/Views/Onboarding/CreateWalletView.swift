@@ -19,14 +19,14 @@ struct CreateWalletView: View {
     
     var body: some View {
         VStack {
-            Spacer()
             VStack {
-                HStack {
-                    BitcoinImage(named: "wallet-filled")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
+                ZStack {
+                    Circle().fill()
                         .foregroundColor(.bitcoinGreen)
-                }.frame(width: 100, height: 100, alignment: .center)
+                    BitcoinImage(named: "wallet-filled")
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.bitcoinWhite)
+                }.frame(width: 60, height: 60, alignment: .center)
                 Text("Two things you must understand")
                     .font(.largeTitle.bold())
                     .multilineTextAlignment(.center)
@@ -51,7 +51,7 @@ struct CreateWalletView: View {
                     .disabled(confirmationOne == false || confirmationTwo == false)
                 NavigationLink(destination: AdvancedCreateView(), tag: NavigateTo.createWalletAdvanced, selection: $navigateTo) {
                     Button("Advanced settings") {
-                        self.navigateTo = .restoreWallet
+                        self.navigateTo = .createWalletAdvanced
                     }.buttonStyle(BitcoinPlain())
                 }
             }

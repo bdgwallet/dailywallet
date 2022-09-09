@@ -9,6 +9,7 @@ import SwiftUI
 import BDKManager
 import LDKFramework
 import BlockSocket
+import WalletUI
 
 struct WalletView: View {
     @EnvironmentObject var bdkManager: BDKManager
@@ -16,6 +17,7 @@ struct WalletView: View {
     let blockSocket = BlockSocket.init(source: BlockSocketSource.blockchain_com)
     
     @State var blockHeight: UInt32?
+    @State private var navigateTo: NavigateTo? = NavigateTo.none
     
     init () {
         let value = blockSocket.$latestBlockHeight.sink { (latestBlockHeight) in
@@ -26,18 +28,23 @@ struct WalletView: View {
     }
     
     var body: some View {
-        VStack (spacing: 50){
-            Text("Hello, wallet!")
-            switch bdkManager.syncState {
-            case .synced:
-                Text("Balance: \(bdkManager.balance)")
-            case .syncing:
-                Text("Balance: Syncing")
-            default:
-                Text("Balance: Not synced")
+        NavigationView {
+            VStack (spacing: 50){
+                Text("Hello, wallet!")
+                switch bdkManager.syncState {
+                case .synced:
+                    Text("Balance: \(bdkManager.balance)")
+                case .syncing:
+                    Text("Balance: Syncing")
+                default:
+                    Text("Balance: Not synced")
+                }
+                //Text(bdkManager.wallet?.getAddress(addressIndex: AddressIndex.new).address ?? "-")
+                Spacer()
+                
             }
-            Text("Hello Wallet")//Text(bdkManager.wallet?.getAddress(addressIndex: AddressIndex.new).address ?? "-")
-        }.task {
+        }.accentColor(.black)
+        .task {
             bdkManager.sync() // to sync once
             //bdkManager.startSyncRegularly(interval: 120) // to sync every 120 seconds
             
@@ -69,6 +76,15 @@ struct WalletView: View {
         if blockSocket.latestBlockHeight != nil {
             print("LatestBlockHeight: " + self.blockSocket.latestBlockHeight!.description)
             let ldkManager = LDKManager.init(network: ldkNetwork, latestBlockHeight: blockSocket.latestBlockHeight!, latestBlockHash: blockSocket.latestBlockHash!)
+        }
+    }
+}
+
+struct VerticalLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack {
+            configuration.icon.font(.headline)
+            configuration.title.font(.caption)
         }
     }
 }
