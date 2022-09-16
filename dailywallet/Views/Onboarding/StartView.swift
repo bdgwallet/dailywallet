@@ -27,9 +27,10 @@ struct StartView: View {
                             .foregroundColor(.bitcoinOrange)
                     }.frame(width: 200, height: 200, alignment: .center)
                     Text("Bitcoin wallet")
-                        .font(.largeTitle.bold())
+                        .textStyle(BitcoinTitle1())
                         .multilineTextAlignment(.center)
                     Text("A simple bitcoin wallet for your daily spending")
+                        .textStyle(BitcoinBody1())
                         .padding()
                         .multilineTextAlignment(.center)
                 }
@@ -47,9 +48,12 @@ struct StartView: View {
                     }
                 }.padding(32)
                 Text("Your wallet, your coins \n 100% open-source & open-design")
+                    .textStyle(BitcoinBody4())
                     .multilineTextAlignment(.center)
             }
-        }.accentColor(.black)
+        }
+        .padding()
+        .accentColor(.black)
     }
 }
 
@@ -59,3 +63,101 @@ public enum NavigateTo {
     case restoreWallet
     case createWalletAdvanced
 }
+
+/*
+extension Text {
+    func textStyle<Style: ViewModifier>(_ style: Style) -> some View {
+        ModifiedContent(content: self, modifier: style)
+    }
+}
+
+struct BitcoinTitle1: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 36, weight: .semibold))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinTitle2: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 28, weight: .semibold))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinTitle3: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 24, weight: .semibold))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinTitle4: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 21, weight: .semibold))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinTitle5: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 18, weight: .semibold))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinBody1: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 24, weight: .regular))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinBody2: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 21, weight: .regular))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinBody3: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 18, weight: .regular))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinBody4: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 15, weight: .regular))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+
+struct BitcoinBody5: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 13, weight: .regular))
+            .foregroundColor(colorScheme == .dark ? .bitcoinWhite : .bitcoinBlack)
+    }
+}
+*/

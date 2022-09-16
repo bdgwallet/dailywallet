@@ -28,7 +28,7 @@ struct CreateWalletView: View {
                         .foregroundColor(.bitcoinWhite)
                 }.frame(width: 60, height: 60, alignment: .center)
                 Text("Two things you must understand")
-                    .font(.largeTitle.bold())
+                    .textStyle(BitcoinTitle1())
                     .multilineTextAlignment(.center)
             }
             Spacer()
@@ -56,6 +56,7 @@ struct CreateWalletView: View {
                 }
             }
         }
+        .padding()
         .navigationBarTitleDisplayMode(.inline)
     }
 }
