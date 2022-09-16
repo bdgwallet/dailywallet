@@ -19,7 +19,6 @@
 		6541A545282E71B60051B2B0 /* ImportWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A542282E71B60051B2B0 /* ImportWalletView.swift */; };
 		6541A546282E71B60051B2B0 /* AdvancedCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A543282E71B60051B2B0 /* AdvancedCreateView.swift */; };
 		6541A5512837E84E0051B2B0 /* LDKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A5502837E84E0051B2B0 /* LDKManager.swift */; };
-		658FA38528CB5C2500196EF9 /* LDKFramework.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 658FA38428CB5C2500196EF9 /* LDKFramework.xcframework */; };
 		658FA38828CB5CEF00196EF9 /* WalletUI in Frameworks */ = {isa = PBXBuildFile; productRef = 658FA38728CB5CEF00196EF9 /* WalletUI */; };
 		658FA38A28CB924F00196EF9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38928CB924F00196EF9 /* SettingsView.swift */; };
 		658FA38C28CB931300196EF9 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38B28CB931200196EF9 /* HomeView.swift */; };
@@ -54,7 +53,6 @@
 		6541A542282E71B60051B2B0 /* ImportWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportWalletView.swift; sourceTree = "<group>"; };
 		6541A543282E71B60051B2B0 /* AdvancedCreateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedCreateView.swift; sourceTree = "<group>"; };
 		6541A5502837E84E0051B2B0 /* LDKManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LDKManager.swift; sourceTree = "<group>"; };
-		658FA38428CB5C2500196EF9 /* LDKFramework.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = LDKFramework.xcframework; path = ../../../Downloads/LDKFramework.xcframework; sourceTree = "<group>"; };
 		658FA38928CB924F00196EF9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		658FA38B28CB931200196EF9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		658FA38D28CB950A00196EF9 /* TransactionHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistory.swift; sourceTree = "<group>"; };
@@ -65,7 +63,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				658FA38528CB5C2500196EF9 /* LDKFramework.xcframework in Frameworks */,
 				6541A53E282E70C20051B2B0 /* KeychainAccess in Frameworks */,
 				6541A538282E6F190051B2B0 /* BDKManager in Frameworks */,
 				65C336C528410A2C0087B77D /* BlockSocket in Frameworks */,
@@ -174,7 +171,6 @@
 		6541A5522837E91F0051B2B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				658FA38428CB5C2500196EF9 /* LDKFramework.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

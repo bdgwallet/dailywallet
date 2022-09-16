@@ -7,7 +7,7 @@
 
 import SwiftUI
 import BDKManager
-import LDKFramework
+//import LDKFramework
 import BlockSocket
 import WalletUI
 
@@ -70,6 +70,7 @@ struct WalletView: View {
         }
     }
     
+    /*
     private func setupLDKManager() {
         // Initialize LDKManager
         let ldkNetwork = LDKNetwork_Testnet // set LDKNetwork_Bitcoin, LDKNetwork_Testnet, LDKNetwork_Signet or LDKNetwork_Regtest
@@ -78,6 +79,7 @@ struct WalletView: View {
             let ldkManager = LDKManager.init(network: ldkNetwork, latestBlockHeight: blockSocket.latestBlockHeight!, latestBlockHash: blockSocket.latestBlockHash!)
         }
     }
+    */
 }
 
 struct VerticalLabelStyle: LabelStyle {
