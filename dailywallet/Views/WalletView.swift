@@ -30,17 +30,50 @@ struct WalletView: View {
     var body: some View {
         NavigationView {
             VStack (spacing: 50){
-                Text("Hello, wallet!")
+                Spacer()
                 switch bdkManager.syncState {
                 case .synced:
-                    Text("Balance: \(bdkManager.balance)")
+                    Text("\(bdkManager.balance) sats")
                 case .syncing:
-                    Text("Balance: Syncing")
+                    Text("Syncing")
                 default:
-                    Text("Balance: Not synced")
+                    Text("Not synced")
                 }
                 //Text(bdkManager.wallet?.getAddress(addressIndex: AddressIndex.new).address ?? "-")
                 Spacer()
+                VStack (spacing: 50) {
+                    HStack (spacing: 100) {
+                        Text("1")
+                        Text("2")
+                        Text("3")
+                    }
+                    HStack (spacing: 100) {
+                        Text("4")
+                        Text("5")
+                        Text("6")
+                    }
+                    HStack (spacing: 100) {
+                        Text("7")
+                        Text("8")
+                        Text("9")
+                    }
+                    HStack (spacing: 100) {
+                        Text(".")
+                        Text("0")
+                        Text("<")
+                    }
+                }
+                HStack {
+                    Spacer()
+                    Button("Request") {
+                        //self.navigateTo = .createWallet
+                    }.buttonStyle(BitcoinFilled(width: 150))
+                    Spacer()
+                    Button("Pay") {
+                        //self.navigateTo = .createWallet
+                    }.buttonStyle(BitcoinFilled(width: 150))
+                    Spacer()
+                }.padding(.bottom, 32)
                 
             }
         }.accentColor(.black)

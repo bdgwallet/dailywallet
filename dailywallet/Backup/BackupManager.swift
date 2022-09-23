@@ -57,6 +57,14 @@ public class BackupManager: ObservableObject {
             }
         }
     }
+    
+    public func deletePrivateKey() {
+        do {
+            try keychain.remove("KeyBackup")
+        } catch let error {
+            print(error)
+        }
+    }
 }
 
 public struct KeyBackup: Codable {
