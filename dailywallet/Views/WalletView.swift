@@ -20,7 +20,12 @@ struct WalletView: View {
                 Spacer()
                 switch bdkManager.syncState {
                 case .synced:
-                    Text("\(bdkManager.balance) sats")
+                    VStack(spacing: 4) {
+                        Text("\(bdkManager.balance) sats")
+                            .textStyle(BitcoinTitle1())
+                        Text("$0")
+                            .textStyle(BitcoinBody4())
+                    }
                 case .syncing:
                     Text("Syncing")
                 default:
@@ -31,23 +36,35 @@ struct WalletView: View {
                 VStack (spacing: 50) {
                     HStack (spacing: 100) {
                         Text("1")
+                            .textStyle(BitcoinTitle3())
                         Text("2")
+                            .textStyle(BitcoinTitle3())
                         Text("3")
+                            .textStyle(BitcoinTitle3())
                     }
                     HStack (spacing: 100) {
                         Text("4")
+                            .textStyle(BitcoinTitle3())
                         Text("5")
+                            .textStyle(BitcoinTitle3())
                         Text("6")
+                            .textStyle(BitcoinTitle3())
                     }
                     HStack (spacing: 100) {
                         Text("7")
+                            .textStyle(BitcoinTitle3())
                         Text("8")
+                            .textStyle(BitcoinTitle3())
                         Text("9")
+                            .textStyle(BitcoinTitle3())
                     }
                     HStack (spacing: 100) {
                         Text(".")
+                            .textStyle(BitcoinTitle3())
                         Text("0")
+                            .textStyle(BitcoinTitle3())
                         Text("<")
+                            .textStyle(BitcoinTitle3())
                     }
                 }
                 HStack {
