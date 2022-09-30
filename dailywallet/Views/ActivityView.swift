@@ -22,22 +22,12 @@ struct ActivityView: View {
     var body: some View {
         VStack() {
             VStack(alignment: .center) {
-                VStack(spacing: 4) {
-                    Text("Your balance")
-                        .textStyle(BitcoinBody4())
-                    Text("25,000 sats")
-                        .textStyle(BitcoinTitle1())
-                    Text("$11.48")
-                        .textStyle(BitcoinBody4())
-                }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
-                HStack {
-                    Text("Activity")
-                        .textStyle(BitcoinTitle5())
-                    Spacer()
-                }
-            }.frame(alignment: .bottom)
-                .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-            TransactionsView(customTransactions: customTransactions)
+                BalanceHeaderView()
+                    .environmentObject(bdkManager)
+                    .frame(alignment: .bottom)
+                    .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
+                TransactionsView(customTransactions: customTransactions)
+            }
         }
     }
 }
@@ -45,6 +35,39 @@ struct ActivityView: View {
 struct TransactionHistory_Previews: PreviewProvider {
     static var previews: some View {
         ActivityView()
+    }
+}
+
+struct BalanceHeaderView: View {
+    @EnvironmentObject var bdkManager: BDKManager
+    
+    var body: some View {
+        VStack(alignment: .center) {
+            VStack(spacing: 4) {
+                Text("Your balance")
+                    .textStyle(BitcoinBody4())
+                switch bdkManager.syncState {
+                case .synced:
+                    VStack(spacing: 4) {
+                        Text("\(bdkManager.balance) sats")
+                            .textStyle(BitcoinTitle1())
+                        Text("$0")
+                            .textStyle(BitcoinBody4())
+                    }
+                case .syncing:
+                    Text("Syncing")
+                        .textStyle(BitcoinTitle1())
+                default:
+                    Text("Not synced")
+                        .textStyle(BitcoinTitle1())
+                }
+            }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
+            HStack {
+                Text("Activity")
+                    .textStyle(BitcoinTitle5())
+                Spacer()
+            }
+        }
     }
 }
 

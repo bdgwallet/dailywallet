@@ -59,7 +59,7 @@ struct WalletView: View {
                             .textStyle(BitcoinTitle3())
                     }
                     HStack (spacing: 100) {
-                        Text(".")
+                        Text(" ")
                             .textStyle(BitcoinTitle3())
                         Text("0")
                             .textStyle(BitcoinTitle3())
