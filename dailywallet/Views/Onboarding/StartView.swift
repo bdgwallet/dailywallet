@@ -19,7 +19,6 @@ struct StartView: View {
         NavigationView {
             VStack {
                 Spacer()
-                Spacer()
                 VStack {
                     Image("BitcoinLogo")
                         .frame(width: 100, height: 100, alignment: .center)
@@ -30,7 +29,7 @@ struct StartView: View {
                     Text("A simple bitcoin wallet for your daily spending")
                         .textStyle(BitcoinBody1())
                         .multilineTextAlignment(.center)
-                        .padding(8)
+                        .padding()
                 }
                 Spacer()
                 VStack {
@@ -44,13 +43,12 @@ struct StartView: View {
                             self.navigateTo = .restoreWallet
                         }.buttonStyle(BitcoinPlain())
                     }
-                }.padding(32)
+                }.padding(16)
                 Text("Your wallet, your coins \n 100% open-source & open-design")
                     .textStyle(BitcoinBody4())
                     .multilineTextAlignment(.center)
-            }
+            }.padding(EdgeInsets(top: 32, leading: 32, bottom: 8, trailing: 32))
         }
-        .padding(EdgeInsets(top: 16, leading: 32, bottom: 16, trailing: 32))
         .accentColor(.black)
     }
 }

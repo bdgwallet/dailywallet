@@ -32,14 +32,12 @@ struct CreateWalletView: View {
                     .multilineTextAlignment(.center)
             }
             Spacer()
-            Toggle("With bitcoin, you are your own bank. No-one else has access to your private keys.", isOn: $confirmationOne)
-                .padding()
-            Toggle("If you lose access to this app, and the backup we will help you create, your bitcoin cannot be recovered.", isOn: $confirmationTwo)
-                .padding()
-//            List {
-//                Toggle("With bitcoin, you are your own bank. No-one else has access to your private keys.", isOn: $showGreeting)
-//                Toggle("If you lose access to this app. and the backup we will help you create, your bitcoin cannot be recovered.", isOn: $showGreeting)
-//            }
+            VStack (spacing: 32) {
+                Toggle("With bitcoin, you are your own bank. No-one else has access to your private keys.", isOn: $confirmationOne)
+                    .padding(0)
+                Toggle("If you lose access to this app, and the backup we will help you create, your bitcoin cannot be recovered.", isOn: $confirmationTwo)
+                    .padding(0)
+            }
             Spacer()
             VStack (spacing: 16) {
                 Button("Continue") {
@@ -55,8 +53,7 @@ struct CreateWalletView: View {
                     }.buttonStyle(BitcoinPlain())
                 }
             }
-        }
-        .padding()
+        }.padding(EdgeInsets(top: 32, leading: 32, bottom: 16, trailing: 32))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
