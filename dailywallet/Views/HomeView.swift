@@ -23,7 +23,7 @@ struct HomeView: View {
                 }
             TransactionHistory()
                 .tabItem {
-                    Label("History", systemImage: "list.bullet")
+                    Label("Activity", systemImage: "list.bullet")
                 }
             SettingsView()
                 .tabItem {
