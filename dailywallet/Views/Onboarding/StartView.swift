@@ -19,20 +19,18 @@ struct StartView: View {
         NavigationView {
             VStack {
                 Spacer()
+                Spacer()
                 VStack {
-                    HStack {
-                        BitcoinImage(named: "bitcoin-circle-filled")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .foregroundColor(.bitcoinOrange)
-                    }.frame(width: 200, height: 200, alignment: .center)
+                    Image("BitcoinLogo")
+                        .frame(width: 100, height: 100, alignment: .center)
+                        .padding()
                     Text("Bitcoin wallet")
                         .textStyle(BitcoinTitle1())
                         .multilineTextAlignment(.center)
                     Text("A simple bitcoin wallet for your daily spending")
                         .textStyle(BitcoinBody1())
-                        .padding()
                         .multilineTextAlignment(.center)
+                        .padding(8)
                 }
                 Spacer()
                 VStack {
@@ -52,7 +50,7 @@ struct StartView: View {
                     .multilineTextAlignment(.center)
             }
         }
-        .padding()
+        .padding(EdgeInsets(top: 16, leading: 32, bottom: 16, trailing: 32))
         .accentColor(.black)
     }
 }
