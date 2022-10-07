@@ -8,7 +8,6 @@
 import SwiftUI
 import BDKManager
 import WalletUI
-import BitcoinDevKit
 
 struct ActivityView: View {
     @EnvironmentObject var bdkManager: BDKManager
@@ -26,6 +25,7 @@ struct ActivityView: View {
                     .frame(alignment: .bottom)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
                 TransactionsListView(transactions: bdkManager.transactions)
+                    .environmentObject(bdkManager)
             }
         }
     }
@@ -45,19 +45,10 @@ struct BalanceHeaderView: View {
             VStack(spacing: 4) {
                 Text("Your balance")
                     .textStyle(BitcoinBody4())
-                switch bdkManager.syncState {
-                case .synced:
-                    VStack(spacing: 4) {
-                        Text("\(bdkManager.balance.total.description) sats")
-                            .textStyle(BitcoinTitle1())
-                        Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
-                    }
-                case .syncing:
-                    Text("Syncing")
+                VStack(spacing: 4) {
+                    Text("\(bdkManager.balance.total.description) sats")
                         .textStyle(BitcoinTitle1())
-                default:
-                    Text("Not synced")
-                        .textStyle(BitcoinTitle1())
+                    Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
                 }
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
             HStack {
@@ -70,7 +61,8 @@ struct BalanceHeaderView: View {
 }
 
 struct TransactionsListView: View {
-    var transactions: [BitcoinDevKit.TransactionDetails]
+    @EnvironmentObject var bdkManager: BDKManager
+    var transactions: [TransactionDetails]
     
     var body: some View {
         if transactions.count != 0 {
@@ -81,14 +73,24 @@ struct TransactionsListView: View {
             }.listStyle(.plain)
         } else {
             Spacer()
-            Text("No transactions").textStyle(BitcoinBody4())
+            switch bdkManager.syncState {
+            case .synced:
+                Text("No transactions")
+                    .textStyle(BitcoinBody4())
+            case .syncing:
+                Text("Syncing")
+                    .textStyle(BitcoinBody4())
+            default:
+                Text("Not synced")
+                    .textStyle(BitcoinBody4())
+            }
             Spacer()
         }
     }
 }
 
 struct TransactionItemView: View {
-    var transaction: BitcoinDevKit.TransactionDetails
+    var transaction: TransactionDetails
     
     var body: some View {
         HStack {

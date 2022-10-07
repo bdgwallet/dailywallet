@@ -42,7 +42,6 @@ struct HomeView: View {
                 }
         }.accentColor(.bitcoinOrange)
             .task {
-                bdkManager.sync() // to sync once
                 bdkManager.startSyncRegularly(interval: 30) // to sync every 120 seconds
                 
             }.onDisappear {
