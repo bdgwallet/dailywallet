@@ -26,7 +26,7 @@ struct HomeView: View {
     
     var body: some View {
         TabView {
-            WalletView()
+            PaymentsView()
                 .environmentObject(bdkManager)
                 .environmentObject(backupManager)
                 .tabItem {

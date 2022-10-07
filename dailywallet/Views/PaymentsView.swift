@@ -1,5 +1,5 @@
 //
-//  WalletView.swift
+//  PaymentsView.swift
 //  dailywallet
 //
 //  Created by Daniel Nordh on 5/13/22.
@@ -9,10 +9,12 @@ import SwiftUI
 import BDKManager
 import WalletUI
 
-struct WalletView: View {
+struct PaymentsView: View {
     @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var backupManager: BackupManager
-    @State private var navigateTo: NavigateTo? = NavigateTo.none
+    
+    @State private var showRequestSheet = false
+    @State private var showSendSheet = false
     
     var body: some View {
         NavigationView {
@@ -70,15 +72,22 @@ struct WalletView: View {
                 HStack {
                     Spacer()
                     Button("Request") {
-                        //self.navigateTo = .createWallet
-                    }.buttonStyle(BitcoinFilled(width: 150))
+                        showRequestSheet.toggle()
+                    }
+                    .buttonStyle(BitcoinFilled(width: 150))
+                    .sheet(isPresented: $showRequestSheet) {
+                        RequestView().environmentObject(bdkManager)
+                    }
                     Spacer()
                     Button("Pay") {
-                        //self.navigateTo = .createWallet
-                    }.buttonStyle(BitcoinFilled(width: 150))
+                        showSendSheet.toggle()
+                    }
+                    .buttonStyle(BitcoinFilled(width: 150))
+                    .sheet(isPresented: $showSendSheet) {
+                        SendView().environmentObject(bdkManager)
+                    }
                     Spacer()
                 }.padding(.bottom, 32)
-                
             }
         }.accentColor(.black)
     }
