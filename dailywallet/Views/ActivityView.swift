@@ -17,7 +17,6 @@ struct ActivityView: View {
     
     let headerWidth = UIScreen.main.bounds.width
     let headerHeight = 200.0 //UIScreen.main.bounds.height / 5
-    var customTransactions: [CustomTransaction] = []
     
     var body: some View {
         VStack() {
