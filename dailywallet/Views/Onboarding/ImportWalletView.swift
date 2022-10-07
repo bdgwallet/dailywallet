@@ -47,15 +47,13 @@ struct ImportWalletView: View {
 
 func importRecoveryPhrase(recoveryPhrase: String, bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
     do {
-        // Create private key info
-        let extendedKeyInfo = try bdkManager.restoreFromMnemonic(mnemonic: recoveryPhrase, password: nil)
         // Create descriptor and load wallet
-        let descriptor = bdkManager.createDescriptorFromXprv(descriptorType: DescriptorType.singleKey_wpkh84, xprv: extendedKeyInfo.xprv)
+        let descriptor = bdkManager.descriptorFromMnemonic(descriptorType: DescriptorType.singleKey_wpkh84, mnemonic: recoveryPhrase, password: nil)
         // Save backup
-        let keyBackup = KeyBackup(mnemonic: extendedKeyInfo.mnemonic, descriptor: descriptor)
+        let keyBackup = KeyBackup(mnemonic: recoveryPhrase, descriptor: descriptor!)
         backupManager.savePrivateKey(keyBackup: keyBackup)
         // Load wallet in bdkManager, this will trigger a view switch
-        bdkManager.loadWallet(descriptor: descriptor)
+        bdkManager.loadWallet(descriptor: descriptor!)
         return true
     } catch let error {
         print(error)

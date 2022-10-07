@@ -8,6 +8,7 @@
 import SwiftUI
 import BDKManager
 import WalletUI
+import BitcoinDevKit
 
 struct CreateWalletView: View {
     @EnvironmentObject var bdkManager: BDKManager
@@ -60,15 +61,15 @@ struct CreateWalletView: View {
 
 func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
     do {
-        // Create private key info
-        let extendedKeyInfo = try bdkManager.generateExtendedKey(wordCount: nil, password: nil)
+        // Create mnemonic
+        let mnemonic = try generateMnemonic(wordCount: WordCount.words12)
         // Create descriptor and load wallet
-        let descriptor = bdkManager.createDescriptorFromXprv(descriptorType: DescriptorType.singleKey_wpkh84, xprv: extendedKeyInfo.xprv)
+        let descriptor = bdkManager.descriptorFromMnemonic(descriptorType: DescriptorType.singleKey_wpkh84, mnemonic: mnemonic, password: nil)
         // Save backup
-        let keyBackup = KeyBackup(mnemonic: extendedKeyInfo.mnemonic, descriptor: descriptor)
+        let keyBackup = KeyBackup(mnemonic: mnemonic, descriptor: descriptor!)
         backupManager.savePrivateKey(keyBackup: keyBackup)
         // Load wallet in bdkManager, this will trigger a view switch
-        bdkManager.loadWallet(descriptor: descriptor)
+        bdkManager.loadWallet(descriptor: descriptor!)
         return true
     } catch let error {
         print(error)

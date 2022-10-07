@@ -33,6 +33,7 @@ struct DailyWalletApp: App {
         // Check if use already has a private key
         if backupManager.keyInfo != nil {
             // If they do, get descriptor and load wallet in bdkManager
+            print(backupManager.keyInfo?.mnemonic)
             bdkManager.loadWallet(descriptor: backupManager.keyInfo!.descriptor)
         }
     }

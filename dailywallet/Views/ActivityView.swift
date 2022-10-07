@@ -48,7 +48,7 @@ struct BalanceHeaderView: View {
                 switch bdkManager.syncState {
                 case .synced:
                     VStack(spacing: 4) {
-                        Text("\(bdkManager.balance) sats")
+                        Text("\(bdkManager.balance.total.description) sats")
                             .textStyle(BitcoinTitle1())
                         Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
                     }
@@ -70,7 +70,7 @@ struct BalanceHeaderView: View {
 }
 
 struct TransactionsView: View {
-    var transactions: [BitcoinDevKit.Transaction]
+    var transactions: [BitcoinDevKit.TransactionDetails]
     
     var body: some View {
         if transactions.count != 0 {
