@@ -26,7 +26,7 @@ struct ActivityView: View {
                     .environmentObject(bdkManager)
                     .frame(alignment: .bottom)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-                TransactionsView(customTransactions: customTransactions)
+                TransactionsView(transactions: bdkManager.transactions)
             }
         }
     }
@@ -72,32 +72,19 @@ struct BalanceHeaderView: View {
 }
 
 struct TransactionsView: View {
-    var customTransactions: [CustomTransaction]
+    var transactions: [BitcoinDevKit.Transaction]
     
     var body: some View {
-        if customTransactions.count != 0 {
+        if transactions.count != 0 {
             List {
-                ForEach(customTransactions) {_ in
-                    Text("Transaction")
-                        .textStyle(BitcoinBody3())
+                ForEach(transactions, id: \.self) {transaction in
+                    Text("Transaction").textStyle(BitcoinBody3())
                 }
             }.listStyle(.plain)
         } else {
             Spacer()
-            Text("No transactions")
-                .textStyle(BitcoinBody4())
+            Text("No transactions").textStyle(BitcoinBody4())
             Spacer()
         }
     }
 }
-
-// Transaction from BitcoinDevKit does not work in List, either use custom struct or wait for it to be changed. Here's a dummy:
-
-public struct CustomTransaction {
-    
-    public let id = UUID()
-    let details: TransactionDetails?
-    let confirmation: BlockTime?
-}
-
-extension CustomTransaction: Equatable, Hashable, Identifiable {}

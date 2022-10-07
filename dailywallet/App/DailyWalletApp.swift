@@ -27,7 +27,7 @@ struct DailyWalletApp: App {
         
         // WARNING!!
         // While testing, remove key backup on every restart
-        backupManager.deletePrivateKey()
+        //backupManager.deletePrivateKey()
         // WARNING!!
         
         // Check if use already has a private key
