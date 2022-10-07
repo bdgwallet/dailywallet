@@ -13,6 +13,7 @@ import CoreImage.CIFilterBuiltins
 
 struct RequestView: View {
     @EnvironmentObject var bdkManager: BDKManager
+    @Environment(\.presentationMode) var presentationMode
     
     @State private var requestAddress: String?
     @State private var copied = false
@@ -35,6 +36,11 @@ struct RequestView: View {
             }
             .navigationTitle("Payment request")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Button("Done") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
         }.accentColor(.black)
         .onAppear(perform: getAddress)
     }
