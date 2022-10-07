@@ -20,18 +20,10 @@ struct PaymentsView: View {
         NavigationView {
             VStack (spacing: 50){
                 Spacer()
-                switch bdkManager.syncState {
-                case .synced:
-                    VStack(spacing: 4) {
-                        Text("\(bdkManager.balance) sats")
-                            .textStyle(BitcoinTitle1())
-                        Text("$0")
-                            .textStyle(BitcoinBody4())
-                    }
-                case .syncing:
-                    Text("Syncing")
-                default:
-                    Text("Not synced")
+                VStack(spacing: 4) {
+                    Text("0 sats")
+                        .textStyle(BitcoinTitle1())
+                    Text("$0").textStyle(BitcoinBody4())
                 }
                 //Text(bdkManager.wallet?.getAddress(addressIndex: AddressIndex.new).address ?? "-")
                 Spacer()
