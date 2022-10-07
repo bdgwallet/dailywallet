@@ -25,7 +25,7 @@ struct ActivityView: View {
                     .environmentObject(bdkManager)
                     .frame(alignment: .bottom)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-                TransactionsView(transactions: bdkManager.transactions)
+                TransactionsListView(transactions: bdkManager.transactions)
             }
         }
     }
@@ -69,20 +69,58 @@ struct BalanceHeaderView: View {
     }
 }
 
-struct TransactionsView: View {
+struct TransactionsListView: View {
     var transactions: [BitcoinDevKit.TransactionDetails]
     
     var body: some View {
         if transactions.count != 0 {
             List {
                 ForEach(transactions, id: \.self) {transaction in
-                    Text("Transaction").textStyle(BitcoinBody3())
+                    TransactionItemView(transaction: transaction)
                 }
             }.listStyle(.plain)
         } else {
             Spacer()
             Text("No transactions").textStyle(BitcoinBody4())
             Spacer()
+        }
+    }
+}
+
+struct TransactionItemView: View {
+    var transaction: BitcoinDevKit.TransactionDetails
+    
+    var body: some View {
+        HStack {
+            if transaction.received != UInt64(0) {
+                ZStack {
+                    Circle()
+                        .fill(Color.bitcoinGreen)
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "arrow.down")
+                        .tint(Color.bitcoinWhite)
+                }
+                VStack (alignment: .leading) {
+                    Text("From").textStyle(BitcoinTitle5())
+                    Text(transaction.confirmationTime?.timestamp.description ?? "Pending").textStyle(BitcoinBody5())
+                }
+                Spacer()
+                Text(transaction.received.description).textStyle(BitcoinBody3())
+            } else {
+                ZStack {
+                    Circle()
+                        .fill(Color.bitcoinRed)
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "arrow.up")
+                        .tint(Color.bitcoinWhite)
+                }
+                VStack (alignment: .leading) {
+                    Text("To").textStyle(BitcoinTitle5())
+                    Text(transaction.confirmationTime?.timestamp.description ?? "Pending").textStyle(BitcoinBody5())
+                }
+                Spacer()
+                Text(transaction.sent.description).textStyle(BitcoinBody3())
+            }
         }
     }
 }
