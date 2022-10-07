@@ -15,6 +15,7 @@ struct RequestView: View {
     @EnvironmentObject var bdkManager: BDKManager
     
     @State private var requestAddress: String?
+    @State private var copied = false
     
     var body: some View {
         NavigationView {
@@ -24,10 +25,12 @@ struct RequestView: View {
                 Spacer()
                 VStack {
                     BitcoinShareButton(title: "Share", shareItem: requestAddress ?? "No address")
-                    Button("Copy") {
+                    Button(self.copied ? "Copied" : "Copy") {
                         UIPasteboard.general.string = requestAddress ?? "No address"
+                        self.copied = true
                     }
                     .buttonStyle(BitcoinPlain(width: 150))
+                    .disabled(self.copied)
                 }.padding(16)
             }
             .navigationTitle("Payment request")
