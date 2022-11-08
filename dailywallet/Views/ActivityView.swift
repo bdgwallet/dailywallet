@@ -103,8 +103,8 @@ struct TransactionItemView: View {
                         .tint(Color.bitcoinWhite)
                 }
                 VStack (alignment: .leading) {
-                    Text("From").textStyle(BitcoinTitle5())
-                    Text(transaction.confirmationTime?.timestamp.description ?? "Pending").textStyle(BitcoinBody5())
+                    Text("Received").textStyle(BitcoinTitle5())
+                    Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
                 }
                 Spacer()
                 Text(transaction.received.description).textStyle(BitcoinBody3())
@@ -117,8 +117,8 @@ struct TransactionItemView: View {
                         .tint(Color.bitcoinWhite)
                 }
                 VStack (alignment: .leading) {
-                    Text("To").textStyle(BitcoinTitle5())
-                    Text(transaction.confirmationTime?.timestamp.description ?? "Pending").textStyle(BitcoinBody5())
+                    Text("Sent").textStyle(BitcoinTitle5())
+                    Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
                 }
                 Spacer()
                 Text(transaction.sent.description).textStyle(BitcoinBody3())
