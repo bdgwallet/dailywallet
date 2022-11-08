@@ -13,6 +13,7 @@ struct PaymentsView: View {
     @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var backupManager: BackupManager
     
+    @State var numpadAmount = "0"
     @State private var showRequestSheet = false
     @State private var showSendSheet = false
     
@@ -21,7 +22,7 @@ struct PaymentsView: View {
             VStack (spacing: 50){
                 Spacer()
                 VStack(spacing: 4) {
-                    Text("0 sats")
+                    Text("\(numpadAmount) sats")
                         .textStyle(BitcoinTitle1())
                     Text("$0").textStyle(BitcoinBody4())
                 }
@@ -29,36 +30,24 @@ struct PaymentsView: View {
                 Spacer()
                 VStack (spacing: 50) {
                     HStack (spacing: 100) {
-                        Text("1")
-                            .textStyle(BitcoinTitle3())
-                        Text("2")
-                            .textStyle(BitcoinTitle3())
-                        Text("3")
-                            .textStyle(BitcoinTitle3())
+                        NumpadButton(numpadAmount:$numpadAmount, character: "1")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "2")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "3")
                     }
                     HStack (spacing: 100) {
-                        Text("4")
-                            .textStyle(BitcoinTitle3())
-                        Text("5")
-                            .textStyle(BitcoinTitle3())
-                        Text("6")
-                            .textStyle(BitcoinTitle3())
+                        NumpadButton(numpadAmount:$numpadAmount, character: "4")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "5")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "6")
                     }
                     HStack (spacing: 100) {
-                        Text("7")
-                            .textStyle(BitcoinTitle3())
-                        Text("8")
-                            .textStyle(BitcoinTitle3())
-                        Text("9")
-                            .textStyle(BitcoinTitle3())
+                        NumpadButton(numpadAmount:$numpadAmount, character: "7")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "8")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "9")
                     }
                     HStack (spacing: 100) {
-                        Text(" ")
-                            .textStyle(BitcoinTitle3())
-                        Text("0")
-                            .textStyle(BitcoinTitle3())
-                        Text("<")
-                            .textStyle(BitcoinTitle3())
+                        NumpadButton(numpadAmount:$numpadAmount, character: " ")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "0")
+                        NumpadButton(numpadAmount:$numpadAmount, character: "<")
                     }
                 }
                 HStack {
@@ -82,6 +71,34 @@ struct PaymentsView: View {
                 }.padding(.bottom, 32)
             }
         }.accentColor(.black)
+    }
+    
+    struct NumpadButton: View {
+        @Binding var numpadAmount: String
+        var character: String
+        
+        var body: some View {
+            Button {
+                if character == "<" {
+                    if numpadAmount.count > 1 {
+                        numpadAmount.removeLast()
+                    } else {
+                        numpadAmount = "0"
+                    }
+                } else if character == " "{
+                    return
+                }
+                else {
+                    if numpadAmount == "0" {
+                        numpadAmount = character
+                    } else {
+                        numpadAmount.append(character)
+                    }
+                }
+            }label: {
+                Text(character).textStyle(BitcoinTitle3())
+            }
+        }
     }
 }
 
