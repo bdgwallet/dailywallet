@@ -11,7 +11,6 @@ import WalletUI
 
 struct PaymentsView: View {
     @EnvironmentObject var bdkManager: BDKManager
-    @EnvironmentObject var backupManager: BackupManager
     
     @State var numpadAmount = "0"
     @State private var showRequestSheet = false
@@ -65,7 +64,7 @@ struct PaymentsView: View {
                     }
                     .buttonStyle(BitcoinFilled(width: 150))
                     .sheet(isPresented: $showSendSheet) {
-                        SendView().environmentObject(bdkManager)
+                        SendView(amount: UInt64(numpadAmount)!).environmentObject(bdkManager)
                     }
                     Spacer()
                 }.padding(.bottom, 32)

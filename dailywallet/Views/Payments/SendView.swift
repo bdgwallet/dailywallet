@@ -12,8 +12,10 @@ import WalletUI
 struct SendView: View {
     @EnvironmentObject var bdkManager: BDKManager
     @Environment(\.presentationMode) var presentationMode
+    let amount: UInt64
     
     @State private var address: String = ""
+    @State private var submitted: Bool?
     
     var body: some View {
         NavigationView {
@@ -42,11 +44,7 @@ struct SendView: View {
     func sendBitcoin() {
         switch bdkManager.walletState {
             case .loaded:
-                do {
-                    //
-                } catch (let error){
-                    print(error)
-                }
+            submitted = bdkManager.sendBitcoin(recipient: address, amount: amount, feeRate: 20)
             default: do {}
         }
     }
@@ -54,6 +52,6 @@ struct SendView: View {
 
 struct SendView_Previews: PreviewProvider {
     static var previews: some View {
-        SendView()
+        SendView(amount: UInt64("10000")!)
     }
 }
