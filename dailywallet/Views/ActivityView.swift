@@ -48,6 +48,8 @@ struct BalanceHeaderView: View {
                 VStack(spacing: 4) {
                     Text("\(bdkManager.balance.total.description) sats")
                         .textStyle(BitcoinTitle1())
+                    Text("\(bdkManager.balance.spendable.description) sats")
+                        .textStyle(BitcoinTitle3())
                     Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
                 }
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
@@ -94,7 +96,7 @@ struct TransactionItemView: View {
     
     var body: some View {
         HStack {
-            if transaction.received != UInt64(0) {
+            if transaction.sent == UInt64(0) {
                 ZStack {
                     Circle()
                         .fill(Color.bitcoinGreen)
