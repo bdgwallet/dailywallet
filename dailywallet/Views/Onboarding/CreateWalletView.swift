@@ -60,19 +60,16 @@ struct CreateWalletView: View {
 }
 
 func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
-    do {
-        // Create mnemonic
-        let mnemonic = try generateMnemonic(wordCount: WordCount.words12)
-        // Create descriptor and load wallet
-        let descriptor = bdkManager.descriptorFromMnemonic(descriptorType: DescriptorType.singleKey_wpkh84, mnemonic: mnemonic, password: nil)
-        // Save backup
-        let keyBackup = KeyBackup(mnemonic: mnemonic, descriptor: descriptor!)
-        backupManager.savePrivateKey(keyBackup: keyBackup)
-        // Load wallet in bdkManager, this will trigger a view switch
-        bdkManager.loadWallet(descriptor: descriptor!)
-        return true
-    } catch let error {
-        print(error)
-        return false
-    }
+    // Create mnemonic
+    let mnemonic = Mnemonic(wordCount: WordCount.words12)
+    // Create descriptor and load wallet
+    let descriptor = DescriptorSecretKey(network: bdkManager.network, mnemonic: mnemonic, password: nil)
+    let descriptorString = descriptor.asString()
+    // Save backup
+    let keyBackup = KeyBackup(mnemonic: mnemonic.asString(), descriptor: descriptor.asString())
+    backupManager.savePrivateKey(keyBackup: keyBackup)
+    // Load wallet in bdkManager, this will trigger a view switch
+    // Hack for now until descriptor templates are part of bdk
+    bdkManager.loadWallet(descriptor: "wpkh(" + descriptorString + ")")
+    return true 
 }

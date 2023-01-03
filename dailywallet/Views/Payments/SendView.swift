@@ -14,6 +14,7 @@ struct SendView: View {
     @Environment(\.presentationMode) var presentationMode
     
     @State private var address: String = ""
+    @State private var amount: UInt64 = 42069
     
     var body: some View {
         NavigationView {
@@ -40,15 +41,8 @@ struct SendView: View {
     }
     
     func sendBitcoin() {
-        switch bdkManager.walletState {
-            case .loaded:
-                do {
-                    //
-                } catch (let error){
-                    print(error)
-                }
-            default: do {}
-        }
+//        let success = bdkManager.sendBitcoin(recipient: address, amount: amount, feeRate: 1000)
+//        print("Send success:" + success.description)
     }
 }
 

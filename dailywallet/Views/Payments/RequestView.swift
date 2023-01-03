@@ -46,16 +46,12 @@ struct RequestView: View {
     }
     
     func getAddress() {
-        switch bdkManager.walletState {
-            case .loaded:
-                do {
-                    let addressInfo = try bdkManager.wallet!.getAddress(addressIndex: AddressIndex.new)
-                    requestAddress = addressInfo.address
-                    print(requestAddress ?? "no address")
-                } catch (let error){
-                    print(error)
-                }
-            default: do {}
+        do {
+            let addressInfo = try bdkManager.wallet!.getAddress(addressIndex: AddressIndex.new)
+            requestAddress = addressInfo.address
+            print(requestAddress ?? "no address")
+        } catch (let error){
+            print(error)
         }
     }
 }
