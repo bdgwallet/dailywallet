@@ -7,14 +7,15 @@
 
 import SwiftUI
 import BDKManager
+import BitcoinDevKit
 import WalletUI
 
 struct SendView: View {
     @EnvironmentObject var bdkManager: BDKManager
     @Environment(\.presentationMode) var presentationMode
-    
+    let amount: UInt64
     @State private var address: String = ""
-    @State private var amount: UInt64 = 42069
+    @State private var submitted: Bool?
     
     var body: some View {
         NavigationView {
@@ -41,13 +42,12 @@ struct SendView: View {
     }
     
     func sendBitcoin() {
-//        let success = bdkManager.sendBitcoin(recipient: address, amount: amount, feeRate: 1000)
-//        print("Send success:" + success.description)
-    }
-}
-
-struct SendView_Previews: PreviewProvider {
-    static var previews: some View {
-        SendView()
+        do {
+            let addressScript = try Address(address: address).scriptPubkey()
+            let success = bdkManager.sendBitcoin(script: addressScript, amount: amount, feeRate: 1000)
+            print("Send success:" + success.description)
+        } catch let error {
+            debugPrint(error)
+        }
     }
 }
