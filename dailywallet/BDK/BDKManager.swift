@@ -41,8 +41,7 @@ public class BDKManager: ObservableObject {
         self.network = Network.testnet // set to .bitcoin, .testnet or regtest
         self.databaseConfig = DatabaseConfig.sqlite(config: SqliteDbConfiguration(path: "")) // set DatabaseConfig.memory or .sqlite
         let esploraConfig = EsploraConfig(baseUrl: self.network == Network.testnet ? ESPLORA_URL_TESTNET : ESPLORA_URL_BITCOIN, proxy: nil, concurrency: nil, stopGap: ESPLORA_STOPGAP, timeout: ESPLORA_TIMEOUT)
-        let blockchainConfig = BlockchainConfig.esplora(config: esploraConfig)
-        self.blockchainConfig = blockchainConfig
+        self.blockchainConfig = BlockchainConfig.esplora(config: esploraConfig)
     }
 
     // Load wallet
