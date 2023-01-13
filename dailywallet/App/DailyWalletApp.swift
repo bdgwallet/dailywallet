@@ -15,7 +15,7 @@ struct DailyWalletApp: App {
     @ObservedObject var backupManager: BackupManager
     
     init() {
-        bdkManager = BDKManager()
+        bdkManager = BDKManager(network: Network.testnet)
         
         // Initialize BackupManager
         let encryptionKey = "d5a423f64b607ea7c65b311d855dc48f36114b227bd0c7a3d403f6158a9e4412" // Use your own unique 256-bit / 64 character string

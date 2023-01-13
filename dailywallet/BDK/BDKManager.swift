@@ -33,15 +33,12 @@ public class BDKManager: ObservableObject {
 
     // Private variables
     private let bdkQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
-    private let databaseConfig: DatabaseConfig
-    private let blockchainConfig: BlockchainConfig
+    private let databaseConfig = DatabaseConfig.sqlite(config: SqliteDbConfiguration(path: "")) // set DatabaseConfig.memory or .sqlite
+    private let blockchainConfig = BlockchainConfig.esplora(config: EsploraConfig(baseUrl: self.network == Network.testnet ? ESPLORA_URL_TESTNET : ESPLORA_URL_BITCOIN, proxy: nil, concurrency: nil, stopGap: ESPLORA_STOPGAP, timeout: ESPLORA_TIMEOUT))
     
-    // Initialize a BDKManager instance, set network and blockchain config
-    public init() {
-        self.network = Network.testnet // set to .bitcoin, .testnet or regtest
-        self.databaseConfig = DatabaseConfig.sqlite(config: SqliteDbConfiguration(path: "")) // set DatabaseConfig.memory or .sqlite
-        let esploraConfig = EsploraConfig(baseUrl: self.network == Network.testnet ? ESPLORA_URL_TESTNET : ESPLORA_URL_BITCOIN, proxy: nil, concurrency: nil, stopGap: ESPLORA_STOPGAP, timeout: ESPLORA_TIMEOUT)
-        self.blockchainConfig = BlockchainConfig.esplora(config: esploraConfig)
+    // Initialize a BDKManager instance, set network
+    public init(network: Network) {
+        self.network = network // set to .bitcoin, .testnet or regtest
     }
 
     // Load wallet
