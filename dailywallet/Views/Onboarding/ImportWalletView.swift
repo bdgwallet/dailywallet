@@ -48,12 +48,13 @@ struct ImportWalletView: View {
 func importRecoveryPhrase(recoveryPhrase: String, bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
     do {
         // Create descriptor and load wallet
-        let descriptor = try DescriptorSecretKey(network: bdkManager.network, mnemonic: Mnemonic.fromString(mnemonic: recoveryPhrase), password: nil)
+        let descriptorSecretKey = try DescriptorSecretKey(network: bdkManager.network, mnemonic: Mnemonic.fromString(mnemonic: recoveryPhrase), password: nil)
+        let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
         // Save backup
         let keyBackup = KeyBackup(mnemonic: recoveryPhrase, descriptor: descriptor.asString())
         backupManager.savePrivateKey(keyBackup: keyBackup)
         // Load wallet in bdkManager, this will trigger a view switch
-        bdkManager.loadWallet(descriptor: descriptor.asString() + ")")
+        bdkManager.loadWallet(descriptor: descriptor)
         return true
     } catch let error {
         print(error)

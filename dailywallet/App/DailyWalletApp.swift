@@ -28,7 +28,12 @@ struct DailyWalletApp: App {
         // Check if use already has a private key
         if backupManager.keyInfo != nil {
             // If they do, get descriptor and load wallet in bdkManager
-            bdkManager.loadWallet(descriptor: "wpkh(" + backupManager.keyInfo!.descriptor + ")")
+            do {
+                let descriptor = try Descriptor(descriptor: backupManager.keyInfo!.descriptor, network: bdkManager.network)
+                bdkManager.loadWallet(descriptor: descriptor)
+            } catch let error {
+                debugPrint(error)
+            }
         }
     }
     

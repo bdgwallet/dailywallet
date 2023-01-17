@@ -62,13 +62,12 @@ func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> B
     // Create mnemonic
     let mnemonic = Mnemonic(wordCount: WordCount.words12)
     // Create descriptor and load wallet
-    let descriptor = DescriptorSecretKey(network: bdkManager.network, mnemonic: mnemonic, password: nil)
-    let descriptorString = descriptor.asString()
+    let descriptorSecretKey = DescriptorSecretKey(network: bdkManager.network, mnemonic: mnemonic, password: nil)
+    let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
     // Save backup
     let keyBackup = KeyBackup(mnemonic: mnemonic.asString(), descriptor: descriptor.asString())
     backupManager.savePrivateKey(keyBackup: keyBackup)
     // Load wallet in bdkManager, this will trigger a view switch
-    // Hack for now until descriptor templates are part of bdk
-    bdkManager.loadWallet(descriptor: "wpkh(" + descriptorString + ")")
+    bdkManager.loadWallet(descriptor: descriptor)
     return true 
 }
