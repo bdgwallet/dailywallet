@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import BDKManager
 import WalletUI
 
 struct StartView: View {

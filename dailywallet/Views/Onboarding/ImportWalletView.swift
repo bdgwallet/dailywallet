@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import BDKManager
 import BitcoinDevKit
 
 struct ImportWalletView: View {
@@ -54,7 +53,7 @@ func importRecoveryPhrase(recoveryPhrase: String, bdkManager: BDKManager, backup
         let keyBackup = KeyBackup(mnemonic: recoveryPhrase, descriptor: descriptor.asString())
         backupManager.savePrivateKey(keyBackup: keyBackup)
         // Load wallet in bdkManager, this will trigger a view switch
-        bdkManager.loadWallet(descriptor: "wpkh(" + descriptor.asString() + ")")
+        bdkManager.loadWallet(descriptor: descriptor.asString() + ")")
         return true
     } catch let error {
         print(error)

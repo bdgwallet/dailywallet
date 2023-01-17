@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import BDKManager
 import WalletUI
 import BitcoinDevKit
 import CoreImage.CIFilterBuiltins

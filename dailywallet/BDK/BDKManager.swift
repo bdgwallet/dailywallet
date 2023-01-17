@@ -43,7 +43,7 @@ public class BDKManager: ObservableObject {
     }
 
     // Load wallet
-    public func loadWallet(descriptor: String) {
+    public func loadWallet(descriptor: Descriptor) {
         do {
             let wallet = try Wallet.init(descriptor: descriptor, changeDescriptor: nil, network: self.network, databaseConfig: self.databaseConfig)
             self.wallet = wallet

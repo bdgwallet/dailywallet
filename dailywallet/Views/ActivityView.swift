@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import BDKManager
 import WalletUI
+import BitcoinDevKit
 
 struct ActivityView: View {
     @EnvironmentObject var bdkManager: BDKManager
