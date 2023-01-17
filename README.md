@@ -1,4 +1,4 @@
-#  BDG Daily Wallet
+#  BDG Daily Wallet - Swift
 
 A bitcoin wallet app template for iOS. 
 
