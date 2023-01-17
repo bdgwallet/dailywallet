@@ -14,22 +14,7 @@ public class BDKManager: ObservableObject {
     @Published public var wallet: Wallet?
     @Published public var balance: Balance?
     @Published public var transactions: [TransactionDetails] = []
-    @Published public var syncState = SyncState.empty {
-        didSet {
-            switch syncState {
-            case .empty:
-                debugPrint("Node is not initialized")
-            case .syncing:
-                debugPrint("Node is syncing")
-            case .synced:
-                debugPrint("Node is synced")
-                self.getBalance()
-                self.getTransactions()
-            case .failed(let error):
-                debugPrint(error.localizedDescription)
-            }
-        }
-    }
+    @Published public var syncState = SyncState.empty
 
     // Private variables
     private let bdkQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
@@ -39,7 +24,8 @@ public class BDKManager: ObservableObject {
     // Initialize a BDKManager instance, set network and blockchainconfig
     public init(network: Network) {
         self.network = network // set to .bitcoin, .testnet or regtest
-        self.blockchainConfig = BlockchainConfig.esplora(config: EsploraConfig(baseUrl: self.network == Network.testnet ? ESPLORA_URL_TESTNET : ESPLORA_URL_BITCOIN, proxy: nil, concurrency: nil, stopGap: ESPLORA_STOPGAP, timeout: ESPLORA_TIMEOUT))
+        let esploraConfig = EsploraConfig(baseUrl: self.network == Network.testnet ? ESPLORA_URL_TESTNET : ESPLORA_URL_BITCOIN, proxy: nil, concurrency: nil, stopGap: ESPLORA_STOPGAP, timeout: ESPLORA_TIMEOUT)
+        self.blockchainConfig = BlockchainConfig.esplora(config: esploraConfig)
     }
 
     // Load wallet
@@ -60,6 +46,8 @@ public class BDKManager: ObservableObject {
                 do {
                     let blockchain = try Blockchain(config: self.blockchainConfig)
                     try self.wallet!.sync(blockchain: blockchain, progress: nil)
+                    self.getBalance()
+                    self.getTransactions()
                     DispatchQueue.main.async {
                         self.syncState = SyncState.synced
                     }
