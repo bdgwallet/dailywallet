@@ -46,9 +46,9 @@ struct BalanceHeaderView: View {
                 Text("Your balance")
                     .textStyle(BitcoinBody4())
                 VStack(spacing: 4) {
-                    Text("\(bdkManager.balance!.total.description) sats")
+                    Text("\(bdkManager.balance?.total.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle1())
-                    Text("\(bdkManager.balance!.spendable.description) sats")
+                    Text("\(bdkManager.balance?.spendable.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle3())
                     Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
                 }

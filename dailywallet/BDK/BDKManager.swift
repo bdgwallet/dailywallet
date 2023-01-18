@@ -18,7 +18,7 @@ public class BDKManager: ObservableObject {
 
     // Private variables
     private let bdkQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
-    private let databaseConfig = DatabaseConfig.sqlite(config: SqliteDbConfiguration(path: "")) // set DatabaseConfig.memory or .sqlite
+    private let databaseConfig = DatabaseConfig.memory // set DatabaseConfig.memory or .sqlite
     private let blockchainConfig: BlockchainConfig
     
     // Initialize a BDKManager instance, set network and blockchainconfig
