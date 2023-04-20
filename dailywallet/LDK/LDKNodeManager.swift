@@ -17,10 +17,11 @@ public class LDKNodeManager: ObservableObject {
     @Published public var syncState = SyncState.empty
     
     // Private variables
-    var esploraServerUrl = ESPLORA_URL_TESTNET
-    var listeningAddress: String? = nil
-    let defaultCltvExpiryDelta = UInt32(2048)
-    let storageDirectoryPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
+    private let nodeQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
+    private var esploraServerUrl = ESPLORA_URL_TESTNET
+    private var listeningAddress: String? = nil
+    private let defaultCltvExpiryDelta = UInt32(2048)
+    private let storageDirectoryPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
     
     // Initialize a LDKNodeManager instance on the specified network
     public init(network: String) {
@@ -65,15 +66,20 @@ public class LDKNodeManager: ObservableObject {
     // Sync once
     public func sync() {
         if self.node != nil {
-            do {
-                self.syncState = .syncing
-                try self.node!.syncWallets()
-                self.getOnchainBalance()
-                self.syncState = .synced
-                debugPrint("LDKNodeManager: Synced")
-            } catch let error {
-                self.syncState = .failed(error)
-                debugPrint("LDKNodeManager: Error syncing wallets: \(error.localizedDescription)")
+            self.syncState = .syncing
+            nodeQueue.async {
+                do {
+                    try self.node!.syncWallets()
+                    debugPrint("LDKNodeManager: Synced")
+                    DispatchQueue.main.async {
+                        self.syncState = SyncState.synced
+                        self.getOnchainBalance()
+                    }
+                } catch let error {
+                    DispatchQueue.main.async {
+                        self.syncState = SyncState.failed(error)
+                    }
+                }
             }
         }
     }
