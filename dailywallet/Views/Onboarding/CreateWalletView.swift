@@ -43,10 +43,16 @@ struct CreateWalletView: View {
             Spacer()
             VStack (spacing: 16) {
                 Button("Continue") {
+                    if !createPrivateKeyWithLDKNode(ldkNodeManager: ldkNodeManager, backupManager: backupManager) {
+                        // Show error message
+                        print("Error creating or backing up private key")
+                    }
+                    /*
                     if !createPrivateKey(bdkManager: bdkManager, backupManager: backupManager) {
                         // Show error message
                         print("Error creating or backing up private key")
                     }
+                    */
                 }.buttonStyle(BitcoinFilled())
                     .disabled(confirmationOne == false || confirmationTwo == false)
                 NavigationLink(destination: AdvancedCreateView(), tag: NavigateTo.createWalletAdvanced, selection: $navigateTo) {
@@ -74,9 +80,9 @@ func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> B
     return true 
 }
 
-func createPrivateKeyWithLDKNode(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) async -> Bool {
+func createPrivateKeyWithLDKNode(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) -> Bool {
     do {
-        try await ldkNodeManager.start()
+        try ldkNodeManager.start()
         return true
     } catch let error {
         debugPrint(error)

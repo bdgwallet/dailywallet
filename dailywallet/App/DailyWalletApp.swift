@@ -42,13 +42,15 @@ struct DailyWalletApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if bdkManager.wallet == nil {
+            if ldkNodeManager.node == nil {
                 StartView()
                     .environmentObject(bdkManager)
+                    .environmentObject(ldkNodeManager)
                     .environmentObject(backupManager)
             } else {
                 HomeView()
                     .environmentObject(bdkManager)
+                    .environmentObject(ldkNodeManager)
                     .environmentObject(backupManager)
             }
         }
