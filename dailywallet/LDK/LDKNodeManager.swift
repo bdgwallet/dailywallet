@@ -12,10 +12,9 @@ public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     public let node: Node
-    //@Published public var wallet: Wallet?
-    //@Published public var balance: Balance?
+    @Published public var onchainBalance: UInt64?
     //@Published public var transactions: [TransactionDetails] = []
-    //@Published public var syncState = SyncState.empty
+    @Published public var syncState = SyncState.empty
 
     // Private variables
     //private let bdkQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
@@ -38,6 +37,7 @@ public class LDKNodeManager: ObservableObject {
             case "testnet":
                 esploraServerUrl = ESPLORA_URL_TESTNET
                 listeningAddress = "127.0.0.1:18333" // Why this port, what about mainnet?
+            // Add bitcoin and signet cases
             default:
                 esploraServerUrl = ESPLORA_URL_TESTNET
                 listeningAddress = "127.0.0.1:18333"
@@ -54,6 +54,38 @@ public class LDKNodeManager: ObservableObject {
         let nodeBuilder = Builder.fromConfig(config: ldkConfig)
         let node = nodeBuilder.build()
         self.node = node
+    }
+    
+    // Start LDK Node
+    public func start() async throws {
+        do {
+            try node.start()
+            debugPrint("LDKNodeManager: Started")
+        } catch {
+            debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
+        }
+    }
+    
+    // Sync once
+    public func sync() {
+        do {
+            self.syncState = .syncing
+            try node.syncWallets()
+            self.syncState = .synced
+        } catch let error {
+            self.syncState = .failed(error)
+            debugPrint("LDKNodeManager: Error syncing wallets: \(error.localizedDescription)")
+        }
+    }
+    
+    // Update .onchainBalance
+    private func getOnchainBalance() {
+        do {
+            onchainBalance = try node.totalOnchainBalanceSats()
+            debugPrint("LDKNodeManager: Onchain balance: \(self.onchainBalance!)")
+        } catch let error {
+            print("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
+        }
     }
 }
 

@@ -8,9 +8,11 @@
 import SwiftUI
 import WalletUI
 import BitcoinDevKit
+import LightningDevKitNode
 
 struct CreateWalletView: View {
     @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     
     @State private var navigateTo: NavigateTo? = NavigateTo.none
@@ -70,4 +72,14 @@ func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> B
     // Load wallet in bdkManager, this will trigger a view switch
     bdkManager.loadWallet(descriptor: descriptor)
     return true 
+}
+
+func createPrivateKeyWithLDKNode(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) async -> Bool {
+    do {
+        try await ldkNodeManager.start()
+        return true
+    } catch let error {
+        debugPrint(error)
+        return false
+    }
 }
