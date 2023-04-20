@@ -11,6 +11,7 @@ import WalletUI
 
 struct HomeView: View {
     @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     let blockSocket = BlockSocket.init(source: BlockSocketSource.blockchain_com)
     @State var blockHeight: UInt32?
@@ -41,27 +42,7 @@ struct HomeView: View {
                 }
         }.accentColor(.bitcoinOrange)
             .task {
-                bdkManager.sync()
-                
-            }.onDisappear {
-                //bdkManager.stopSyncRegularly() // if startSyncRegularly was used
-            }.onReceive(self.blockSocket.$latestBlockHeight) { flag in
-                let cancellable = blockSocket.$latestBlockHeight.sink (
-                    receiveCompletion: { completion in
-                        // Called once, when the publisher was completed.
-                        switch completion {
-                            case .failure(let error):
-                                print(error)
-                            case .finished:
-                                print("Success")
-                            }
-                    },
-                    receiveValue: { value in
-                        // Can be called multiple times, each time that a
-                        // new value was emitted by the publisher.
-                        print(value)
-                    }
-                )
+                ldkNodeManager.sync()
             }
     }
     

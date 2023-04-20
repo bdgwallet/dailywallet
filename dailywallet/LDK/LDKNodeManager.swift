@@ -68,7 +68,9 @@ public class LDKNodeManager: ObservableObject {
             do {
                 self.syncState = .syncing
                 try self.node!.syncWallets()
+                self.getOnchainBalance()
                 self.syncState = .synced
+                debugPrint("LDKNodeManager: Synced")
             } catch let error {
                 self.syncState = .failed(error)
                 debugPrint("LDKNodeManager: Error syncing wallets: \(error.localizedDescription)")
@@ -80,7 +82,7 @@ public class LDKNodeManager: ObservableObject {
     private func getOnchainBalance() {
         if self.node != nil {
             do {
-                onchainBalance = try self.node!.totalOnchainBalanceSats()
+                self.onchainBalance = try self.node!.totalOnchainBalanceSats()
                 debugPrint("LDKNodeManager: Onchain balance: \(self.onchainBalance!)")
             } catch let error {
                 print("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
