@@ -99,6 +99,24 @@ public class BackupManager: ObservableObject {
             return nil
         }
     }
+    
+    // Get the seed that initiates the node
+    // TODO: remove once ldk-node can generate and instantiate from mnemonic
+    public func extractNodeSeed() throws -> Data {
+        let fileManager = FileManager.default
+        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        if let url = urls.first {
+            let fileURL = url.appendingPathComponent("keys_seed")
+            do {
+                let data = try Data(contentsOf: fileURL)
+                return data
+            } catch {
+                throw KeyDataError.decodingError
+            }
+        } else {
+            throw KeyDataError.urlError
+        }
+    }
 }
 
 public struct KeyBackup: Codable {
@@ -141,4 +159,12 @@ public extension Data {
         return map { String(format: "%02x", $0) }
             .joined()
     }
+}
+
+enum KeyDataError: Error {
+    case encodingError
+    case writeError
+    case urlError
+    case decodingError
+    case readError
 }
