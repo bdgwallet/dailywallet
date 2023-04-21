@@ -28,12 +28,11 @@ struct DailyWalletApp: App {
         //backupManager.deletePrivateKey()
         // WARNING!!
         
-        // Check if use already has a private key
-        if backupManager.keyInfo != nil {
-            // If they do, get descriptor and load wallet in bdkManager
+        // Check if use already has a node seed
+        if backupManager.seedData != nil {
+            // If they do, start node
             do {
-                let descriptor = try Descriptor(descriptor: backupManager.keyInfo!.descriptor, network: bdkManager.network)
-                bdkManager.loadWallet(descriptor: descriptor)
+                try ldkNodeManager.start()
             } catch let error {
                 debugPrint(error)
             }

@@ -12,6 +12,7 @@ import KeychainAccess
 public class BackupManager: ObservableObject {
     // Public variables
     @Published public var keyInfo: KeyBackup?
+    @Published public var seedData: Data?
     
     // Private variables
     private let keychain: Keychain
@@ -25,6 +26,7 @@ public class BackupManager: ObservableObject {
             .synchronizable(enableCloudBackup)
             .accessibility(.whenUnlocked)
         self.keyInfo = self.getPrivateKey()
+        self.seedData = self.getSeed()
     }
     
     public func getPrivateKey() -> KeyBackup? {
@@ -63,6 +65,38 @@ public class BackupManager: ObservableObject {
             try keychain.remove("KeyBackup")
         } catch let error {
             print(error)
+        }
+    }
+    
+    // Temporary seed backup functions, TODO: remove when ldk-node supports mnemonics
+    public func saveSeed(seedData: Data) {
+        // Convert Data to json string
+        if let json = try? JSONEncoder().encode(seedData) {
+            do {
+                let encryptedContent = try AES.GCM.seal(json, using: self.symmetricKey).combined
+                keychain[data: "LDKNodeSeed"] = encryptedContent
+            } catch let error {
+                print(error)
+            }
+        }
+    }
+    
+    public func getSeed() -> Data? {
+        // Check keychain for seed info saved as encrypted json
+        let encryptedJsonData = try? keychain.getData("LDKNodeSeed")
+        if encryptedJsonData != nil {
+            do {
+                let sealedBox = try AES.GCM.SealedBox(combined: encryptedJsonData!)
+                let decryptedData = try AES.GCM.open(sealedBox, using: symmetricKey)
+                let decryptedJson = String(data: decryptedData, encoding: .utf8)
+                let seedData = try JSONDecoder().decode(Data.self, from: decryptedJson!.data(using: .utf8)!)
+                return seedData
+            } catch let error {
+                print(error)
+                return nil
+            }
+        } else {
+            return nil
         }
     }
 }

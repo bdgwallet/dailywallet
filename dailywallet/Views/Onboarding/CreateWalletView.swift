@@ -83,6 +83,8 @@ func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> B
 func createPrivateKeyWithLDKNode(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) -> Bool {
     do {
         try ldkNodeManager.start()
+        let data = try ldkNodeManager.getSeed()
+        backupManager.saveSeed(seedData: data)
         return true
     } catch let error {
         debugPrint(error)

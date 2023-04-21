@@ -12,7 +12,8 @@ public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     @Published public var node: Node?
-    @Published public var onchainBalance: UInt64?
+    @Published public var onchainBalanceTotal: UInt64?
+    @Published public var onchainBalanceSpendable: UInt64?
     //@Published public var transactions: [TransactionDetails] = []
     @Published public var syncState = SyncState.empty
     
@@ -88,11 +89,30 @@ public class LDKNodeManager: ObservableObject {
     private func getOnchainBalance() {
         if self.node != nil {
             do {
-                self.onchainBalance = try self.node!.totalOnchainBalanceSats()
-                debugPrint("LDKNodeManager: Onchain balance: \(self.onchainBalance!)")
+                self.onchainBalanceTotal = try self.node!.totalOnchainBalanceSats()
+                debugPrint("LDKNodeManager: Onchain balance total: \(self.onchainBalanceTotal!)")
+                self.onchainBalanceSpendable = try self.node!.spendableOnchainBalanceSats()
+                debugPrint("LDKNodeManager: Onchain balance spendable: \(self.onchainBalanceSpendable!)")
             } catch let error {
                 print("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
             }
+        }
+    }
+    
+    // Get the seed that initiates the node TODO: remove once ldk-node can generate and instantiate from mnemonic
+    public func getSeed() throws -> Data {
+        let fileManager = FileManager.default
+        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        if let url = urls.first {
+            let fileURL = url.appendingPathComponent("keys_seed")
+            do {
+                let data = try Data(contentsOf: fileURL)
+                return data
+            } catch {
+                throw KeyDataError.decodingError
+            }
+        } else {
+            throw KeyDataError.urlError
         }
     }
 }
@@ -101,3 +121,10 @@ public class LDKNodeManager: ObservableObject {
 //let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
 //let ESPLORA_URL_TESTNET = "https://blockstream.info/testnet/api"
 
+enum KeyDataError: Error {
+    case encodingError
+    case writeError
+    case urlError
+    case decodingError
+    case readError
+}
