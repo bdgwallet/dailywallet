@@ -12,47 +12,29 @@ public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     @Published public var node: Node?
+    @Published public var syncState = SyncState.empty
     @Published public var onchainBalanceTotal: UInt64?
     @Published public var onchainBalanceSpendable: UInt64?
-    //@Published public var transactions: [TransactionDetails] = []
-    @Published public var syncState = SyncState.empty
     
     // Private variables
     private let nodeQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
-    private var esploraServerUrl = ESPLORA_URL_TESTNET
-    private var listeningAddress: String? = nil
-    private let defaultCltvExpiryDelta = UInt32(2048)
-    private let storageDirectoryPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
     
     // Initialize a LDKNodeManager instance on the specified network
     public init(network: String) {
         self.network = network
-            
-        switch network { // Update when Network type is enum instead of string
-            case "regtest":
-                esploraServerUrl = "http://127.0.0.1:3002"
-                listeningAddress = "127.0.0.1:24224"
-            case "testnet":
-                esploraServerUrl = ESPLORA_URL_TESTNET
-                listeningAddress = "127.0.0.1:18333" // Why this port, what about mainnet?
-            // Add bitcoin and signet cases
-            default:
-                esploraServerUrl = ESPLORA_URL_TESTNET
-                listeningAddress = "127.0.0.1:18333"
-        }
     }
     
     // Start LDK Node
     public func start() throws {
-        let ldkConfig = Config(
-            storageDirPath: storageDirectoryPath,
-            esploraServerUrl: esploraServerUrl,
-            network: network,
-            listeningAddress: listeningAddress,
-            defaultCltvExpiryDelta: defaultCltvExpiryDelta
+        let nodeConfig = Config(
+            storageDirPath: DEFAULT_STORAGE_PATH,
+            esploraServerUrl: esploraServerURL(network: self.network),
+            network: self.network,
+            listeningAddress: listeningAddress(network: self.network),
+            defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA
         )
             
-        let nodeBuilder = Builder.fromConfig(config: ldkConfig)
+        let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         let node = nodeBuilder.build()
         
         do {
@@ -98,6 +80,38 @@ public class LDKNodeManager: ObservableObject {
             }
         }
     }
+    
+    // Return esplora url for network
+    private func esploraServerURL(network: String) -> String {
+            
+        switch network { // Update when Network type is enum instead of string
+            case "regtest":
+                return "http://127.0.0.1:3002"
+            case "testnet":
+                return ESPLORA_URL_TESTNET
+            case "bitcoin":
+                return ESPLORA_URL_BITCOIN
+            // TODO: Add signet case
+            default:
+                return "127.0.0.1:18333"
+        }
+    }
+    
+    // Return listening address for network
+    private func listeningAddress(network: String) -> String {
+            
+        switch network { // Update when Network type is enum instead of string
+            case "regtest":
+                return "127.0.0.1:24224"
+            case "testnet":
+                return "127.0.0.1:18333" // Why this port, what about mainnet?
+            case "bitcoin":
+                return "127.0.0.1:18333" // Why this port, what about mainnet?
+            // TODO: Add signet case
+            default:
+                return "127.0.0.1:18333"
+        }
+    }
 }
 
 public enum SyncState {
@@ -107,6 +121,8 @@ public enum SyncState {
     case failed(Error)
 }
 
-// Public API URLs
+// Helper constants
 let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
 let ESPLORA_URL_TESTNET = "https://blockstream.info/testnet/api"
+let DEFAULT_CLTV_EXPIRY_DELTA = UInt32(2048)
+let DEFAULT_STORAGE_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
