@@ -7,11 +7,9 @@
 
 import SwiftUI
 import WalletUI
-import BitcoinDevKit
 import CoreImage.CIFilterBuiltins
 
 struct RequestView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
     
@@ -48,7 +46,7 @@ struct RequestView: View {
     func getAddress() {
         do {
             requestAddress = try ldkNodeManager.node!.newFundingAddress()
-            debugPrint(requestAddress?.description)
+            debugPrint(requestAddress?.description ?? "No address")
         } catch (let error){
             print(error)
         }

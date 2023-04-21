@@ -117,9 +117,16 @@ public class LDKNodeManager: ObservableObject {
     }
 }
 
+public enum SyncState {
+    case empty
+    case syncing
+    case synced
+    case failed(Error)
+}
+
 // Public API URLs
-//let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
-//let ESPLORA_URL_TESTNET = "https://blockstream.info/testnet/api"
+let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
+let ESPLORA_URL_TESTNET = "https://blockstream.info/testnet/api"
 
 enum KeyDataError: Error {
     case encodingError

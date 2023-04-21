@@ -9,7 +9,7 @@ import SwiftUI
 import WalletUI
 
 struct PaymentsView: View {
-    @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     
     @State var numpadAmount = "0"
     @State private var showRequestSheet = false
@@ -24,7 +24,6 @@ struct PaymentsView: View {
                         .textStyle(BitcoinTitle1())
                     Text("$0").textStyle(BitcoinBody4())
                 }
-                //Text(bdkManager.wallet?.getAddress(addressIndex: AddressIndex.new).address ?? "-")
                 Spacer()
                 VStack (spacing: 50) {
                     HStack (spacing: 100) {
@@ -55,7 +54,7 @@ struct PaymentsView: View {
                     }
                     .buttonStyle(BitcoinFilled(width: 150))
                     .sheet(isPresented: $showRequestSheet) {
-                        RequestView().environmentObject(bdkManager)
+                        RequestView().environmentObject(ldkNodeManager)
                     }
                     Spacer()
                     Button("Pay") {
@@ -63,7 +62,7 @@ struct PaymentsView: View {
                     }
                     .buttonStyle(BitcoinFilled(width: 150))
                     .sheet(isPresented: $showSendSheet) {
-                        SendView(amount: UInt64(numpadAmount)!).environmentObject(bdkManager)
+                        SendView(amount: UInt64(numpadAmount)!).environmentObject(ldkNodeManager)
                     }
                     Spacer()
                 }.padding(.bottom, 32)

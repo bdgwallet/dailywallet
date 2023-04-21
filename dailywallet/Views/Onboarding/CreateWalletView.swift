@@ -7,11 +7,9 @@
 
 import SwiftUI
 import WalletUI
-import BitcoinDevKit
 import LightningDevKitNode
 
 struct CreateWalletView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     
@@ -66,6 +64,7 @@ struct CreateWalletView: View {
     }
 }
 
+/*
 func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
     // Create mnemonic
     let mnemonic = Mnemonic(wordCount: WordCount.words12)
@@ -79,6 +78,7 @@ func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> B
     bdkManager.loadWallet(descriptor: descriptor)
     return true 
 }
+ */
 
 func createPrivateKeyWithLDKNode(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) -> Bool {
     do {

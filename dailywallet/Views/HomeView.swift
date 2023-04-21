@@ -9,7 +9,6 @@ import SwiftUI
 import WalletUI
 
 struct HomeView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     @State var blockHeight: UInt32?
@@ -17,7 +16,6 @@ struct HomeView: View {
     var body: some View {
         TabView {
             PaymentsView()
-                .environmentObject(bdkManager)
                 .environmentObject(backupManager)
                 .tabItem {
                     Label("Payments", systemImage: "arrow.up.arrow.down")

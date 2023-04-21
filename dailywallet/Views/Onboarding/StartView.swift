@@ -10,7 +10,6 @@ import WalletUI
 import LightningDevKitNode
 
 struct StartView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     
@@ -34,7 +33,7 @@ struct StartView: View {
                 }
                 Spacer()
                 VStack {
-                    NavigationLink(destination: CreateWalletView().environmentObject(bdkManager).environmentObject(backupManager).environmentObject(ldkNodeManager), tag: NavigateTo.createWallet, selection: $navigateTo) {
+                    NavigationLink(destination: CreateWalletView().environmentObject(backupManager).environmentObject(ldkNodeManager), tag: NavigateTo.createWallet, selection: $navigateTo) {
                         Button("Create new wallet") {
                             self.navigateTo = .createWallet
                         }.buttonStyle(BitcoinFilled())

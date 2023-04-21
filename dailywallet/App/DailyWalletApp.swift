@@ -6,17 +6,14 @@
 //
 
 import SwiftUI
-import BitcoinDevKit
 import LightningDevKitNode
 
 @main
 struct DailyWalletApp: App {
-    @ObservedObject var bdkManager: BDKManager
     @ObservedObject var ldkNodeManager: LDKNodeManager
     @ObservedObject var backupManager: BackupManager
     
     init() {
-        bdkManager = BDKManager(network: Network.testnet)
         ldkNodeManager = LDKNodeManager(network: "testnet")
         
         // Initialize BackupManager
@@ -43,12 +40,10 @@ struct DailyWalletApp: App {
         WindowGroup {
             if ldkNodeManager.node == nil {
                 StartView()
-                    .environmentObject(bdkManager)
                     .environmentObject(ldkNodeManager)
                     .environmentObject(backupManager)
             } else {
                 HomeView()
-                    .environmentObject(bdkManager)
                     .environmentObject(ldkNodeManager)
                     .environmentObject(backupManager)
             }

@@ -7,10 +7,9 @@
 
 import SwiftUI
 import WalletUI
-import BitcoinDevKit
+import LightningDevKitNode
 
 struct ActivityView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     @State private var navigateTo: NavigateTo? = NavigateTo.none
@@ -22,11 +21,10 @@ struct ActivityView: View {
         VStack() {
             VStack(alignment: .center) {
                 BalanceHeaderView()
-                    .environmentObject(bdkManager)
+                    .environmentObject(ldkNodeManager)
                     .frame(alignment: .bottom)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-                TransactionsListView(transactions: bdkManager.transactions)
-                    .environmentObject(bdkManager)
+                TransactionsListView()
                     .environmentObject(ldkNodeManager)
             }
         }
@@ -40,7 +38,6 @@ struct TransactionHistory_Previews: PreviewProvider {
 }
 
 struct BalanceHeaderView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     
     var body: some View {
@@ -66,11 +63,13 @@ struct BalanceHeaderView: View {
 }
 
 struct TransactionsListView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
-    var transactions: [TransactionDetails]
+    //var transactions: [TransactionDetails]
     
     var body: some View {
+        Text("TODO: show transactions")
+            .textStyle(BitcoinBody4())
+        /*
         if transactions.count != 0 {
             List {
                 ForEach(transactions, id: \.self) {transaction in
@@ -92,9 +91,11 @@ struct TransactionsListView: View {
             }
             Spacer()
         }
+         */
     }
 }
 
+/*
 struct TransactionItemView: View {
     var transaction: TransactionDetails
     
@@ -132,3 +133,4 @@ struct TransactionItemView: View {
         }
     }
 }
+*/
