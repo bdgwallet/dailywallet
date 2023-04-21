@@ -11,6 +11,7 @@ import BitcoinDevKit
 
 struct ActivityView: View {
     @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     @State private var navigateTo: NavigateTo? = NavigateTo.none
     
@@ -26,6 +27,7 @@ struct ActivityView: View {
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
                 TransactionsListView(transactions: bdkManager.transactions)
                     .environmentObject(bdkManager)
+                    .environmentObject(ldkNodeManager)
             }
         }
     }
@@ -39,6 +41,7 @@ struct TransactionHistory_Previews: PreviewProvider {
 
 struct BalanceHeaderView: View {
     @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     
     var body: some View {
         VStack(alignment: .center) {
@@ -46,9 +49,9 @@ struct BalanceHeaderView: View {
                 Text("Your balance")
                     .textStyle(BitcoinBody4())
                 VStack(spacing: 4) {
-                    Text("\(bdkManager.balance?.total.description ?? "unknown") sats")
+                    Text("\(ldkNodeManager.onchainBalanceTotal?.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle1())
-                    Text("\(bdkManager.balance?.spendable.description ?? "unknown") sats")
+                    Text("\(ldkNodeManager.onchainBalanceSpendable?.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle3())
                     Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
                 }
@@ -64,6 +67,7 @@ struct BalanceHeaderView: View {
 
 struct TransactionsListView: View {
     @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     var transactions: [TransactionDetails]
     
     var body: some View {
@@ -75,7 +79,7 @@ struct TransactionsListView: View {
             }.listStyle(.plain)
         } else {
             Spacer()
-            switch bdkManager.syncState {
+            switch ldkNodeManager.syncState {
             case .synced:
                 Text("No transactions")
                     .textStyle(BitcoinBody4())
