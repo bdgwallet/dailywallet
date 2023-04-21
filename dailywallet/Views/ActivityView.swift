@@ -67,8 +67,10 @@ struct TransactionsListView: View {
     //var transactions: [TransactionDetails]
     
     var body: some View {
+        Spacer()
         Text("TODO: show transactions")
             .textStyle(BitcoinBody4())
+        Spacer()
         /*
         if transactions.count != 0 {
             List {
