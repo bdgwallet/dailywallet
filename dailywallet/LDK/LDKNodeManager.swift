@@ -94,7 +94,7 @@ public class LDKNodeManager: ObservableObject {
                 return ESPLORA_URL_BITCOIN
             // TODO: Add signet case
             default:
-                return "127.0.0.1:18333"
+                return ESPLORA_URL_TESTNET
         }
     }
 }
