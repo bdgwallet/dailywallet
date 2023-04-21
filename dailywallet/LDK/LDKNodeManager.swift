@@ -30,7 +30,7 @@ public class LDKNodeManager: ObservableObject {
             storageDirPath: DEFAULT_STORAGE_PATH,
             esploraServerUrl: esploraServerURL(network: self.network),
             network: self.network,
-            listeningAddress: listeningAddress(network: self.network),
+            listeningAddress: DEFAULT_LISTENING_ADDRESS,
             defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA
         )
             
@@ -53,15 +53,16 @@ public class LDKNodeManager: ObservableObject {
             nodeQueue.async {
                 do {
                     try self.node!.syncWallets()
-                    debugPrint("LDKNodeManager: Synced")
                     DispatchQueue.main.async {
                         self.syncState = SyncState.synced
                         self.getOnchainBalance()
                     }
+                    debugPrint("LDKNodeManager: Synced")
                 } catch let error {
                     DispatchQueue.main.async {
                         self.syncState = SyncState.failed(error)
                     }
+                    debugPrint("LDKNodeManager: Error syncing \(error.localizedDescription)")
                 }
             }
         }
@@ -76,7 +77,7 @@ public class LDKNodeManager: ObservableObject {
                 self.onchainBalanceSpendable = try self.node!.spendableOnchainBalanceSats()
                 debugPrint("LDKNodeManager: Onchain balance spendable: \(self.onchainBalanceSpendable!)")
             } catch let error {
-                print("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
+                debugPrint("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
             }
         }
     }
@@ -96,22 +97,6 @@ public class LDKNodeManager: ObservableObject {
                 return "127.0.0.1:18333"
         }
     }
-    
-    // Return listening address for network
-    private func listeningAddress(network: String) -> String {
-            
-        switch network { // Update when Network type is enum instead of string
-            case "regtest":
-                return "127.0.0.1:24224"
-            case "testnet":
-                return "127.0.0.1:18333" // Why this port, what about mainnet?
-            case "bitcoin":
-                return "127.0.0.1:18333" // Why this port, what about mainnet?
-            // TODO: Add signet case
-            default:
-                return "127.0.0.1:18333"
-        }
-    }
 }
 
 public enum SyncState {
@@ -122,7 +107,10 @@ public enum SyncState {
 }
 
 // Helper constants
-let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
-let ESPLORA_URL_TESTNET = "https://blockstream.info/testnet/api"
+let DEFAULT_LISTENING_ADDRESS = "0.0.0.0:9735"
 let DEFAULT_CLTV_EXPIRY_DELTA = UInt32(2048)
 let DEFAULT_STORAGE_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
+
+// Public APIs
+let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
+let ESPLORA_URL_TESTNET = "https://blockstream.info/testnet/api"
