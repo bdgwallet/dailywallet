@@ -41,7 +41,7 @@ struct CreateWalletView: View {
             Spacer()
             VStack (spacing: 16) {
                 Button("Continue") {
-                    if !createPrivateKeyWithLDKNode(ldkNodeManager: ldkNodeManager, backupManager: backupManager) {
+                    if !createPrivateKey(ldkNodeManager: ldkNodeManager, backupManager: backupManager) {
                         // Show error message
                         print("Error creating or backing up private key")
                     }
@@ -64,28 +64,25 @@ struct CreateWalletView: View {
     }
 }
 
-/*
-func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
-    // Create mnemonic
-    let mnemonic = Mnemonic(wordCount: WordCount.words12)
-    // Create descriptor and load wallet
-    let descriptorSecretKey = DescriptorSecretKey(network: bdkManager.network, mnemonic: mnemonic, password: nil)
-    let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
-    // Save backup
-    let keyBackup = KeyBackup(mnemonic: mnemonic.asString(), descriptor: descriptor.asString())
-    backupManager.savePrivateKey(keyBackup: keyBackup)
-    // Load wallet in bdkManager, this will trigger a view switch
-    bdkManager.loadWallet(descriptor: descriptor)
-    return true 
-}
- */
-
-func createPrivateKeyWithLDKNode(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) -> Bool {
+func createPrivateKey(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) -> Bool {
     do {
         try ldkNodeManager.start()
         let data = try backupManager.extractNodeSeed()
         backupManager.saveSeed(seedData: data)
         return true
+        /* Old BDK for creating mnemonic, TODO: Use something similar when ldk-node can use mnemonics
+         // Create mnemonic
+         let mnemonic = Mnemonic(wordCount: WordCount.words12)
+         // Create descriptor and load wallet
+         let descriptorSecretKey = DescriptorSecretKey(network: bdkManager.network, mnemonic: mnemonic, password: nil)
+         let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
+         // Save backup
+         let keyBackup = KeyBackup(mnemonic: mnemonic.asString(), descriptor: descriptor.asString())
+         backupManager.savePrivateKey(keyBackup: keyBackup)
+         // Load wallet in bdkManager, this will trigger a view switch
+         bdkManager.loadWallet(descriptor: descriptor)
+         return true
+        */
     } catch let error {
         debugPrint(error)
         return false
