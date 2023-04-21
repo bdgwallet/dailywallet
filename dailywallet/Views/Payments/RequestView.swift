@@ -12,6 +12,7 @@ import CoreImage.CIFilterBuiltins
 
 struct RequestView: View {
     @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
     
     @State private var requestAddress: String?
@@ -46,9 +47,8 @@ struct RequestView: View {
     
     func getAddress() {
         do {
-            let addressInfo = try bdkManager.wallet!.getAddress(addressIndex: AddressIndex.new)
-            requestAddress = addressInfo.address
-            print(requestAddress ?? "no address")
+            requestAddress = try ldkNodeManager.node!.newFundingAddress()
+            debugPrint(requestAddress?.description)
         } catch (let error){
             print(error)
         }
