@@ -22,9 +22,11 @@ public func connectToVoltage(node: Node) {
 
 public func wrapInvoice(node: Node) {
     let voltageEndpoint = "https://testnet-lsp.voltageapi.com/api/v1/proposal"
+    debugPrint("LDKNodeManager: Node id: \(node.nodeId())")
           
     do {
-        let bolt11 = try node.receivePayment(amountMsat: 10000, description: "Test JIT channel", expirySecs: 3600)
+        let bolt11 = try node.receivePayment(amountMsat: 10000, description: "Test JIT channel", expirySecs: 36000)
+        debugPrint("LDKNodeManager: Original invoice : \(bolt11)")
         
         let body = ["bolt11": bolt11]
         let bodyData = try JSONSerialization.data(
