@@ -12,6 +12,7 @@ import CoreImage.CIFilterBuiltins
 struct RequestView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
+    let amount: UInt64?
     
     //@State private var requestAddress: String?
     @State private var unifiedAddress: String?
@@ -49,7 +50,7 @@ struct RequestView: View {
         do {
             let onchainAddress = try ldkNodeManager.node!.newFundingAddress()
             
-            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: 10000, description: "Test JIT channel", expirySecs: 36000)
+            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount != nil ? amount! : 0, description: "Test JIT channel", expirySecs: 36000)
             debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
             
             getWrappedInvoice(invoice: bolt11!) { wrappedInvoice in
@@ -59,12 +60,6 @@ struct RequestView: View {
         } catch (let error){
             print(error)
         }
-    }
-}
-
-struct RequestView_Previews: PreviewProvider {
-    static var previews: some View {
-        RequestView()
     }
 }
 

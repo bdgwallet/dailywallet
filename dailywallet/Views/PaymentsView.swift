@@ -54,7 +54,7 @@ struct PaymentsView: View {
                     }
                     .buttonStyle(BitcoinFilled(width: 150))
                     .sheet(isPresented: $showRequestSheet) {
-                        RequestView().environmentObject(ldkNodeManager)
+                        RequestView(amount: UInt64(numpadAmount)).environmentObject(ldkNodeManager)
                     }
                     Spacer()
                     Button("Pay") {
