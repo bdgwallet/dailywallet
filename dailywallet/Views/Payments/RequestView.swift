@@ -13,19 +13,20 @@ struct RequestView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
     
-    @State private var requestAddress: String?
+    //@State private var requestAddress: String?
+    @State private var unifiedAddress: String?
     @State private var copied = false
     
     var body: some View {
         NavigationView {
             VStack {
                 Spacer()
-                QRView(paymentRequest: requestAddress ?? "No address")
+                QRView(paymentRequest: unifiedAddress ?? "No address")
                 Spacer()
                 VStack {
-                    BitcoinShareButton(title: "Share", shareItem: requestAddress ?? "No address")
+                    BitcoinShareButton(title: "Share", shareItem: unifiedAddress ?? "No address")
                     Button(self.copied ? "Copied" : "Copy") {
-                        UIPasteboard.general.string = requestAddress ?? "No address"
+                        UIPasteboard.general.string = unifiedAddress ?? "No address"
                         self.copied = true
                     }
                     .buttonStyle(BitcoinPlain(width: 150))
@@ -40,13 +41,21 @@ struct RequestView: View {
                 }
             }
         }.accentColor(.black)
-        .onAppear(perform: getAddress)
+        .onAppear(perform: getUnifiedAddress)
     }
     
-    func getAddress() {
+    func getUnifiedAddress() {
+        // TODO: handle amount
         do {
-            requestAddress = try ldkNodeManager.node!.newFundingAddress()
-            debugPrint(requestAddress?.description ?? "No address")
+            let onchainAddress = try ldkNodeManager.node!.newFundingAddress()
+            
+            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: 10000, description: "Test JIT channel", expirySecs: 36000)
+            debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
+            
+            getWrappedInvoice(invoice: bolt11!) { wrappedInvoice in
+                unifiedAddress = "bitcoin:\(onchainAddress)&lightning=\(String(describing: wrappedInvoice))"
+                debugPrint(unifiedAddress?.description ?? "No address")
+            }
         } catch (let error){
             print(error)
         }

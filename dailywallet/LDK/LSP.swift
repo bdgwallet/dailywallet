@@ -8,47 +8,41 @@
 import Foundation
 import LightningDevKitNode
 
+// Experimental Lightning Service Provider code3
+
 // Connect to node (Voltage on testnet)
 public func connectToVoltage(node: Node) {
-    let voltagePubKey = "025804d4431ad05b06a1a1ee41f22fefeb8ce800b0be3a92ff3b9f594a263da34e"
-    let voltageAddress = "44.228.24.253:9735"
     do {
-        try node.connect(nodeId: voltagePubKey, address: voltageAddress, permanently: true, trusted0conf: true)
+        try node.connect(nodeId: VOLTAGE_PUBKEY, address: VOLTAGE_ADDRESS, permanently: true, trusted0conf: true)
         debugPrint("LDKNodeManager: Connected to Voltage node")
     } catch let error {
         debugPrint("LDKNodeManager: Error connecting to Voltage node: \(error.localizedDescription)")
     }
 }
 
-public func wrapInvoice(node: Node) {
-    let voltageEndpoint = "https://testnet-lsp.voltageapi.com/api/v1/proposal"
-    debugPrint("LDKNodeManager: Node id: \(node.nodeId())")
-          
+func getWrappedInvoice(invoice: String, completion: @escaping (String) -> ()) {
     do {
-        let bolt11 = try node.receivePayment(amountMsat: 10000, description: "Test JIT channel", expirySecs: 36000)
-        debugPrint("LDKNodeManager: Original invoice : \(bolt11)")
-        
-        let body = ["bolt11": bolt11]
+        let body = ["bolt11": invoice]
         let bodyData = try JSONSerialization.data(
             withJSONObject: body,
             options: []
         )
         
-        let url = URL(string: voltageEndpoint)!
+        let url = URL(string: VOLTAGE_API)!
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         request.httpBody = bodyData
-
-        let session = URLSession.shared
-        let task = session.dataTask(with: request) { (data, response, error) in
-
+        
+        URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) -> Void in
             if let data = data {
                 // Handle HTTP request response
                 do {
-                    let voltageRespone = try JSONDecoder().decode(VoltageResponse.self, from: data)
-                    debugPrint("LDKNodeManager: Wrapped invoice received: \(voltageRespone.jit_bolt11)")
+                    let voltageResponse = try JSONDecoder().decode(VoltageResponse.self, from: data)
+                    completion(voltageResponse.jit_bolt11)
+                    debugPrint("LDKNodeManager: Wrapped invoice received: \(voltageResponse.jit_bolt11)")
                 } catch let error {
+                    debugPrint(response.debugDescription)
                     debugPrint("LDKNodeManager: Decoding error: \(error.localizedDescription)")
                 }
             } else if let error = error {
@@ -58,8 +52,7 @@ public func wrapInvoice(node: Node) {
                 // Handle unexpected error
                 debugPrint("LDKNodeManager: Unknown error getting wrapped invoice")
             }
-        }
-        task.resume()
+        }).resume()
         
     } catch let error {
         debugPrint("LDKNodeManager: Error connecting to Voltage node: \(error.localizedDescription)")
@@ -69,3 +62,8 @@ public func wrapInvoice(node: Node) {
 struct VoltageResponse: Decodable {
     let jit_bolt11: String
 }
+
+// Public APIs
+let VOLTAGE_API = "https://testnet-lsp.voltageapi.com/api/v1/proposal"
+let VOLTAGE_PUBKEY = "025804d4431ad05b06a1a1ee41f22fefeb8ce800b0be3a92ff3b9f594a263da34e"
+let VOLTAGE_ADDRESS = "44.228.24.253:9735"

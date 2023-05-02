@@ -58,7 +58,6 @@ public class LDKNodeManager: ObservableObject {
                         self.getOnchainBalance()
                         // Test Voltage JIT Channel creation
                         connectToVoltage(node: self.node!)
-                        wrapInvoice(node: self.node!)
                     }
                     debugPrint("LDKNodeManager: Synced")
                 } catch let error {
