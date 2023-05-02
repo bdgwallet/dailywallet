@@ -46,15 +46,15 @@ struct RequestView: View {
     }
     
     func getUnifiedAddress() {
-        // TODO: handle amount
         do {
             let onchainAddress = try ldkNodeManager.node!.newFundingAddress()
+            let onchainString = amount != nil ? "bitcoin:\(onchainAddress)?amount=\(amount!.satsToBitcoin)" : "bitcoin:\(onchainAddress)"
             
             let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount != nil ? amount! : 0, description: "Test JIT channel", expirySecs: 36000)
             debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
             
             getWrappedInvoice(invoice: bolt11!) { wrappedInvoice in
-                unifiedAddress = "bitcoin:\(onchainAddress)&lightning=\(String(describing: wrappedInvoice))"
+                unifiedAddress = "\(onchainString)&lightning=\(String(describing: wrappedInvoice))"
                 debugPrint(unifiedAddress?.description ?? "No address")
             }
         } catch (let error){
