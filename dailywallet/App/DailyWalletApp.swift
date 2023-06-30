@@ -26,10 +26,10 @@ struct DailyWalletApp: App {
         // WARNING!!
         
         // Check if use already has a node seed
-        if backupManager.seedData != nil {
+        if backupManager.backupInfo != nil {
             // If they do, start node
             do {
-                try ldkNodeManager.start()
+                try ldkNodeManager.start(mnemonic: backupManager.backupInfo!.mnemonic, passphrase: nil)
             } catch let error {
                 debugPrint(error)
             }

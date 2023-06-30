@@ -66,23 +66,15 @@ struct CreateWalletView: View {
 
 func createPrivateKey(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) -> Bool {
     do {
-        try ldkNodeManager.start()
-        let data = try backupManager.extractNodeSeed()
-        backupManager.saveSeed(seedData: data)
-        return true
-        /* Old BDK for creating mnemonic, TODO: Use something similar when ldk-node can use mnemonics
          // Create mnemonic
-         let mnemonic = Mnemonic(wordCount: WordCount.words12)
-         // Create descriptor and load wallet
-         let descriptorSecretKey = DescriptorSecretKey(network: bdkManager.network, mnemonic: mnemonic, password: nil)
-         let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
+         let mnemonic = generateEntropyMnemonic()
          // Save backup
-         let keyBackup = KeyBackup(mnemonic: mnemonic.asString(), descriptor: descriptor.asString())
-         backupManager.savePrivateKey(keyBackup: keyBackup)
-         // Load wallet in bdkManager, this will trigger a view switch
-         bdkManager.loadWallet(descriptor: descriptor)
+        let backupInfo = BackupInfo(mnemonic: mnemonic)
+         backupManager.saveBackupInfo(backupInfo: backupInfo)
+         // Build and start LDKNode with mnemonic, this will trigger a view switch
+        try ldkNodeManager.start(mnemonic: mnemonic, passphrase: nil)
          return true
-        */
+        
     } catch let error {
         debugPrint(error)
         return false

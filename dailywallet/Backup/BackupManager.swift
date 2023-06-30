@@ -11,13 +11,14 @@ import KeychainAccess
 
 public class BackupManager: ObservableObject {
     // Public variables
-    @Published public var keyInfo: KeyBackup?
-    @Published public var seedData: Data?
+    @Published public var backupInfo: BackupInfo?
     
     // Private variables
     private let keychain: Keychain
     private let symmetricKey: SymmetricKey
     
+    // Public functions
+    // Initialize the backupmanager with an encryption key and cloud backup option
     public init(encryptionKey: String, enableCloudBackup: Bool) {
         self.symmetricKey = SymmetricKey(data: Data(hexString:encryptionKey)!)
         let appName = Bundle.main.displayName
@@ -25,20 +26,19 @@ public class BackupManager: ObservableObject {
             .label(appName)
             .synchronizable(enableCloudBackup)
             .accessibility(.whenUnlocked)
-        self.keyInfo = self.getPrivateKey()
-        self.seedData = self.getSeed()
+        self.backupInfo = self.getBackupInfo()
     }
     
-    public func getPrivateKey() -> KeyBackup? {
-        // Check keychain for private key info saved as encrypted json
-        let encryptedJsonData = try? keychain.getData("KeyBackup")
+    // Get any saved backup info from keychain, decrypted
+    public func getBackupInfo() -> BackupInfo? {
+        let encryptedJsonData = try? keychain.getData("BackupInfo")
         if encryptedJsonData != nil {
             do {
                 let sealedBox = try AES.GCM.SealedBox(combined: encryptedJsonData!)
                 let decryptedData = try AES.GCM.open(sealedBox, using: symmetricKey)
                 let decryptedJson = String(data: decryptedData, encoding: .utf8)
-                let keyBackup = try JSONDecoder().decode(KeyBackup.self, from: decryptedJson!.data(using: .utf8)!)
-                return keyBackup
+                let backupInfo = try JSONDecoder().decode(BackupInfo.self, from: decryptedJson!.data(using: .utf8)!)
+                return backupInfo
             } catch let error {
                 print(error)
                 return nil
@@ -48,86 +48,39 @@ public class BackupManager: ObservableObject {
         }
     }
 
-    public func savePrivateKey(keyBackup: KeyBackup) {
-        // Convert KeyBackup to json string
-        if let json = try? JSONEncoder().encode(keyBackup) {
+    // Save backup info to keychain, encrypted
+    public func saveBackupInfo(backupInfo: BackupInfo) {
+        if let json = try? JSONEncoder().encode(backupInfo) {
             do {
                 let encryptedContent = try AES.GCM.seal(json, using: self.symmetricKey).combined
-                keychain[data: "KeyBackup"] = encryptedContent
+                keychain[data: "BackupInfo"] = encryptedContent
             } catch let error {
                 print(error)
             }
         }
     }
     
-    public func deletePrivateKey() {
+    // Delete backup info from keychain - WARNING!
+    public func deleteBackupInfo() {
         do {
-            try keychain.remove("KeyBackup")
+            try keychain.remove("BackupInfo")
         } catch let error {
             print(error)
         }
     }
-    
-    // Temporary seed backup functions, TODO: remove when ldk-node supports mnemonics
-    public func saveSeed(seedData: Data) {
-        // Convert Data to json string
-        if let json = try? JSONEncoder().encode(seedData) {
-            do {
-                let encryptedContent = try AES.GCM.seal(json, using: self.symmetricKey).combined
-                keychain[data: "LDKNodeSeed"] = encryptedContent
-            } catch let error {
-                print(error)
-            }
-        }
-    }
-    
-    public func getSeed() -> Data? {
-        // Check keychain for seed info saved as encrypted json
-        let encryptedJsonData = try? keychain.getData("LDKNodeSeed")
-        if encryptedJsonData != nil {
-            do {
-                let sealedBox = try AES.GCM.SealedBox(combined: encryptedJsonData!)
-                let decryptedData = try AES.GCM.open(sealedBox, using: symmetricKey)
-                let decryptedJson = String(data: decryptedData, encoding: .utf8)
-                let seedData = try JSONDecoder().decode(Data.self, from: decryptedJson!.data(using: .utf8)!)
-                return seedData
-            } catch let error {
-                print(error)
-                return nil
-            }
-        } else {
-            return nil
-        }
-    }
-    
-    // Get the seed that initiates the node
-    // TODO: remove once ldk-node can generate and instantiate from mnemonic
-    public func extractNodeSeed() throws -> Data {
-        let fileManager = FileManager.default
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        if let url = urls.first {
-            let fileURL = url.appendingPathComponent("keys_seed")
-            do {
-                let data = try Data(contentsOf: fileURL)
-                return data
-            } catch {
-                throw KeyDataError.decodingError
-            }
-        } else {
-            throw KeyDataError.urlError
-        }
-    }
 }
 
-public struct KeyBackup: Codable {
-    public var mnemonic: String?
-    public var descriptor: String
+// Struct for holding backup info, expand with content as needed
+public struct BackupInfo: Codable {
+    public var mnemonic: String
 
-    public init(mnemonic: String, descriptor: String ) {
+    public init(mnemonic: String) {
         self.mnemonic = mnemonic
-        self.descriptor = descriptor
     }
 }
+
+
+// Helper functions
 
 extension Bundle {
     var displayName: String {
@@ -159,12 +112,4 @@ public extension Data {
         return map { String(format: "%02x", $0) }
             .joined()
     }
-}
-
-enum KeyDataError: Error {
-    case encodingError
-    case writeError
-    case urlError
-    case decodingError
-    case readError
 }

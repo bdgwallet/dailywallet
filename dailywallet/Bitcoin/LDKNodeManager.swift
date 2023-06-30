@@ -25,7 +25,7 @@ public class LDKNodeManager: ObservableObject {
     }
     
     // Start LDK Node
-    public func start() throws {
+    public func start(mnemonic: Mnemonic, passphrase: String?) throws {
         let nodeConfig = Config(
             storageDirPath: DEFAULT_STORAGE_PATH,
             network: self.network,
@@ -35,6 +35,7 @@ public class LDKNodeManager: ObservableObject {
         )
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
+        nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
         
         do {
             let node = try nodeBuilder.build()
