@@ -29,8 +29,9 @@ public class LDKNodeManager: ObservableObject {
         let nodeConfig = Config(
             storageDirPath: DEFAULT_STORAGE_PATH,
             network: self.network,
-            listeningAddress: DEFAULT_LISTENING_ADDRESS,
-            defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA
+            listeningAddress: nil,
+            defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
+            trustedPeers0conf: [VOLTAGE_PUBKEY]
         )
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
@@ -39,7 +40,7 @@ public class LDKNodeManager: ObservableObject {
             let node = try nodeBuilder.build()
             try node.start()
             self.node = node
-            debugPrint("LDKNodeManager: Started")
+            debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
         }
@@ -109,8 +110,8 @@ public enum SyncState {
 
 // Helper constants
 let DEFAULT_LISTENING_ADDRESS = "0.0.0.0:9735"
-let DEFAULT_CLTV_EXPIRY_DELTA = UInt32(2048)
-let DEFAULT_STORAGE_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
+let DEFAULT_CLTV_EXPIRY_DELTA = UInt32(2016)
+let DEFAULT_STORAGE_PATH = "/tmp/ldk_node_swift/" //FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
 
 // Public APIs
 let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
