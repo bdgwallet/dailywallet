@@ -7,7 +7,7 @@
 
 import SwiftUI
 import WalletUI
-import LightningDevKitNode
+import LDKNode
 
 struct ActivityView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager

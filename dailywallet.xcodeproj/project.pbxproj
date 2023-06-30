@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		651A53C929F65EF4001441F9 /* LightningDevKitNode in Frameworks */ = {isa = PBXBuildFile; productRef = 651A53C829F65EF4001441F9 /* LightningDevKitNode */; };
 		6523F6762A01132200CE31C3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6523F6752A01132200CE31C3 /* Extensions.swift */; };
 		6541A524282E69600051B2B0 /* DailyWalletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A523282E69600051B2B0 /* DailyWalletApp.swift */; };
 		6541A526282E69600051B2B0 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A525282E69600051B2B0 /* StartView.swift */; };
@@ -23,6 +22,7 @@
 		658FA38A28CB924F00196EF9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38928CB924F00196EF9 /* SettingsView.swift */; };
 		658FA38C28CB931300196EF9 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38B28CB931200196EF9 /* HomeView.swift */; };
 		658FA38E28CB950A00196EF9 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38D28CB950A00196EF9 /* ActivityView.swift */; };
+		65A47D972A4EE88F00D57EF9 /* LDKNode in Frameworks */ = {isa = PBXBuildFile; productRef = 65A47D962A4EE88F00D57EF9 /* LDKNode */; };
 		65A85E6628F01D8A00845AE2 /* RequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A85E6528F01D8A00845AE2 /* RequestView.swift */; };
 		65A85E6828F01F5600845AE2 /* SendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A85E6728F01F5500845AE2 /* SendView.swift */; };
 		65E0D8EA29FFD8BF003F45C8 /* LSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E0D8E929FFD8BF003F45C8 /* LSP.swift */; };
@@ -62,7 +62,6 @@
 		65A85E6528F01D8A00845AE2 /* RequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestView.swift; sourceTree = "<group>"; };
 		65A85E6728F01F5500845AE2 /* SendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendView.swift; sourceTree = "<group>"; };
 		65E0D8E929FFD8BF003F45C8 /* LSP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LSP.swift; sourceTree = "<group>"; };
-		65E7B48A29F65EA800E3A672 /* swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = swift; path = "../../../../Downloads/ldk-node/bindings/swift"; sourceTree = "<group>"; };
 		65EA783429F1431E00384706 /* LDKNodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LDKNodeManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,7 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				651A53C929F65EF4001441F9 /* LightningDevKitNode in Frameworks */,
+				65A47D972A4EE88F00D57EF9 /* LDKNode in Frameworks */,
 				6541A53E282E70C20051B2B0 /* KeychainAccess in Frameworks */,
 				658FA38828CB5CEF00196EF9 /* WalletUI in Frameworks */,
 			);
@@ -198,7 +197,6 @@
 		65E7B48929F65EA800E3A672 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				65E7B48A29F65EA800E3A672 /* swift */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -223,7 +221,7 @@
 			packageProductDependencies = (
 				6541A53D282E70C20051B2B0 /* KeychainAccess */,
 				658FA38728CB5CEF00196EF9 /* WalletUI */,
-				651A53C829F65EF4001441F9 /* LightningDevKitNode */,
+				65A47D962A4EE88F00D57EF9 /* LDKNode */,
 			);
 			productName = dailywallet;
 			productReference = 6541A520282E69600051B2B0 /* Daily Wallet.app */;
@@ -256,6 +254,7 @@
 			packageReferences = (
 				6541A53C282E70C20051B2B0 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				658FA38628CB5CEF00196EF9 /* XCRemoteSwiftPackageReference "WalletUI" */,
+				65A47D952A4EE88E00D57EF9 /* XCRemoteSwiftPackageReference "ldk-node" */,
 			);
 			productRefGroup = 6541A521282E69600051B2B0 /* Products */;
 			projectDirPath = "";
@@ -524,13 +523,17 @@
 				kind = branch;
 			};
 		};
+		65A47D952A4EE88E00D57EF9 /* XCRemoteSwiftPackageReference "ldk-node" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lightningdevkit/ldk-node";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		651A53C829F65EF4001441F9 /* LightningDevKitNode */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LightningDevKitNode;
-		};
 		6541A53D282E70C20051B2B0 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6541A53C282E70C20051B2B0 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
@@ -540,6 +543,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 658FA38628CB5CEF00196EF9 /* XCRemoteSwiftPackageReference "WalletUI" */;
 			productName = WalletUI;
+		};
+		65A47D962A4EE88F00D57EF9 /* LDKNode */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65A47D952A4EE88E00D57EF9 /* XCRemoteSwiftPackageReference "ldk-node" */;
+			productName = LDKNode;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

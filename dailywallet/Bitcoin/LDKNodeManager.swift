@@ -6,12 +6,12 @@
 //
 
 import Foundation
-import LightningDevKitNode
+import LDKNode
 
 public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
-    @Published public var node: Node?
+    @Published public var node: LdkNode?
     @Published public var syncState = SyncState.empty
     @Published public var onchainBalanceTotal: UInt64?
     @Published public var onchainBalanceSpendable: UInt64?
@@ -20,7 +20,7 @@ public class LDKNodeManager: ObservableObject {
     private let nodeQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
     
     // Initialize a LDKNodeManager instance on the specified network
-    public init(network: String) {
+    public init(network: Network) {
         self.network = network
     }
     
@@ -28,16 +28,15 @@ public class LDKNodeManager: ObservableObject {
     public func start() throws {
         let nodeConfig = Config(
             storageDirPath: DEFAULT_STORAGE_PATH,
-            esploraServerUrl: esploraServerURL(network: self.network),
             network: self.network,
             listeningAddress: DEFAULT_LISTENING_ADDRESS,
             defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA
         )
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
-        let node = nodeBuilder.build()
         
         do {
+            let node = try nodeBuilder.build()
             try node.start()
             self.node = node
             debugPrint("LDKNodeManager: Started")
@@ -85,14 +84,14 @@ public class LDKNodeManager: ObservableObject {
     }
     
     // Return esplora url for network
-    private func esploraServerURL(network: String) -> String {
+    private func esploraServerURL(network: Network) -> String {
             
         switch network { // Update when Network type is enum instead of string
-            case "regtest":
+        case Network.regtest:
                 return "http://127.0.0.1:3002"
-            case "testnet":
+            case Network.testnet:
                 return ESPLORA_URL_TESTNET
-            case "bitcoin":
+            case Network.bitcoin:
                 return ESPLORA_URL_BITCOIN
             // TODO: Add signet case
             default:

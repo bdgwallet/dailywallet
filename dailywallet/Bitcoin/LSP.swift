@@ -6,14 +6,14 @@
 //
 
 import Foundation
-import LightningDevKitNode
+import LDKNode
 
 // Experimental Lightning Service Provider code3
 
 // Connect to node (Voltage on testnet)
-public func connectToVoltage(node: Node) {
+public func connectToVoltage(node: LdkNode) {
     do {
-        try node.connect(nodeId: VOLTAGE_PUBKEY, address: VOLTAGE_ADDRESS, permanently: true, trusted0conf: true)
+        try node.connect(nodeId: VOLTAGE_PUBKEY, address: VOLTAGE_ADDRESS, persist: true)
         debugPrint("LDKNodeManager: Connected to Voltage node")
     } catch let error {
         debugPrint("LDKNodeManager: Error connecting to Voltage node: \(error.localizedDescription)")
@@ -65,5 +65,5 @@ struct VoltageResponse: Decodable {
 
 // Public APIs
 let VOLTAGE_API = "https://testnet-lsp.voltageapi.com/api/v1/proposal"
-let VOLTAGE_PUBKEY = "025804d4431ad05b06a1a1ee41f22fefeb8ce800b0be3a92ff3b9f594a263da34e"
+let VOLTAGE_PUBKEY: PublicKey = "025804d4431ad05b06a1a1ee41f22fefeb8ce800b0be3a92ff3b9f594a263da34e"
 let VOLTAGE_ADDRESS = "44.228.24.253:9735"
