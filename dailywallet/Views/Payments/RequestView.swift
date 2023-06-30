@@ -50,7 +50,7 @@ struct RequestView: View {
             let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
             let onchainString = amount != nil ? "bitcoin:\(onchainAddress)?amount=\(amount!.satsToBitcoin)" : "bitcoin:\(onchainAddress)"
             
-            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount != nil ? amount! : 0, description: "Test JIT channel", expirySecs: 36000)
+            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount != nil ? amount! : 0, description: "Test JIT channel", expirySecs: 599)
             debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
             
             getWrappedInvoice(invoice: bolt11!) { wrappedInvoice in
