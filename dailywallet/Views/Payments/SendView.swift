@@ -6,11 +6,9 @@
 //
 
 import SwiftUI
-import BitcoinDevKit
 import WalletUI
 
 struct SendView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @Environment(\.presentationMode) var presentationMode
     let amount: UInt64
     @State private var address: String = ""
@@ -42,9 +40,11 @@ struct SendView: View {
     
     func sendBitcoin() {
         do {
+            /* TODO: replace with ldknode code
             let addressScript = try Address(address: address).scriptPubkey()
             let success = bdkManager.sendBitcoin(script: addressScript, amount: amount, feeRate: 1000)
             print("Send success:" + success.description)
+            */
         } catch let error {
             debugPrint(error)
         }

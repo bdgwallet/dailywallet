@@ -7,10 +7,10 @@
 
 import SwiftUI
 import WalletUI
-import BitcoinDevKit
+import LDKNode
 
 struct ActivityView: View {
-    @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     @State private var navigateTo: NavigateTo? = NavigateTo.none
     
@@ -21,11 +21,11 @@ struct ActivityView: View {
         VStack() {
             VStack(alignment: .center) {
                 BalanceHeaderView()
-                    .environmentObject(bdkManager)
+                    .environmentObject(ldkNodeManager)
                     .frame(alignment: .bottom)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-                TransactionsListView(transactions: bdkManager.transactions)
-                    .environmentObject(bdkManager)
+                TransactionsListView()
+                    .environmentObject(ldkNodeManager)
             }
         }
     }
@@ -38,7 +38,7 @@ struct TransactionHistory_Previews: PreviewProvider {
 }
 
 struct BalanceHeaderView: View {
-    @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     
     var body: some View {
         VStack(alignment: .center) {
@@ -46,9 +46,9 @@ struct BalanceHeaderView: View {
                 Text("Your balance")
                     .textStyle(BitcoinBody4())
                 VStack(spacing: 4) {
-                    Text("\(bdkManager.balance?.total.description ?? "unknown") sats")
+                    Text("\(ldkNodeManager.onchainBalanceTotal?.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle1())
-                    Text("\(bdkManager.balance?.spendable.description ?? "unknown") sats")
+                    Text("\(ldkNodeManager.onchainBalanceSpendable?.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle3())
                     Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
                 }
@@ -63,10 +63,15 @@ struct BalanceHeaderView: View {
 }
 
 struct TransactionsListView: View {
-    @EnvironmentObject var bdkManager: BDKManager
-    var transactions: [TransactionDetails]
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
+    //var transactions: [TransactionDetails]
     
     var body: some View {
+        Spacer()
+        Text("TODO: show transactions")
+            .textStyle(BitcoinBody4())
+        Spacer()
+        /*
         if transactions.count != 0 {
             List {
                 ForEach(transactions, id: \.self) {transaction in
@@ -75,7 +80,7 @@ struct TransactionsListView: View {
             }.listStyle(.plain)
         } else {
             Spacer()
-            switch bdkManager.syncState {
+            switch ldkNodeManager.syncState {
             case .synced:
                 Text("No transactions")
                     .textStyle(BitcoinBody4())
@@ -88,9 +93,11 @@ struct TransactionsListView: View {
             }
             Spacer()
         }
+         */
     }
 }
 
+/*
 struct TransactionItemView: View {
     var transaction: TransactionDetails
     
@@ -128,3 +135,4 @@ struct TransactionItemView: View {
         }
     }
 }
+*/

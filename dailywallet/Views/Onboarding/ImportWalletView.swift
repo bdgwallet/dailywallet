@@ -6,10 +6,8 @@
 //
 
 import SwiftUI
-import BitcoinDevKit
 
 struct ImportWalletView: View {
-    @EnvironmentObject var bdkManager: BDKManager
     @EnvironmentObject var backupManager: BackupManager
     
     @State private var recoveryPhrase: String = ""
@@ -29,9 +27,11 @@ struct ImportWalletView: View {
             if !importError {
                 VStack (spacing: 32) {
                     Button("Import") {
+                        /* TODO: replace with ldknode code
                         if !importRecoveryPhrase(recoveryPhrase: recoveryPhrase, bdkManager: bdkManager, backupManager: backupManager) {
                             self.importError = true
                         }
+                        */
                     }
                     /* TODO: Advanced import settings
                     NavigationLink(destination: AdvancedImportView()) {
@@ -45,19 +45,24 @@ struct ImportWalletView: View {
     }
 }
 
-func importRecoveryPhrase(recoveryPhrase: String, bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
-    do {
-        // Create descriptor and load wallet
-        let descriptorSecretKey = try DescriptorSecretKey(network: bdkManager.network, mnemonic: Mnemonic.fromString(mnemonic: recoveryPhrase), password: nil)
-        let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
-        // Save backup
-        let keyBackup = KeyBackup(mnemonic: recoveryPhrase, descriptor: descriptor.asString())
-        backupManager.savePrivateKey(keyBackup: keyBackup)
-        // Load wallet in bdkManager, this will trigger a view switch
-        bdkManager.loadWallet(descriptor: descriptor)
-        return true
-    } catch let error {
-        print(error)
-        return false
-    }
-}
+/*
+ func importRecoveryPhrase(recoveryPhrase: String, bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
+ do {
+ /* TODO: replace with ldknode code
+  // Create descriptor and load wallet
+  let descriptorSecretKey = try DescriptorSecretKey(network: bdkManager.network, mnemonic: Mnemonic.fromString(mnemonic: recoveryPhrase), password: nil)
+  let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
+  // Save backup
+  let keyBackup = KeyBackup(mnemonic: recoveryPhrase, descriptor: descriptor.asString())
+  backupManager.savePrivateKey(keyBackup: keyBackup)
+  // Load wallet in bdkManager, this will trigger a view switch
+  bdkManager.loadWallet(descriptor: descriptor)
+  return true
+  */
+ return false
+ } catch let error {
+ print(error)
+ return false
+ }
+ }
+ */

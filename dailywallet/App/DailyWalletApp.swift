@@ -6,31 +6,25 @@
 //
 
 import SwiftUI
-import BitcoinDevKit
+import LDKNode
 
 @main
 struct DailyWalletApp: App {
-    @ObservedObject var bdkManager: BDKManager
+    @ObservedObject var ldkNodeManager: LDKNodeManager
     @ObservedObject var backupManager: BackupManager
     
     init() {
-        bdkManager = BDKManager(network: Network.testnet)
+        ldkNodeManager = LDKNodeManager(network: Network.testnet)
         
         // Initialize BackupManager
         let encryptionKey = "d5a423f64b607ea7c65b311d855dc48f36114b227bd0c7a3d403f6158a9e4412" // Use your own unique 256-bit / 64 character string
         backupManager = BackupManager.init(encryptionKey: encryptionKey, enableCloudBackup: true)
         
-        // WARNING!!
-        // While testing, remove key backup on every restart
-        //backupManager.deletePrivateKey()
-        // WARNING!!
-        
-        // Check if use already has a private key
-        if backupManager.keyInfo != nil {
-            // If they do, get descriptor and load wallet in bdkManager
+        // Check if use already has a node seed
+        if backupManager.backupInfo != nil {
+            // If they do, start node
             do {
-                let descriptor = try Descriptor(descriptor: backupManager.keyInfo!.descriptor, network: bdkManager.network)
-                bdkManager.loadWallet(descriptor: descriptor)
+                try ldkNodeManager.start(mnemonic: backupManager.backupInfo!.mnemonic, passphrase: nil)
             } catch let error {
                 debugPrint(error)
             }
@@ -39,13 +33,13 @@ struct DailyWalletApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if bdkManager.wallet == nil {
+            if ldkNodeManager.node == nil {
                 StartView()
-                    .environmentObject(bdkManager)
+                    .environmentObject(ldkNodeManager)
                     .environmentObject(backupManager)
             } else {
                 HomeView()
-                    .environmentObject(bdkManager)
+                    .environmentObject(ldkNodeManager)
                     .environmentObject(backupManager)
             }
         }

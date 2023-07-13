@@ -7,10 +7,10 @@
 
 import SwiftUI
 import WalletUI
-import BitcoinDevKit
+import LDKNode
 
 struct CreateWalletView: View {
-    @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
     
     @State private var navigateTo: NavigateTo? = NavigateTo.none
@@ -41,10 +41,16 @@ struct CreateWalletView: View {
             Spacer()
             VStack (spacing: 16) {
                 Button("Continue") {
+                    if !createPrivateKey(ldkNodeManager: ldkNodeManager, backupManager: backupManager) {
+                        // Show error message
+                        print("Error creating or backing up private key")
+                    }
+                    /*
                     if !createPrivateKey(bdkManager: bdkManager, backupManager: backupManager) {
                         // Show error message
                         print("Error creating or backing up private key")
                     }
+                    */
                 }.buttonStyle(BitcoinFilled())
                     .disabled(confirmationOne == false || confirmationTwo == false)
                 NavigationLink(destination: AdvancedCreateView(), tag: NavigateTo.createWalletAdvanced, selection: $navigateTo) {
@@ -58,16 +64,19 @@ struct CreateWalletView: View {
     }
 }
 
-func createPrivateKey(bdkManager: BDKManager, backupManager: BackupManager) -> Bool {
-    // Create mnemonic
-    let mnemonic = Mnemonic(wordCount: WordCount.words12)
-    // Create descriptor and load wallet
-    let descriptorSecretKey = DescriptorSecretKey(network: bdkManager.network, mnemonic: mnemonic, password: nil)
-    let descriptor = Descriptor.newBip84(secretKey: descriptorSecretKey, keychain: KeychainKind.external, network: bdkManager.network)
-    // Save backup
-    let keyBackup = KeyBackup(mnemonic: mnemonic.asString(), descriptor: descriptor.asString())
-    backupManager.savePrivateKey(keyBackup: keyBackup)
-    // Load wallet in bdkManager, this will trigger a view switch
-    bdkManager.loadWallet(descriptor: descriptor)
-    return true 
+func createPrivateKey(ldkNodeManager: LDKNodeManager, backupManager: BackupManager) -> Bool {
+    do {
+         // Create mnemonic
+         let mnemonic = generateEntropyMnemonic()
+         // Save backup
+        let backupInfo = BackupInfo(mnemonic: mnemonic)
+         backupManager.saveBackupInfo(backupInfo: backupInfo)
+         // Build and start LDKNode with mnemonic, this will trigger a view switch
+        try ldkNodeManager.start(mnemonic: mnemonic, passphrase: nil)
+         return true
+        
+    } catch let error {
+        debugPrint(error)
+        return false
+    }
 }

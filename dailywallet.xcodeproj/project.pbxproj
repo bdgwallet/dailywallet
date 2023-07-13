@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6523F6762A01132200CE31C3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6523F6752A01132200CE31C3 /* Extensions.swift */; };
 		6541A524282E69600051B2B0 /* DailyWalletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A523282E69600051B2B0 /* DailyWalletApp.swift */; };
 		6541A526282E69600051B2B0 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A525282E69600051B2B0 /* StartView.swift */; };
 		6541A528282E69620051B2B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6541A527282E69620051B2B0 /* Assets.xcassets */; };
@@ -17,16 +18,15 @@
 		6541A544282E71B60051B2B0 /* CreateWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A541282E71B60051B2B0 /* CreateWalletView.swift */; };
 		6541A545282E71B60051B2B0 /* ImportWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A542282E71B60051B2B0 /* ImportWalletView.swift */; };
 		6541A546282E71B60051B2B0 /* AdvancedCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A543282E71B60051B2B0 /* AdvancedCreateView.swift */; };
-		6541A5512837E84E0051B2B0 /* LDKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6541A5502837E84E0051B2B0 /* LDKManager.swift */; };
 		658FA38828CB5CEF00196EF9 /* WalletUI in Frameworks */ = {isa = PBXBuildFile; productRef = 658FA38728CB5CEF00196EF9 /* WalletUI */; };
 		658FA38A28CB924F00196EF9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38928CB924F00196EF9 /* SettingsView.swift */; };
 		658FA38C28CB931300196EF9 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38B28CB931200196EF9 /* HomeView.swift */; };
 		658FA38E28CB950A00196EF9 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658FA38D28CB950A00196EF9 /* ActivityView.swift */; };
+		65A47D972A4EE88F00D57EF9 /* LDKNode in Frameworks */ = {isa = PBXBuildFile; productRef = 65A47D962A4EE88F00D57EF9 /* LDKNode */; };
 		65A85E6628F01D8A00845AE2 /* RequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A85E6528F01D8A00845AE2 /* RequestView.swift */; };
 		65A85E6828F01F5600845AE2 /* SendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A85E6728F01F5500845AE2 /* SendView.swift */; };
-		65C336C528410A2C0087B77D /* BlockSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 65C336C428410A2C0087B77D /* BlockSocket */; };
-		65FFFAFF29644B9600C7E8F9 /* BDKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FFFAFE29644B9600C7E8F9 /* BDKManager.swift */; };
-		65FFFB02296451AA00C7E8F9 /* BitcoinDevKit in Frameworks */ = {isa = PBXBuildFile; productRef = 65FFFB01296451AA00C7E8F9 /* BitcoinDevKit */; };
+		65E0D8EA29FFD8BF003F45C8 /* LSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E0D8E929FFD8BF003F45C8 /* LSP.swift */; };
+		65EA783529F1431E00384706 /* LDKNodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EA783429F1431E00384706 /* LDKNodeManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6523F6752A01132200CE31C3 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		6541A520282E69600051B2B0 /* Daily Wallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Daily Wallet.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6541A523282E69600051B2B0 /* DailyWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWalletApp.swift; sourceTree = "<group>"; };
 		6541A525282E69600051B2B0 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
@@ -55,13 +56,13 @@
 		6541A541282E71B60051B2B0 /* CreateWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateWalletView.swift; sourceTree = "<group>"; };
 		6541A542282E71B60051B2B0 /* ImportWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportWalletView.swift; sourceTree = "<group>"; };
 		6541A543282E71B60051B2B0 /* AdvancedCreateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedCreateView.swift; sourceTree = "<group>"; };
-		6541A5502837E84E0051B2B0 /* LDKManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LDKManager.swift; sourceTree = "<group>"; };
 		658FA38928CB924F00196EF9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		658FA38B28CB931200196EF9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		658FA38D28CB950A00196EF9 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		65A85E6528F01D8A00845AE2 /* RequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestView.swift; sourceTree = "<group>"; };
 		65A85E6728F01F5500845AE2 /* SendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendView.swift; sourceTree = "<group>"; };
-		65FFFAFE29644B9600C7E8F9 /* BDKManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDKManager.swift; sourceTree = "<group>"; };
+		65E0D8E929FFD8BF003F45C8 /* LSP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LSP.swift; sourceTree = "<group>"; };
+		65EA783429F1431E00384706 /* LDKNodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LDKNodeManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,9 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65FFFB02296451AA00C7E8F9 /* BitcoinDevKit in Frameworks */,
+				65A47D972A4EE88F00D57EF9 /* LDKNode in Frameworks */,
 				6541A53E282E70C20051B2B0 /* KeychainAccess in Frameworks */,
-				65C336C528410A2C0087B77D /* BlockSocket in Frameworks */,
 				658FA38828CB5CEF00196EF9 /* WalletUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,6 +82,7 @@
 		6541A517282E69600051B2B0 = {
 			isa = PBXGroup;
 			children = (
+				65E7B48929F65EA800E3A672 /* Packages */,
 				6541A534282E6A960051B2B0 /* README.md */,
 				6541A535282E6B710051B2B0 /* .gitignore */,
 				6541A522282E69600051B2B0 /* dailywallet */,
@@ -104,8 +105,7 @@
 				6541A531282E69DD0051B2B0 /* App */,
 				6541A532282E69EE0051B2B0 /* Views */,
 				6541A539282E6FE50051B2B0 /* Backup */,
-				65FFFAFD29644B7E00C7E8F9 /* BDK */,
-				6541A54F2837E8320051B2B0 /* LDK */,
+				6541A54F2837E8320051B2B0 /* Bitcoin */,
 				6541A533282E69FF0051B2B0 /* Resources */,
 				6541A529282E69620051B2B0 /* Preview Content */,
 			);
@@ -168,12 +168,14 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		6541A54F2837E8320051B2B0 /* LDK */ = {
+		6541A54F2837E8320051B2B0 /* Bitcoin */ = {
 			isa = PBXGroup;
 			children = (
-				6541A5502837E84E0051B2B0 /* LDKManager.swift */,
+				65EA783429F1431E00384706 /* LDKNodeManager.swift */,
+				65E0D8E929FFD8BF003F45C8 /* LSP.swift */,
+				6523F6752A01132200CE31C3 /* Extensions.swift */,
 			);
-			path = LDK;
+			path = Bitcoin;
 			sourceTree = "<group>";
 		};
 		6541A5522837E91F0051B2B0 /* Frameworks */ = {
@@ -192,12 +194,11 @@
 			path = Payments;
 			sourceTree = "<group>";
 		};
-		65FFFAFD29644B7E00C7E8F9 /* BDK */ = {
+		65E7B48929F65EA800E3A672 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				65FFFAFE29644B9600C7E8F9 /* BDKManager.swift */,
 			);
-			path = BDK;
+			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,9 +220,8 @@
 			name = dailywallet;
 			packageProductDependencies = (
 				6541A53D282E70C20051B2B0 /* KeychainAccess */,
-				65C336C428410A2C0087B77D /* BlockSocket */,
 				658FA38728CB5CEF00196EF9 /* WalletUI */,
-				65FFFB01296451AA00C7E8F9 /* BitcoinDevKit */,
+				65A47D962A4EE88F00D57EF9 /* LDKNode */,
 			);
 			productName = dailywallet;
 			productReference = 6541A520282E69600051B2B0 /* Daily Wallet.app */;
@@ -253,9 +253,8 @@
 			mainGroup = 6541A517282E69600051B2B0;
 			packageReferences = (
 				6541A53C282E70C20051B2B0 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
-				65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */,
 				658FA38628CB5CEF00196EF9 /* XCRemoteSwiftPackageReference "WalletUI" */,
-				65FFFB00296451AA00C7E8F9 /* XCRemoteSwiftPackageReference "bdk-swift" */,
+				65A47D952A4EE88E00D57EF9 /* XCRemoteSwiftPackageReference "ldk-node" */,
 			);
 			productRefGroup = 6541A521282E69600051B2B0 /* Products */;
 			projectDirPath = "";
@@ -285,14 +284,15 @@
 			files = (
 				658FA38C28CB931300196EF9 /* HomeView.swift in Sources */,
 				6541A526282E69600051B2B0 /* StartView.swift in Sources */,
-				6541A5512837E84E0051B2B0 /* LDKManager.swift in Sources */,
-				65FFFAFF29644B9600C7E8F9 /* BDKManager.swift in Sources */,
 				6541A53B282E70590051B2B0 /* BackupManager.swift in Sources */,
 				658FA38A28CB924F00196EF9 /* SettingsView.swift in Sources */,
 				6541A546282E71B60051B2B0 /* AdvancedCreateView.swift in Sources */,
 				6541A544282E71B60051B2B0 /* CreateWalletView.swift in Sources */,
 				6541A524282E69600051B2B0 /* DailyWalletApp.swift in Sources */,
+				65E0D8EA29FFD8BF003F45C8 /* LSP.swift in Sources */,
+				65EA783529F1431E00384706 /* LDKNodeManager.swift in Sources */,
 				65A85E6628F01D8A00845AE2 /* RequestView.swift in Sources */,
+				6523F6762A01132200CE31C3 /* Extensions.swift in Sources */,
 				6541A545282E71B60051B2B0 /* ImportWalletView.swift in Sources */,
 				6541A540282E718D0051B2B0 /* PaymentsView.swift in Sources */,
 				65A85E6828F01F5600845AE2 /* SendView.swift in Sources */,
@@ -427,7 +427,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"dailywallet/Preview Content\"";
-				DEVELOPMENT_TEAM = 8DAB7BVU34;
+				DEVELOPMENT_TEAM = V9277T6GRS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -459,7 +459,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"dailywallet/Preview Content\"";
-				DEVELOPMENT_TEAM = 8DAB7BVU34;
+				DEVELOPMENT_TEAM = V9277T6GRS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -523,20 +523,12 @@
 				kind = branch;
 			};
 		};
-		65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */ = {
+		65A47D952A4EE88E00D57EF9 /* XCRemoteSwiftPackageReference "ldk-node" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bdgwallet/blocksocket-swift";
+			repositoryURL = "https://github.com/lightningdevkit/ldk-node";
 			requirement = {
 				branch = main;
 				kind = branch;
-			};
-		};
-		65FFFB00296451AA00C7E8F9 /* XCRemoteSwiftPackageReference "bdk-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bitcoindevkit/bdk-swift";
-			requirement = {
-				kind = exactVersion;
-				version = 0.26.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -552,15 +544,10 @@
 			package = 658FA38628CB5CEF00196EF9 /* XCRemoteSwiftPackageReference "WalletUI" */;
 			productName = WalletUI;
 		};
-		65C336C428410A2C0087B77D /* BlockSocket */ = {
+		65A47D962A4EE88F00D57EF9 /* LDKNode */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 65C336C328410A2C0087B77D /* XCRemoteSwiftPackageReference "blocksocket-swift" */;
-			productName = BlockSocket;
-		};
-		65FFFB01296451AA00C7E8F9 /* BitcoinDevKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 65FFFB00296451AA00C7E8F9 /* XCRemoteSwiftPackageReference "bdk-swift" */;
-			productName = BitcoinDevKit;
+			package = 65A47D952A4EE88E00D57EF9 /* XCRemoteSwiftPackageReference "ldk-node" */;
+			productName = LDKNode;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

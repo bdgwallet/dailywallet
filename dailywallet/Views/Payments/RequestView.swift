@@ -7,26 +7,27 @@
 
 import SwiftUI
 import WalletUI
-import BitcoinDevKit
 import CoreImage.CIFilterBuiltins
 
 struct RequestView: View {
-    @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
+    let amount: UInt64?
     
-    @State private var requestAddress: String?
+    //@State private var requestAddress: String?
+    @State private var unifiedAddress: String?
     @State private var copied = false
     
     var body: some View {
         NavigationView {
             VStack {
                 Spacer()
-                QRView(paymentRequest: requestAddress ?? "No address")
+                QRView(paymentRequest: unifiedAddress ?? "No address")
                 Spacer()
                 VStack {
-                    BitcoinShareButton(title: "Share", shareItem: requestAddress ?? "No address")
+                    BitcoinShareButton(title: "Share", shareItem: unifiedAddress ?? "No address")
                     Button(self.copied ? "Copied" : "Copy") {
-                        UIPasteboard.general.string = requestAddress ?? "No address"
+                        UIPasteboard.general.string = unifiedAddress ?? "No address"
                         self.copied = true
                     }
                     .buttonStyle(BitcoinPlain(width: 150))
@@ -41,23 +42,24 @@ struct RequestView: View {
                 }
             }
         }.accentColor(.black)
-        .onAppear(perform: getAddress)
+        .onAppear(perform: getUnifiedAddress)
     }
     
-    func getAddress() {
+    func getUnifiedAddress() {
         do {
-            let addressInfo = try bdkManager.wallet!.getAddress(addressIndex: AddressIndex.new)
-            requestAddress = addressInfo.address
-            print(requestAddress ?? "no address")
+            let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
+            let onchainString = amount != nil ? "bitcoin:\(onchainAddress)?amount=\(amount!.satsToBitcoin)" : "bitcoin:\(onchainAddress)"
+            
+            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount != nil ? amount! : 0, description: "Test JIT channel", expirySecs: 599)
+            debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
+            
+            getWrappedInvoice(invoice: bolt11!) { wrappedInvoice in
+                unifiedAddress = "\(onchainString)&lightning=\(String(describing: wrappedInvoice))"
+                debugPrint(unifiedAddress?.description ?? "No address")
+            }
         } catch (let error){
             print(error)
         }
-    }
-}
-
-struct RequestView_Previews: PreviewProvider {
-    static var previews: some View {
-        RequestView()
     }
 }
 

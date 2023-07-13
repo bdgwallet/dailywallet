@@ -6,27 +6,16 @@
 //
 
 import SwiftUI
-import BlockSocket
 import WalletUI
 
 struct HomeView: View {
-    @EnvironmentObject var bdkManager: BDKManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @EnvironmentObject var backupManager: BackupManager
-    let blockSocket = BlockSocket.init(source: BlockSocketSource.blockchain_com)
     @State var blockHeight: UInt32?
-    
-    init () {
-        let value = blockSocket.$latestBlockHeight.sink { (latestBlockHeight) in
-            if latestBlockHeight != nil {
-                print("Blockheight" + latestBlockHeight!.description)
-            }
-        }
-    }
     
     var body: some View {
         TabView {
             PaymentsView()
-                .environmentObject(bdkManager)
                 .environmentObject(backupManager)
                 .tabItem {
                     Label("Payments", systemImage: "arrow.up.arrow.down")
@@ -41,27 +30,7 @@ struct HomeView: View {
                 }
         }.accentColor(.bitcoinOrange)
             .task {
-                bdkManager.sync()
-                
-            }.onDisappear {
-                //bdkManager.stopSyncRegularly() // if startSyncRegularly was used
-            }.onReceive(self.blockSocket.$latestBlockHeight) { flag in
-                let cancellable = blockSocket.$latestBlockHeight.sink (
-                    receiveCompletion: { completion in
-                        // Called once, when the publisher was completed.
-                        switch completion {
-                            case .failure(let error):
-                                print(error)
-                            case .finished:
-                                print("Success")
-                            }
-                    },
-                    receiveValue: { value in
-                        // Can be called multiple times, each time that a
-                        // new value was emitted by the publisher.
-                        print(value)
-                    }
-                )
+                ldkNodeManager.sync()
             }
     }
     
@@ -72,14 +41,3 @@ struct TabView_Previews: PreviewProvider {
         HomeView()
     }
 }
-
-/*
-private func setupLDKManager() {
-    // Initialize LDKManager
-    let ldkNetwork = LDKNetwork_Testnet // set LDKNetwork_Bitcoin, LDKNetwork_Testnet, LDKNetwork_Signet or LDKNetwork_Regtest
-    if blockSocket.latestBlockHeight != nil {
-        print("LatestBlockHeight: " + self.blockSocket.latestBlockHeight!.description)
-        let ldkManager = LDKManager.init(network: ldkNetwork, latestBlockHeight: blockSocket.latestBlockHeight!, latestBlockHash: blockSocket.latestBlockHash!)
-    }
-}
-*/
