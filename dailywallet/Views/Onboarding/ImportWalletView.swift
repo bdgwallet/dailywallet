@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ImportWalletView: View {
-    @Environment(BackupManager.self) var backupManager
+    @EnvironmentObject var backupManager: BackupManager
     
     @State private var recoveryPhrase: String = ""
     @State private var importError = false

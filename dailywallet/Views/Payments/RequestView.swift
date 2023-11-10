@@ -10,7 +10,7 @@ import WalletUI
 import CoreImage.CIFilterBuiltins
 
 struct RequestView: View {
-    @Environment(LDKNodeManager.self) var ldkNodeManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
     let amount: UInt64?
     

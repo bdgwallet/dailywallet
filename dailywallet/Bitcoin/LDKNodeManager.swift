@@ -8,7 +8,7 @@
 import Foundation
 import LDKNode
 
-public class LDKNodeManager: Observable {
+public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     @Published public var node: LdkNode?
@@ -57,16 +57,6 @@ public class LDKNodeManager: Observable {
             debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
-        }
-    }
-    
-    // Stop LDK Node
-    public func stop() throws {
-        do {
-            try self.node?.stop()
-            debugPrint("LDKNodeManager: Stopped")
-        } catch {
-            debugPrint("LDKNodeManager: Error stopping node: \(error.localizedDescription)")
         }
     }
     

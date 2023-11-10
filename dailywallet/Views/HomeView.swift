@@ -9,14 +9,14 @@ import SwiftUI
 import WalletUI
 
 struct HomeView: View {
-    @Environment(LDKNodeManager.self) var ldkNodeManager
-    @Environment(BackupManager.self) var backupManager
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
+    @EnvironmentObject var backupManager: BackupManager
     @State var blockHeight: UInt32?
     
     var body: some View {
         TabView {
             PaymentsView()
-                .environment(backupManager)
+                .environmentObject(backupManager)
                 .tabItem {
                     Label("Payments", systemImage: "arrow.up.arrow.down")
                 }
