@@ -10,8 +10,8 @@ import WalletUI
 import LDKNode
 
 struct CreateWalletView: View {
-    @EnvironmentObject var ldkNodeManager: LDKNodeManager
-    @EnvironmentObject var backupManager: BackupManager
+    @Environment(LDKNodeManager.self) var ldkNodeManager
+    @Environment(BackupManager.self) var backupManager
     
     @State private var navigateTo: NavigateTo? = NavigateTo.none
     @State private var confirmationOne = false

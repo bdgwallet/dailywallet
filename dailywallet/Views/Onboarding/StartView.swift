@@ -10,8 +10,8 @@ import WalletUI
 import LDKNode
 
 struct StartView: View {
-    @EnvironmentObject var ldkNodeManager: LDKNodeManager
-    @EnvironmentObject var backupManager: BackupManager
+    @Environment(LDKNodeManager.self) var ldkNodeManager
+    @Environment(BackupManager.self) var backupManager
     
     @State private var navigateTo: NavigateTo? = NavigateTo.none
     
@@ -33,7 +33,7 @@ struct StartView: View {
                 }
                 Spacer()
                 VStack {
-                    NavigationLink(destination: CreateWalletView().environmentObject(backupManager).environmentObject(ldkNodeManager), tag: NavigateTo.createWallet, selection: $navigateTo) {
+                    NavigationLink(destination: CreateWalletView().environment(backupManager).environment(ldkNodeManager), tag: NavigateTo.createWallet, selection: $navigateTo) {
                         Button("Create new wallet") {
                             self.navigateTo = .createWallet
                         }.buttonStyle(BitcoinFilled())

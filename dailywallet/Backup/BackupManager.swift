@@ -9,7 +9,7 @@ import Foundation
 import CryptoKit
 import KeychainAccess
 
-public class BackupManager: ObservableObject {
+public class BackupManager: Observable {
     // Public variables
     @Published public var backupInfo: BackupInfo?
     

@@ -10,8 +10,8 @@ import WalletUI
 import LDKNode
 
 struct ActivityView: View {
-    @EnvironmentObject var ldkNodeManager: LDKNodeManager
-    @EnvironmentObject var backupManager: BackupManager
+    @Environment(LDKNodeManager.self) var ldkNodeManager
+    @Environment(BackupManager.self) var backupManager
     @State private var navigateTo: NavigateTo? = NavigateTo.none
     
     let headerWidth = UIScreen.main.bounds.width
@@ -21,11 +21,11 @@ struct ActivityView: View {
         VStack() {
             VStack(alignment: .center) {
                 BalanceHeaderView()
-                    .environmentObject(ldkNodeManager)
+                    .environment(ldkNodeManager)
                     .frame(alignment: .bottom)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
                 TransactionsListView()
-                    .environmentObject(ldkNodeManager)
+                    .environment(ldkNodeManager)
             }
         }
     }
@@ -38,7 +38,7 @@ struct TransactionHistory_Previews: PreviewProvider {
 }
 
 struct BalanceHeaderView: View {
-    @EnvironmentObject var ldkNodeManager: LDKNodeManager
+    @Environment(LDKNodeManager.self) var ldkNodeManager
     
     var body: some View {
         VStack(alignment: .center) {
@@ -63,7 +63,7 @@ struct BalanceHeaderView: View {
 }
 
 struct TransactionsListView: View {
-    @EnvironmentObject var ldkNodeManager: LDKNodeManager
+    @Environment(LDKNodeManager.self) var ldkNodeManager
     //var transactions: [TransactionDetails]
     
     var body: some View {

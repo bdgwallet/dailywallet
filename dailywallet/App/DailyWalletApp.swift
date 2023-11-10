@@ -10,8 +10,8 @@ import LDKNode
 
 @main
 struct DailyWalletApp: App {
-    @ObservedObject var ldkNodeManager: LDKNodeManager
-    @ObservedObject var backupManager: BackupManager
+    @State var ldkNodeManager: LDKNodeManager
+    @State var backupManager: BackupManager
     
     init() {
         ldkNodeManager = LDKNodeManager(network: Network.testnet)
@@ -35,13 +35,19 @@ struct DailyWalletApp: App {
         WindowGroup {
             if ldkNodeManager.node == nil {
                 StartView()
-                    .environmentObject(ldkNodeManager)
-                    .environmentObject(backupManager)
+                    .environment(ldkNodeManager)
+                    .environment(backupManager)
             } else {
                 HomeView()
-                    .environmentObject(ldkNodeManager)
-                    .environmentObject(backupManager)
+                    .environment(ldkNodeManager)
+                    .environment(backupManager)
             }
         }
+    }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func applicationWillTerminate(_ application: UIApplication) {
+        //try? ldknNodeManager.stop()
     }
 }
