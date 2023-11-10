@@ -33,6 +33,19 @@ public class LDKNodeManager: Observable {
             defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
             trustedPeers0conf: [VOLTAGE_PUBKEY]
         )
+        
+        // Write test file to directory to check availability
+        let str = "Writing to disk"
+        let path = DEFAULT_STORAGE_PATH + "message.txt"
+
+        do {
+            let url = URL(filePath: path)
+            try str.write(to: url, atomically: true, encoding: .utf8)
+            let input = try String(contentsOf: url)
+            print(input)
+        } catch {
+            print(error.localizedDescription)
+        }
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
