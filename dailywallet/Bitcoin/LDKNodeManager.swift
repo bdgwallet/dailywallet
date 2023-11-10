@@ -125,7 +125,7 @@ public enum SyncState {
 // Helper constants
 let DEFAULT_LISTENING_ADDRESS = "0.0.0.0:9735"
 let DEFAULT_CLTV_EXPIRY_DELTA = UInt32(2016)
-let DEFAULT_STORAGE_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path // "/tmp/ldk_node_swift/"
+let DEFAULT_STORAGE_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
 
 // Public APIs
 let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
