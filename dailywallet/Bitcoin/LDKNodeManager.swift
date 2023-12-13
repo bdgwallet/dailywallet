@@ -29,7 +29,7 @@ public class LDKNodeManager: ObservableObject {
         let nodeConfig = Config(
             storageDirPath: DEFAULT_STORAGE_PATH,
             network: self.network,
-            listeningAddress: nil,
+            listeningAddresses: nil,
             defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
             trustedPeers0conf: [VOLTAGE_PUBKEY]
         )
