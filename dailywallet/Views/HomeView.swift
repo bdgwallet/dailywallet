@@ -30,7 +30,7 @@ struct HomeView: View {
                 }
         }.accentColor(.bitcoinOrange)
             .task {
-                ldkNodeManager.sync()
+                //
             }
     }
     
