@@ -12,9 +12,9 @@ public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     @Published public var node: LdkNode?
-    @Published public var syncState = SyncState.empty
     @Published public var onchainBalanceTotal: UInt64?
     @Published public var onchainBalanceSpendable: UInt64?
+    @Published public var lightningBalance: UInt64?
     
     // Private variables
     private let nodeQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
@@ -41,6 +41,8 @@ public class LDKNodeManager: ObservableObject {
             let node = try nodeBuilder.build()
             try node.start()
             self.node = node
+            getOnchainBalance()
+            getLightningBalance()
             debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
@@ -50,37 +52,66 @@ public class LDKNodeManager: ObservableObject {
     // Sync once
     public func sync() {
         if self.node != nil {
-            self.syncState = .syncing
             nodeQueue.async {
                 do {
                     try self.node!.syncWallets()
                     DispatchQueue.main.async {
-                        self.syncState = SyncState.synced
                         self.getOnchainBalance()
                         // Test Voltage JIT Channel creation
                         connectToVoltage(node: self.node!)
                     }
                     debugPrint("LDKNodeManager: Synced")
                 } catch let error {
-                    DispatchQueue.main.async {
-                        self.syncState = SyncState.failed(error)
-                    }
                     debugPrint("LDKNodeManager: Error syncing \(error.localizedDescription)")
                 }
             }
         }
     }
     
+    // Listen for events
+    public func listenForEvents() {
+        nodeQueue.async {
+            let event = self.node!.waitNextEvent()
+            // TODO: Handle event, upate on main queue when finished
+            self.node!.eventHandled()
+        }
+    }
+    
     // Update .onchainBalance
     private func getOnchainBalance() {
         if self.node != nil {
-            do {
-                self.onchainBalanceTotal = try self.node!.totalOnchainBalanceSats()
-                debugPrint("LDKNodeManager: Onchain balance total: \(self.onchainBalanceTotal!)")
-                self.onchainBalanceSpendable = try self.node!.spendableOnchainBalanceSats()
-                debugPrint("LDKNodeManager: Onchain balance spendable: \(self.onchainBalanceSpendable!)")
-            } catch let error {
-                debugPrint("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
+            nodeQueue.async {
+                do {
+                    let onchainBalanceTotal = try self.node!.totalOnchainBalanceSats()
+                    let onchainBalanceSpendable = try self.node!.spendableOnchainBalanceSats()
+                    
+                    DispatchQueue.main.async {
+                        self.onchainBalanceTotal = onchainBalanceTotal
+                        self.onchainBalanceSpendable = onchainBalanceSpendable
+                        debugPrint("LDKNodeManager: Onchain balance total: \(self.onchainBalanceTotal!)")
+                        debugPrint("LDKNodeManager: Onchain balance spendable: \(self.onchainBalanceSpendable!)")
+                    }
+                    
+                } catch let error {
+                    debugPrint("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    // Update .lightningBalance
+    private func getLightningBalance() {
+        if self.node != nil {
+            nodeQueue.async {
+                var iteratedBalance = UInt64(0)
+                for channel in self.node!.listChannels() {
+                    iteratedBalance = iteratedBalance + channel.balanceMsat
+                }
+                
+                DispatchQueue.main.async {
+                    self.lightningBalance = iteratedBalance
+                    debugPrint("LDKNodeManager: Lightning balance: \(self.lightningBalance!)")
+                }
             }
         }
     }
@@ -100,13 +131,6 @@ public class LDKNodeManager: ObservableObject {
                 return ESPLORA_URL_TESTNET
         }
     }
-}
-
-public enum SyncState {
-    case empty
-    case syncing
-    case synced
-    case failed(Error)
 }
 
 // Helper constants
