@@ -20,7 +20,10 @@ struct DailyWalletApp: App {
         let encryptionKey = "d5a423f64b607ea7c65b311d855dc48f36114b227bd0c7a3d403f6158a9e4412" // Use your own unique 256-bit / 64 character string
         backupManager = BackupManager.init(encryptionKey: encryptionKey, enableCloudBackup: true)
         
-        // Check if use already has a node seed
+        // Warning, only use in development
+        //backupManager.deleteBackupInfo()
+        
+        // Check if user already has a node seed
         if backupManager.backupInfo != nil {
             // If they do, start node
             do {
