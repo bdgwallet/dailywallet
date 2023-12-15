@@ -48,3 +48,11 @@ struct DailyWalletApp: App {
         }
     }
 }
+
+// Helper for debugging load delays
+func printLog(log: String) {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH:mm:ss.SSS "
+    debugPrint(formatter.string(from: Date()), terminator: "")
+    debugPrint(log)
+}
