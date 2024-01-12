@@ -25,7 +25,7 @@ struct RequestView: View {
         NavigationView {
             VStack {
                 Spacer()
-                QRView(qrString: ((qrType == .unified && unifiedAddress != nil) ? unifiedAddress! : qrType == .lightning ? lightningInvoice : onchainAddress) ?? "no address", qrType: qrType)
+                QRView(qrString: getQRString(), qrType: qrType)
                 Picker("What is your favorite color?", selection: $qrType) {
                     Text("Unified").tag(QRType.unified)
                     Text("Lightning").tag(QRType.lightning)
@@ -36,9 +36,9 @@ struct RequestView: View {
 
                 Spacer()
                 VStack {
-                    BitcoinShareButton(title: "Share", shareItem: unifiedAddress ?? "No address")
+                    BitcoinShareButton(title: "Share", shareItem: getQRString())
                     Button(self.copied ? "Copied" : "Copy") {
-                        UIPasteboard.general.string = unifiedAddress ?? "No address"
+                        UIPasteboard.general.string = getQRString()
                         self.copied = true
                     }
                     .buttonStyle(BitcoinPlain(width: 150))
@@ -66,9 +66,9 @@ struct RequestView: View {
             self.lightningInvoice = bolt11
             debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
             
-            getWrappedInvoice(invoice: bolt11!) { wrappedInvoice in
-                self.lightningInvoice = wrappedInvoice
-                self.unifiedAddress = "\(onchainString)&lightning=\(String(describing: wrappedInvoice))"
+            getWrappedInvoice(invoice: bolt11!, network: ldkNodeManager.network) { wrappedInvoice in
+                //self.lightningInvoice = wrappedInvoice
+                self.unifiedAddress = wrappedInvoice //"\(onchainString)&lightning=\(String(describing: wrappedInvoice))"
                 debugPrint(unifiedAddress?.description ?? "No address")
                 if self.unifiedAddress == nil {
                     self.qrType = QRType.lightning
@@ -77,6 +77,10 @@ struct RequestView: View {
         } catch (let error){
             print(error)
         }
+    }
+    
+    func getQRString() -> String {
+        return (qrType == .unified && unifiedAddress != nil) ? unifiedAddress! : qrType == .lightning ? lightningInvoice! : onchainAddress ?? "no address"
     }
 }
 

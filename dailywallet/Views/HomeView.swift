@@ -35,9 +35,3 @@ struct HomeView: View {
     }
     
 }
-
-struct TabView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-    }
-}

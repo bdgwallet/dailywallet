@@ -15,14 +15,14 @@ struct ActivityView: View {
     @State private var navigateTo: NavigateTo? = NavigateTo.none
     
     let headerWidth = UIScreen.main.bounds.width
-    let headerHeight = 200.0 //UIScreen.main.bounds.height / 5
+    let headerHeight = UIScreen.main.bounds.height / 5
     
     var body: some View {
         VStack() {
             VStack(alignment: .center) {
                 BalanceHeaderView()
                     .environmentObject(ldkNodeManager)
-                    .frame(alignment: .bottom)
+                    .frame(minHeight: headerHeight, alignment: .center)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
                 TransactionsListView()
                     .environmentObject(ldkNodeManager)
@@ -48,16 +48,23 @@ struct BalanceHeaderView: View {
                 VStack(spacing: 4) {
                     Text("\(ldkNodeManager.onchainBalanceTotal?.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle1())
+                    Text("$0").textStyle(BitcoinBody4())
+                    /*
                     Text("\(ldkNodeManager.onchainBalanceSpendable?.description ?? "unknown") sats")
                         .textStyle(BitcoinTitle3())
+                    Text("\(ldkNodeManager.lightningBalance?.description ?? "unknown") sats")
+                        .textStyle(BitcoinTitle3())
                     Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
+                     */
                 }
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
+            /*
             HStack {
                 Text("Activity")
                     .textStyle(BitcoinTitle5())
                 Spacer()
             }
+            */
         }
     }
 }
@@ -67,6 +74,7 @@ struct TransactionsListView: View {
     //var transactions: [TransactionDetails]
     
     var body: some View {
+        Divider()
         Spacer()
         Text("TODO: show transactions")
             .textStyle(BitcoinBody4())

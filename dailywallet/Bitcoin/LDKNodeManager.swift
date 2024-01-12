@@ -27,15 +27,16 @@ public class LDKNodeManager: ObservableObject {
     // Start LDK Node
     public func start(mnemonic: Mnemonic, passphrase: String?) throws {
         let nodeConfig = Config(
-            storageDirPath: DEFAULT_STORAGE_PATH,
+            storageDirPath: network == .bitcoin ? DEFAULT_STORAGE_PATH + "/bitcoin/" : DEFAULT_STORAGE_PATH,
             network: self.network,
             listeningAddresses: nil,
             defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
-            trustedPeers0conf: [VOLTAGE_PUBKEY]
+            trustedPeers0conf: network == .bitcoin ? [VOLTAGE_PUBKEY_BITCOIN] : [VOLTAGE_PUBKEY_TESTNET]
         )
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
+        nodeBuilder.setEsploraServer(esploraServerUrl: self.network == Network.bitcoin ? ESPLORA_URL_BITCOIN : ESPLORA_URL_TESTNET)
         
         do {
             let node = try nodeBuilder.build()
@@ -43,6 +44,9 @@ public class LDKNodeManager: ObservableObject {
             self.node = node
             getOnchainBalance()
             getLightningBalance()
+            // Test Voltage JIT Channel creation
+            connectToVoltage(node: self.node!, network: network)
+            listenForEvents()
             debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
@@ -58,7 +62,7 @@ public class LDKNodeManager: ObservableObject {
                     DispatchQueue.main.async {
                         self.getOnchainBalance()
                         // Test Voltage JIT Channel creation
-                        connectToVoltage(node: self.node!)
+                        //connectToVoltage(node: self.node!)
                     }
                     debugPrint("LDKNodeManager: Synced")
                 } catch let error {
@@ -73,6 +77,8 @@ public class LDKNodeManager: ObservableObject {
         nodeQueue.async {
             let event = self.node!.waitNextEvent()
             // TODO: Handle event, upate on main queue when finished
+            self.getOnchainBalance()
+            self.getLightningBalance()
             self.node!.eventHandled()
         }
     }
@@ -139,5 +145,5 @@ let DEFAULT_CLTV_EXPIRY_DELTA = UInt32(2016)
 let DEFAULT_STORAGE_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
 
 // Public APIs
-let ESPLORA_URL_BITCOIN = "https://blockstream.info/api/"
-let ESPLORA_URL_TESTNET = "https://blockstream.info/testnet/api"
+let ESPLORA_URL_BITCOIN = "https://esplora.kuutamo.cloud" //"https://blockstream.info/api/"
+let ESPLORA_URL_TESTNET = "https://esplora.testnet.kuutamo.cloud" //https://blockstream.info/testnet/api"
