@@ -16,13 +16,24 @@ struct RequestView: View {
     
     //@State private var requestAddress: String?
     @State private var unifiedAddress: String?
+    @State private var onchainAddress: String?
+    @State private var lightningInvoice: String?
+    @State private var qrType = QRType.unified
     @State private var copied = false
     
     var body: some View {
         NavigationView {
             VStack {
                 Spacer()
-                QRView(paymentRequest: unifiedAddress ?? "No address")
+                QRView(qrString: ((qrType == .unified && unifiedAddress != nil) ? unifiedAddress! : qrType == .lightning ? lightningInvoice : onchainAddress) ?? "no address", qrType: qrType)
+                Picker("What is your favorite color?", selection: $qrType) {
+                    Text("Unified").tag(QRType.unified)
+                    Text("Lightning").tag(QRType.lightning)
+                    Text("Onchain").tag(QRType.onchain)
+                }
+                .frame(maxWidth: 250)
+                .pickerStyle(.segmented)
+
                 Spacer()
                 VStack {
                     BitcoinShareButton(title: "Share", shareItem: unifiedAddress ?? "No address")
@@ -49,13 +60,19 @@ struct RequestView: View {
         do {
             let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
             let onchainString = amount != nil ? "bitcoin:\(onchainAddress)?amount=\(amount!.satsToBitcoin)" : "bitcoin:\(onchainAddress)"
+            self.onchainAddress = onchainString
             
             let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount != nil ? amount! : 0, description: "Test JIT channel", expirySecs: 599)
+            self.lightningInvoice = bolt11
             debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
             
             getWrappedInvoice(invoice: bolt11!) { wrappedInvoice in
-                unifiedAddress = "\(onchainString)&lightning=\(String(describing: wrappedInvoice))"
+                self.lightningInvoice = wrappedInvoice
+                self.unifiedAddress = "\(onchainString)&lightning=\(String(describing: wrappedInvoice))"
                 debugPrint(unifiedAddress?.description ?? "No address")
+                if self.unifiedAddress == nil {
+                    self.qrType = QRType.lightning
+                }
             }
         } catch (let error){
             print(error)
@@ -64,17 +81,24 @@ struct RequestView: View {
 }
 
 struct QRView: View {
-    var paymentRequest: String
+    var qrString: String
     var width = 250.0
     var height = 250.0
+    var qrType: QRType
     
     var body: some View {
-        Image(uiImage: generateQRCode(from: "bitcoin:\(paymentRequest)"))
+        Image(uiImage: qrType == QRType.unified ? generateQRCode(from: "bitcoin:\(qrString)") : generateQRCode(from: qrString))
             .interpolation(.none)
             .resizable()
             .scaledToFit()
             .frame(width: width, height: height)
     }
+}
+
+public enum QRType {
+    case unified
+    case onchain
+    case lightning
 }
 
 func generateQRCode(from string: String) -> UIImage {
