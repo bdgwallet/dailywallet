@@ -12,8 +12,10 @@ struct PaymentsView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     
     @State var numpadAmount = "0"
+    @State var scanResult : String?
     @State private var showRequestSheet = false
     @State private var showSendSheet = false
+    @State private var isShowingScanner = false
     
     var body: some View {
         NavigationView {
@@ -52,15 +54,27 @@ struct PaymentsView: View {
                     Button("Request") {
                         showRequestSheet.toggle()
                     }
-                    .buttonStyle(BitcoinFilled(width: 150))
+                    .buttonStyle(BitcoinFilled(width: 110))
                     .sheet(isPresented: $showRequestSheet) {
                         RequestView(amount: UInt64(numpadAmount)!).environmentObject(ldkNodeManager)
+                    }
+                    Spacer()
+                    Button {
+                        isShowingScanner.toggle()
+                    } label: {
+                        Image(systemName: "qrcode.viewfinder")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                    }
+                    .buttonStyle(BitcoinFilled(width: 60))
+                    .sheet(isPresented: $isShowingScanner) {
+                        ScannerView(result: $scanResult)
                     }
                     Spacer()
                     Button("Pay") {
                         showSendSheet.toggle()
                     }
-                    .buttonStyle(BitcoinFilled(width: 150))
+                    .buttonStyle(BitcoinFilled(width: 110))
                     .sheet(isPresented: $showSendSheet) {
                         SendView(amount: UInt64(numpadAmount)!).environmentObject(ldkNodeManager)
                     }
@@ -93,9 +107,19 @@ struct PaymentsView: View {
                     }
                 }
             }label: {
-                Text(character).textStyle(BitcoinTitle3())
+                if character == "<" {
+                    Image(systemName: "delete.left")
+                        .font(.system(size: 18, design: .rounded))
+                } else {
+                    Text(character).textStyle(BitcoinTitle3())
+                }
             }
         }
+    }
+    
+    func handleScan(result: Result<ScanResult, ScanError>) {
+       isShowingScanner = false
+       // more code to come
     }
 }
 
