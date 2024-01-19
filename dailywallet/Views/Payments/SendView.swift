@@ -17,10 +17,25 @@ struct SendView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Spacer()
+                ZStack {
+                    Circle().fill()
+                        .foregroundColor(.bitcoinPurple)
+                    BitcoinImage(named: "lightning-filled")
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.bitcoinWhite)
+                }.frame(width: 60, height: 60, alignment: .center)
+                    .padding(16)
+                Divider()
+                Text("Amount")
+                Text("10,000")
+                Divider()
+                Text("To")
                 TextField("Enter address", text: $address).padding(32)
                     .textFieldStyle(.roundedBorder)
                     .tint(Color.bitcoinOrange)
+                Divider()
+                Text("Fee")
+                Divider()
                 Spacer()
                 Button("Send bitcoin") {
                     sendBitcoin()
