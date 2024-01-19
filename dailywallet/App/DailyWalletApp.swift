@@ -14,7 +14,7 @@ struct DailyWalletApp: App {
     @ObservedObject var backupManager: BackupManager
     
     init() {
-        ldkNodeManager = LDKNodeManager(network: Network.testnet)
+        ldkNodeManager = LDKNodeManager(network: Network.bitcoin)
         
         // Initialize BackupManager
         let encryptionKey = "d5a423f64b607ea7c65b311d855dc48f36114b227bd0c7a3d403f6158a9e4412" // Use your own unique 256-bit / 64 character string
@@ -32,6 +32,12 @@ struct DailyWalletApp: App {
                 debugPrint(error)
             }
         }
+        
+#if targetEnvironment(simulator)
+    if let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path {
+        print("Documents Directory: \(documentsPath)")
+    }
+#endif
     }
     
     var body: some Scene {

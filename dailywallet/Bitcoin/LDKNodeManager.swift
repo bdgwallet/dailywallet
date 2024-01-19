@@ -17,7 +17,7 @@ public class LDKNodeManager: ObservableObject {
     @Published public var lightningBalance: UInt64?
     
     // Private variables
-    private let nodeQueue = DispatchQueue (label: "bdkQueue", qos: .userInitiated)
+    private let nodeQueue = DispatchQueue (label: "ldkNodeQueue", qos: .userInitiated)
     
     // Initialize a LDKNodeManager instance on the specified network
     public init(network: Network) {
