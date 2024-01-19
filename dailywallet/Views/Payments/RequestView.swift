@@ -12,7 +12,7 @@ import CoreImage.CIFilterBuiltins
 struct RequestView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
-    let amount: UInt64?
+    let amount: UInt64
     
     //@State private var requestAddress: String?
     @State private var unifiedAddress: String?
@@ -59,16 +59,16 @@ struct RequestView: View {
     func getUnifiedAddress() {
         do {
             let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
-            let onchainString = amount != nil ? "bitcoin:\(onchainAddress)?amount=\(amount!.satsToBitcoin)" : "bitcoin:\(onchainAddress)"
+            let onchainString = "bitcoin:" + onchainAddress.uppercased() + "?amount=" + amount.satsToBitcoin.description
             self.onchainAddress = onchainString
             
-            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount != nil ? amount! : 0, description: "Test JIT channel", expirySecs: 599)
+            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
             self.lightningInvoice = bolt11
             debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
             
             getWrappedInvoice(invoice: bolt11!, network: ldkNodeManager.network) { wrappedInvoice in
-                //self.lightningInvoice = wrappedInvoice
-                self.unifiedAddress = wrappedInvoice //"\(onchainString)&lightning=\(String(describing: wrappedInvoice))"
+                self.lightningInvoice = wrappedInvoice
+                self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
                 debugPrint(unifiedAddress?.description ?? "No address")
                 if self.unifiedAddress == nil {
                     self.qrType = QRType.lightning
