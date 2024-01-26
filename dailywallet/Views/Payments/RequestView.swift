@@ -16,9 +16,10 @@ struct RequestView: View {
     
     //@State private var requestAddress: String?
     @State private var unifiedAddress: String?
+    @State private var jitInvoice: String?
     @State private var onchainAddress: String?
     @State private var lightningInvoice: String?
-    @State private var qrType = QRType.unified
+    @State private var qrType = QRType.onchain
     @State private var copied = false
     
     var body: some View {
@@ -26,8 +27,10 @@ struct RequestView: View {
             VStack {
                 Spacer()
                 QRView(qrString: getQRString(), qrType: qrType)
-                Picker("What is your favorite color?", selection: $qrType) {
-                    Text("Unified").tag(QRType.unified)
+                Picker("QR type?", selection: $qrType) {
+                    if jitInvoice != nil {
+                        Text("JIT").tag(QRType.jit)
+                    }
                     Text("Lightning").tag(QRType.lightning)
                     Text("Onchain").tag(QRType.onchain)
                 }
@@ -62,17 +65,16 @@ struct RequestView: View {
             let onchainString = "bitcoin:" + onchainAddress.uppercased() + "?amount=" + amount.satsToBitcoin.description
             self.onchainAddress = onchainString
             
-            let bolt11 = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
-            self.lightningInvoice = bolt11
-            debugPrint("LDKNodeManager: Original invoice : \(bolt11 ?? "")")
+            self.lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
+            self.jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: 50_000_000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
+
+            debugPrint("LDKNodeManager: Lightning invoice : \(self.lightningInvoice ?? "")")
+            debugPrint("LDKNodeManager: JIT invoice : \(self.jitInvoice ?? "")")
             
-            getWrappedInvoice(invoice: bolt11!, network: ldkNodeManager.network) { wrappedInvoice in
-                self.lightningInvoice = wrappedInvoice
-                self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
-                debugPrint(unifiedAddress?.description ?? "No address")
-                if self.unifiedAddress == nil {
-                    self.qrType = QRType.lightning
-                }
+            //self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
+            debugPrint(unifiedAddress?.description ?? "No address")
+            if self.unifiedAddress == nil {
+                self.qrType = QRType.lightning
             }
         } catch (let error){
             print(error)
@@ -80,7 +82,7 @@ struct RequestView: View {
     }
     
     func getQRString() -> String {
-        return (qrType == .unified && unifiedAddress != nil) ? unifiedAddress! : qrType == .lightning ? lightningInvoice! : onchainAddress ?? "no address"
+        return (qrType == .jit && jitInvoice != nil) ? jitInvoice! : qrType == .lightning ? lightningInvoice! : onchainAddress ?? "no address"
     }
 }
 
@@ -101,6 +103,7 @@ struct QRView: View {
 
 public enum QRType {
     case unified
+    case jit
     case onchain
     case lightning
 }

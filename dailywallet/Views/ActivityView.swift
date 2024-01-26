@@ -24,7 +24,7 @@ struct ActivityView: View {
                     .environmentObject(ldkNodeManager)
                     .frame(minHeight: headerHeight, alignment: .center)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-                TransactionsListView()
+                TransactionsListView(transactions: ldkNodeManager.transactions)
                     .environmentObject(ldkNodeManager)
             }
         }
@@ -45,17 +45,22 @@ struct BalanceHeaderView: View {
             VStack(spacing: 4) {
                 Text("Your balance")
                     .textStyle(BitcoinBody4())
-                VStack(spacing: 4) {
-                    Text("\(ldkNodeManager.onchainBalanceTotal?.description ?? "unknown") sats")
-                        .textStyle(BitcoinTitle1())
-                    Text("$0").textStyle(BitcoinBody4())
-                    /*
-                    Text("\(ldkNodeManager.onchainBalanceSpendable?.description ?? "unknown") sats")
-                        .textStyle(BitcoinTitle3())
-                    Text("\(ldkNodeManager.lightningBalance?.description ?? "unknown") sats")
-                        .textStyle(BitcoinTitle3())
-                    Text("").textStyle(BitcoinBody4()) // TODO: this should show fiat value
-                     */
+                Text("\(ldkNodeManager.balance.combined.formatted()) sats")
+                    .textStyle(BitcoinTitle1())
+                HStack(spacing: 4) {
+                    Text("Lightning: ").textStyle(BitcoinBody4())
+                    Text(ldkNodeManager.balance.lightning.formatted())
+                        .textStyle(BitcoinBody4())
+                }
+                HStack(spacing: 4) {
+                    Text("Onchain: ").textStyle(BitcoinBody4())
+                    Text(ldkNodeManager.balance.onchain.formatted())
+                        .textStyle(BitcoinBody4())
+                }
+                HStack(spacing: 4) {
+                    Text("Channels: ").textStyle(BitcoinBody4())
+                    Text(ldkNodeManager.channels.count.formatted())
+                        .textStyle(BitcoinBody4())
                 }
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
             /*
@@ -71,15 +76,10 @@ struct BalanceHeaderView: View {
 
 struct TransactionsListView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
-    //var transactions: [TransactionDetails]
+    var transactions: [PaymentDetails]
     
     var body: some View {
         Divider()
-        Spacer()
-        Text("TODO: show transactions")
-            .textStyle(BitcoinBody4())
-        Spacer()
-        /*
         if transactions.count != 0 {
             List {
                 ForEach(transactions, id: \.self) {transaction in
@@ -88,30 +88,19 @@ struct TransactionsListView: View {
             }.listStyle(.plain)
         } else {
             Spacer()
-            switch ldkNodeManager.syncState {
-            case .synced:
-                Text("No transactions")
-                    .textStyle(BitcoinBody4())
-            case .syncing:
-                Text("Syncing")
-                    .textStyle(BitcoinBody4())
-            default:
-                Text("Not synced")
-                    .textStyle(BitcoinBody4())
-            }
+            Text("No transactions")
+                .textStyle(BitcoinBody4())
             Spacer()
         }
-         */
     }
 }
 
-/*
 struct TransactionItemView: View {
-    var transaction: TransactionDetails
+    var transaction: PaymentDetails
     
     var body: some View {
         HStack {
-            if transaction.sent == UInt64(0) {
+            if transaction.direction == .inbound {
                 ZStack {
                     Circle()
                         .fill(Color.bitcoinGreen)
@@ -121,10 +110,10 @@ struct TransactionItemView: View {
                 }
                 VStack (alignment: .leading) {
                     Text("Received").textStyle(BitcoinTitle5())
-                    Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
+                    //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
                 }
                 Spacer()
-                Text(transaction.received.description).textStyle(BitcoinBody3())
+                Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
             } else {
                 ZStack {
                     Circle()
@@ -135,12 +124,11 @@ struct TransactionItemView: View {
                 }
                 VStack (alignment: .leading) {
                     Text("Sent").textStyle(BitcoinTitle5())
-                    Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
+                    //Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
                 }
                 Spacer()
-                Text(transaction.sent.description).textStyle(BitcoinBody3())
+                Text(transaction.amountMsat?.description ?? "0").textStyle(BitcoinBody3())
             }
         }
     }
 }
-*/

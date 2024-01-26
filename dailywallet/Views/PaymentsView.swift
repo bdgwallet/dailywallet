@@ -28,22 +28,22 @@ struct PaymentsView: View {
                 }
                 Spacer()
                 VStack (spacing: 50) {
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: "1")
                         NumpadButton(numpadAmount:$numpadAmount, character: "2")
                         NumpadButton(numpadAmount:$numpadAmount, character: "3")
                     }
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: "4")
                         NumpadButton(numpadAmount:$numpadAmount, character: "5")
                         NumpadButton(numpadAmount:$numpadAmount, character: "6")
                     }
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: "7")
                         NumpadButton(numpadAmount:$numpadAmount, character: "8")
                         NumpadButton(numpadAmount:$numpadAmount, character: "9")
                     }
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: " ")
                         NumpadButton(numpadAmount:$numpadAmount, character: "0")
                         NumpadButton(numpadAmount:$numpadAmount, character: "<")
@@ -113,14 +113,14 @@ struct PaymentsView: View {
                 } else {
                     Text(character).textStyle(BitcoinTitle3())
                 }
-            }
+            }.frame(minWidth: 32)
         }
     }
     
-    func handleScan(result: Result<ScanResult, ScanError>) {
-       isShowingScanner = false
-       // more code to come
-    }
+//    func handleScan(result: Result<ScanResult, ScanError>) {
+//       isShowingScanner = false
+//       // more code to come
+//    }
 }
 
 struct VerticalLabelStyle: LabelStyle {

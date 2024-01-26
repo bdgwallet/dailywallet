@@ -68,6 +68,24 @@ public class BackupManager: ObservableObject {
             print(error)
         }
     }
+    
+    // Delete all files in document directories - WARNING!
+    public func deleteAllFiles() {
+        let fileManager = FileManager.default
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+                
+            do {
+                let fileName = try fileManager.contentsOfDirectory(atPath: paths)
+                    
+                for file in fileName {
+                    // For each file in the directory, create full path and delete the file
+                    let filePath = URL(fileURLWithPath: paths).appendingPathComponent(file).absoluteURL
+                    try fileManager.removeItem(at: filePath)
+                }
+            } catch let error {
+                print(error)
+            }
+    }
 }
 
 // Struct for holding backup info, expand with content as needed

@@ -7,11 +7,14 @@
 
 import SwiftUI
 import WalletUI
+import LDKNode
 
 struct SendView: View {
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
     let amount: UInt64
     @State private var address: String = ""
+    @State private var invoice: String = ""
     @State private var submitted: Bool?
     
     var body: some View {
@@ -27,21 +30,35 @@ struct SendView: View {
                     .padding(16)
                 Divider()
                 Text("Amount")
-                Text("10,000")
+                Text(amount.formatted())
                 Divider()
-                Text("To")
-                TextField("Enter address", text: $address).padding(32)
-                    .textFieldStyle(.roundedBorder)
-                    .tint(Color.bitcoinOrange)
+                HStack {
+                    Text("To")
+                    TextField("Enter address", text: $address).padding(32)
+                        .textFieldStyle(.roundedBorder)
+                        .tint(Color.bitcoinOrange)
+                }
+                Divider()
+                HStack {
+                    Text("To")
+                    TextField("Enter invoice", text: $invoice).padding(32)
+                        .textFieldStyle(.roundedBorder)
+                        .tint(Color.bitcoinOrange)
+                }
                 Divider()
                 Text("Fee")
-                Divider()
+                
                 Spacer()
                 Button("Send bitcoin") {
                     sendBitcoin()
                 }
                 .buttonStyle(BitcoinFilled())
                 .disabled(self.address == "").padding(16)
+                Button("Pay invoice") {
+                    sendLightning()
+                }
+                .buttonStyle(BitcoinFilled())
+                .disabled(self.invoice == "").padding(16)
             }
             .navigationTitle("Send bitcoin")
             .navigationBarTitleDisplayMode(.inline)
@@ -55,11 +72,17 @@ struct SendView: View {
     
     func sendBitcoin() {
         do {
-            /* TODO: replace with ldknode code
-            let addressScript = try Address(address: address).scriptPubkey()
-            let success = bdkManager.sendBitcoin(script: addressScript, amount: amount, feeRate: 1000)
-            print("Send success:" + success.description)
-            */
+            let success = try ldkNodeManager.node?.sendToOnchainAddress(address: address, amountMsat: amount)
+            submitted = success != nil ? true : false
+        } catch let error {
+            debugPrint(error)
+        }
+    }
+    
+    func sendLightning() {
+        do {
+            let success = try ldkNodeManager.node?.sendPaymentUsingAmount(invoice: invoice, amountMsat: amount)
+            submitted = success != nil ? true : false
         } catch let error {
             debugPrint(error)
         }
