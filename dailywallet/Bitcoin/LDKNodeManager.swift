@@ -27,7 +27,7 @@ public class LDKNodeManager: ObservableObject {
     // Start LDK Node
     public func start(mnemonic: Mnemonic, passphrase: String?) throws {
         let nodeConfig = Config(
-            storageDirPath: network == .bitcoin ? DEFAULT_STORAGE_PATH + "/bitcoin/" : DEFAULT_STORAGE_PATH,
+            storageDirPath: storagePath(network: network),
             network: self.network,
             listeningAddresses: nil,
             defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
@@ -135,6 +135,21 @@ public class LDKNodeManager: ObservableObject {
             // TODO: Add signet case
             default:
                 return ESPLORA_URL_TESTNET
+        }
+    }
+    
+    // Return storage path for network
+    private func storagePath(network: Network) -> String {
+            
+        switch network { // Update when Network type is enum instead of string
+        case Network.regtest:
+                return DEFAULT_STORAGE_PATH + "/regtest/"
+            case Network.testnet:
+                return DEFAULT_STORAGE_PATH + "/testnet/"
+            case Network.bitcoin:
+                return DEFAULT_STORAGE_PATH + "/bitcoin/"
+            case Network.signet:
+                return DEFAULT_STORAGE_PATH + "/signet/"
         }
     }
 }
