@@ -22,9 +22,9 @@ struct PaymentsView: View {
             VStack (spacing: 50){
                 Spacer()
                 VStack(spacing: 4) {
-                    Text("\(numpadAmount) sats")
+                    Text(Double(numpadAmount)!.formatted() + " sats")
                         .textStyle(BitcoinTitle1())
-                    Text("$0").textStyle(BitcoinBody4())
+                    //Text("$0").textStyle(BitcoinBody4()) TODO: show fiat value
                 }
                 Spacer()
                 VStack (spacing: 50) {
@@ -58,19 +58,19 @@ struct PaymentsView: View {
                     .sheet(isPresented: $showRequestSheet) {
                         RequestView(amount: UInt64(numpadAmount)!).environmentObject(ldkNodeManager)
                     }
-                    Spacer()
+                    //Spacer()
                     Button {
                         isShowingScanner.toggle()
                     } label: {
                         Image(systemName: "qrcode.viewfinder")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
+                            .font(.system(size: 24, weight: .semibold, design: .rounded))
+                            .foregroundColor(.bitcoinOrange)
                     }
-                    .buttonStyle(BitcoinFilled(width: 60))
+                    .buttonStyle(BitcoinFilled(width: 60, tintColor: .bitcoinWhite))
                     .sheet(isPresented: $isShowingScanner) {
                         ScannerView(result: $scanResult)
                     }
-                    Spacer()
+                    //Spacer()
                     Button("Pay") {
                         showSendSheet.toggle()
                     }
@@ -82,6 +82,11 @@ struct PaymentsView: View {
                 }.padding(.bottom, 32)
             }
         }.accentColor(.black)
+            .task {
+                if $scanResult.wrappedValue != nil {
+                    isShowingScanner.toggle()
+                }
+            }
     }
     
     struct NumpadButton: View {
