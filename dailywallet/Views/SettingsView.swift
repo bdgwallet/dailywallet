@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LDKNode
 
 struct SettingsView: View {
     var body: some View {
@@ -13,6 +14,10 @@ struct SettingsView: View {
             List {
                 NavigationLink(destination: Text("General")) {
                     Text("General")
+                        .padding()
+                }
+                NavigationLink(destination: SettingsLightningChannelsView()) {
+                    Text("Lightning channels")
                         .padding()
                 }
                 NavigationLink(destination: Text("Fees")) {
@@ -50,5 +55,34 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+    }
+}
+
+struct SettingsLightningChannelsView: View {
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
+    
+    var ids: [String] {
+            ldkNodeManager.channels.map { $0.channelId }
+        }
+    
+    var body: some View {
+        if ldkNodeManager.channels.count != 0 {
+                List {
+                    ForEach(ids, id: \.self) { channel in
+                        NavigationLink(destination: Text("General")) {
+                            Text(channel)
+                                .padding()
+                        }
+                    }
+                }
+                .listStyle(.plain)
+                .navigationTitle("Lightning channels")
+                .navigationBarTitleDisplayMode(.inline)
+        } else {
+            Spacer()
+            Text("No transactions")
+                //.textStyle(BitcoinBody4())
+            Spacer()
+        }
     }
 }
