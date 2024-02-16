@@ -67,6 +67,21 @@ struct NodeInfoView: View {
                         Text(ldkNodeManager.node?.nodeId() ?? "No id")
                             .textStyle(BitcoinBody5())
                     }
+                    Spacer()
+                    Button {
+                        UIPasteboard.general.string = ldkNodeManager.node?.nodeId() ?? "No id"
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                    }.padding()
+                }
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("network")
+                            .textStyle(BitcoinBody5()).bold()
+                        Text(stringValue(for: ldkNodeManager.network))
+                            .textStyle(BitcoinBody5())
+                    }
+                    Spacer()
                     Button {
                         UIPasteboard.general.string = ldkNodeManager.node?.nodeId() ?? "No id"
                     } label: {
@@ -165,4 +180,15 @@ struct ChannelInfoView: View {
     }
 }
 
-
+func stringValue(for network: Network) -> String {
+    switch network {
+    case .bitcoin:
+        return "bitcoin"
+    case .testnet:
+        return "testnet"
+    case .signet:
+        return "signet"
+    case .regtest:
+        return "regtest"
+    }
+}
