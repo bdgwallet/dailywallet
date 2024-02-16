@@ -60,29 +60,35 @@ struct RequestView: View {
     }
     
     func getUnifiedAddress() {
-        do {
-            let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
-            let onchainString = "bitcoin:" + onchainAddress.uppercased() + "?amount=" + amount.satsToBitcoin.description
-            self.onchainAddress = onchainString
-            
-            self.lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
-            self.jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: 50_000_000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
+        DispatchQueue.global(qos: .background).async {
+            do {
+                let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
+                let onchainString = "bitcoin:" + onchainAddress.uppercased() + "?amount=" + amount.satsToBitcoin.description
+                self.onchainAddress = onchainString
+                
+                let mSatAmount = amount * 1000
+                debugPrint("LDKNodeManager: Invoice amount : \(mSatAmount.description)")
+                
+                self.lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
+                self.qrType = .lightning
+                self.jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: amount * 1000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
 
-            debugPrint("LDKNodeManager: Lightning invoice : \(self.lightningInvoice ?? "")")
-            debugPrint("LDKNodeManager: JIT invoice : \(self.jitInvoice ?? "")")
-            
-            //self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
-            debugPrint(unifiedAddress?.description ?? "No address")
-            if self.unifiedAddress == nil {
-                self.qrType = QRType.lightning
+                debugPrint("LDKNodeManager: Lightning invoice : \(self.lightningInvoice ?? "")")
+                debugPrint("LDKNodeManager: JIT invoice : \(self.jitInvoice ?? "")")
+                
+                //self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
+                debugPrint(unifiedAddress?.description ?? "No address")
+                if self.unifiedAddress == nil {
+                    self.qrType = QRType.lightning
+                }
+            } catch (let error){
+                print(error)
             }
-        } catch (let error){
-            print(error)
         }
     }
     
     func getQRString() -> String {
-        return (qrType == .jit && jitInvoice != nil) ? jitInvoice! : qrType == .lightning ? lightningInvoice! : onchainAddress ?? "no address"
+        return (qrType == .jit && jitInvoice != nil) ? jitInvoice! : (qrType == .lightning && lightningInvoice != nil) ? lightningInvoice! : onchainAddress ?? "no address"
     }
 }
 
