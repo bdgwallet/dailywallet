@@ -101,34 +101,108 @@ struct TransactionItemView: View {
     var body: some View {
         HStack {
             if transaction.direction == .inbound {
-                ZStack {
-                    Circle()
-                        .fill(Color.bitcoinGreen)
-                        .frame(width: 40, height: 40)
-                    Image(systemName: "arrow.down")
-                        .tint(Color.bitcoinWhite)
+                if (transaction.status == PaymentStatus.succeeded) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.bitcoinGreen)
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "arrow.down")
+                            .foregroundColor(.bitcoinWhite)
+                    }
+                    VStack (alignment: .leading) {
+                        Text("Received").textStyle(BitcoinTitle5())
+                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
+                    }
+                    Spacer()
+                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
                 }
-                VStack (alignment: .leading) {
-                    Text("Received").textStyle(BitcoinTitle5())
-                    //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
+                else if (transaction.status == PaymentStatus.pending) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.bitcoinOrange)
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "clock")
+                            .foregroundColor(.bitcoinWhite)
+                    }
+                    VStack (alignment: .leading) {
+                        Text("Pending").textStyle(BitcoinTitle5())
+                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
+                    }
+                    Spacer()
+                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
                 }
-                Spacer()
-                Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
+                else if (transaction.status == PaymentStatus.failed) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.bitcoinRed.opacity(50))
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "arrow.down")
+                            .foregroundColor(.bitcoinWhite)
+                    }
+                    VStack (alignment: .leading) {
+                        Text("Failed").textStyle(BitcoinTitle5())
+                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
+                    }
+                    Spacer()
+                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
+                }
             } else {
-                ZStack {
-                    Circle()
-                        .fill(Color.bitcoinRed)
-                        .frame(width: 40, height: 40)
-                    Image(systemName: "arrow.up")
-                        .tint(Color.bitcoinWhite)
+                if (transaction.status == PaymentStatus.succeeded) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.bitcoinGreen)
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "arrow.up")
+                            .foregroundColor(.bitcoinWhite)
+                    }
+                    VStack (alignment: .leading) {
+                        Text("Sent").textStyle(BitcoinTitle5())
+                        //Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
+                    }
+                    Spacer()
+                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
+                } else if (transaction.status == PaymentStatus.pending) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.bitcoinOrange)
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "clock")
+                            .foregroundColor(.bitcoinWhite)
+                    }
+                    VStack (alignment: .leading) {
+                        Text("Pending").textStyle(BitcoinTitle5())
+                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
+                    }
+                    Spacer()
+                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
+                } else if (transaction.status == PaymentStatus.failed) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.bitcoinRed.opacity(50))
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "arrow.up")
+                            .foregroundColor(.bitcoinWhite)
+                    }
+                    VStack (alignment: .leading) {
+                        Text("Failed").textStyle(BitcoinTitle5())
+                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
+                    }
+                    Spacer()
+                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
                 }
-                VStack (alignment: .leading) {
-                    Text("Sent").textStyle(BitcoinTitle5())
-                    //Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
-                }
-                Spacer()
-                Text(transaction.amountMsat?.description ?? "0").textStyle(BitcoinBody3())
+                
             }
         }
     }
+}
+
+public func filteredTransactions(transactions: [PaymentDetails]) -> [PaymentDetails] {
+    var filtered: [PaymentDetails] = []
+
+    for transaction in transactions {
+        if transaction.status != .pending {
+            filtered.append(transaction)
+        }
+    }
+    return filtered
 }
