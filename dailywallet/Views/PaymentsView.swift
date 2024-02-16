@@ -12,7 +12,7 @@ struct PaymentsView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     
     @State var numpadAmount = "0"
-    @State var scanResult : String?
+    @State var scanResult = "No QR code detected"
     @State private var showRequestSheet = false
     @State private var showSendSheet = false
     @State private var isShowingScanner = false
@@ -68,7 +68,7 @@ struct PaymentsView: View {
                     }
                     .buttonStyle(BitcoinFilled(width: 60, tintColor: .bitcoinWhite))
                     .sheet(isPresented: $isShowingScanner) {
-                        ScannerView(result: $scanResult)
+                        ScannerView(scanResult: $scanResult)
                     }
                     //Spacer()
                     Button("Pay") {
@@ -82,8 +82,8 @@ struct PaymentsView: View {
                 }.padding(.bottom, 32)
             }
         }.accentColor(.black)
-            .task {
-                if $scanResult.wrappedValue != nil {
+            .onChange(of: scanResult) {
+                if scanResult != "No QR code detected" {
                     isShowingScanner.toggle()
                 }
             }
@@ -121,11 +121,6 @@ struct PaymentsView: View {
             }.frame(minWidth: 32)
         }
     }
-    
-//    func handleScan(result: Result<ScanResult, ScanError>) {
-//       isShowingScanner = false
-//       // more code to come
-//    }
 }
 
 struct VerticalLabelStyle: LabelStyle {
