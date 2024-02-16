@@ -60,11 +60,18 @@ struct NodeInfoView: View {
     var body: some View {
         NavigationView {
             List {
-                VStack(alignment: .leading) {
-                    Text("nodeId")
-                        .textStyle(BitcoinBody5()).bold()
-                    Text(ldkNodeManager.node?.nodeId() ?? "No id")
-                        .textStyle(BitcoinBody5())
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("nodeId")
+                            .textStyle(BitcoinBody5()).bold()
+                        Text(ldkNodeManager.node?.nodeId() ?? "No id")
+                            .textStyle(BitcoinBody5())
+                    }
+                    Button {
+                        UIPasteboard.general.string = ldkNodeManager.node?.nodeId() ?? "No id"
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                    }.padding()
                 }
             }
             .padding(8)
@@ -119,13 +126,23 @@ struct ChannelInfoView: View {
         NavigationView {
             List {
                 ForEach(flattenChannelDetails(), id: \.label) { detail in
-                    VStack(alignment: .leading) {
-                        Text(detail.label)
-                            .textStyle(BitcoinBody5()).bold()
-                        Text(detail.value)
-                        .textStyle(BitcoinBody5())
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(detail.label)
+                                .textStyle(BitcoinBody5()).bold()
+                            Text(detail.value)
+                            .textStyle(BitcoinBody5())
+                        }
+                        .padding(8)
+                        Spacer()
+                        Button {
+                            UIPasteboard.general.string = detail.value
+                            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+                        } label: {
+                            Image(systemName: "doc.on.doc")
+                        }
                     }
-                    .padding(8)
+                    
                 }
             }
             .listStyle(.plain)
