@@ -72,6 +72,7 @@ struct SendView: View {
     
     func sendBitcoin() {
         do {
+            debugPrint("Address: " + address)
             let success = try ldkNodeManager.node?.sendToOnchainAddress(address: address, amountMsat: amount)
             submitted = success != nil ? true : false
         } catch let error {
@@ -81,7 +82,7 @@ struct SendView: View {
     
     func sendLightning() {
         do {
-            let success = try ldkNodeManager.node?.sendPaymentUsingAmount(invoice: invoice, amountMsat: amount)
+            let success = try ldkNodeManager.node?.sendPayment(invoice: invoice)
             submitted = success != nil ? true : false
         } catch let error {
             debugPrint(error)
