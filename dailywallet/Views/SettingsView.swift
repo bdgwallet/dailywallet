@@ -62,6 +62,20 @@ struct NodeInfoView: View {
             List {
                 HStack {
                     VStack(alignment: .leading) {
+                        Text("network")
+                            .textStyle(BitcoinBody5()).bold()
+                        Text(stringValue(for: ldkNodeManager.network))
+                            .textStyle(BitcoinBody5())
+                    }
+                    Spacer()
+                    Button {
+                        UIPasteboard.general.string = ldkNodeManager.node?.nodeId() ?? "No id"
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                    }.padding()
+                }
+                HStack {
+                    VStack(alignment: .leading) {
                         Text("nodeId")
                             .textStyle(BitcoinBody5()).bold()
                         Text(ldkNodeManager.node?.nodeId() ?? "No id")
@@ -76,9 +90,9 @@ struct NodeInfoView: View {
                 }
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("network")
+                        Text("connection string")
                             .textStyle(BitcoinBody5()).bold()
-                        Text(stringValue(for: ldkNodeManager.network))
+                        Text(ldkNodeManager.node!.nodeId() + "@0.0.0.0:9735")
                             .textStyle(BitcoinBody5())
                     }
                     Spacer()
