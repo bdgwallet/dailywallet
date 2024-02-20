@@ -192,7 +192,7 @@ let ESPLORA_URL_SIGNET = "https://mutinynet.com/api/"
 // LSPs
 let LSP_ADDRESS_MUTINY = "3.84.56.108:39735"
 let LSP_NODEID_MUTINY = "0371d6fd7d75de2d0372d03ea00e8bacdacb50c27d0eaea0a76a0622eff1f5ef2b"
-let LSP_TOKEN_MUTINY = "LSPSTOKEN"
+let LSP_TOKEN_MUTINY = "4GH1W3YW"
 
 // Struct for holding the different balances
 public struct Balance: Codable {
