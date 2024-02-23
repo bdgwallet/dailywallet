@@ -12,41 +12,58 @@ import WalletUI
 struct SettingsView: View {
     var body: some View {
         NavigationView {
-            List {
-                NavigationLink(destination: NodeInfoView()) {
-                    Text("Node details")
+            VStack (alignment: .leading) {
+                Text("This app attempts to implement the Daily Wallet reference design from the Bitcoin Design Guide. It is for educational purposes only. It runs on the Mutinynet Signet and is work in progress. Functionality not guaranteed.")
+                    .textStyle(BitcoinBody4())
+                    .padding(32)
+                Text("[bitcoin.design/guide/daily-spending-wallet](https://bitcoin.design/guide/daily-spending-wallet)")
+                    .textStyle(BitcoinBody4())
+                    .tint(.blue)
+                    .padding(.horizontal, 32)
+                Spacer()
+                        .frame(height: 8)
+                Text("[github.com/bdgwallet/dailywallet](https://github.com/bdgwallet/dailywallet)")
+                    .textStyle(BitcoinBody4())
+                    .tint(.blue)
+                    .padding(.horizontal, 32)
+                List {
+                    NavigationLink(destination: NodeInfoView()) {
+                        Text("Node details")
+                    }
+                    NavigationLink(destination: ChannelListView()) {
+                        Text("Channels")
+                    }
+                    /*
+                    NavigationLink(destination: Text("Fees")) {
+                        Text("Fees")
+                    }
+                    NavigationLink(destination: Text("Privacy")) {
+                        Text("Privacy")
+                    }
+                    NavigationLink(destination: Text("Security")) {
+                        Text("Security")
+                    }
+                    NavigationLink(destination: Text("Wallet backup")) {
+                        Text("Wallet backup")
+                    }
+                    NavigationLink(destination: Text("Network")) {
+                        Text("Network")
+                    }
+                    NavigationLink(destination: Text("Help & Support")) {
+                        Text("Help & Support")
+                    }
+                     */
                 }
-                NavigationLink(destination: ChannelListView()) {
-                    Text("Channels")
-                }
-                /*
-                NavigationLink(destination: Text("Fees")) {
-                    Text("Fees")
-                }
-                NavigationLink(destination: Text("Privacy")) {
-                    Text("Privacy")
-                }
-                NavigationLink(destination: Text("Security")) {
-                    Text("Security")
-                }
-                NavigationLink(destination: Text("Wallet backup")) {
-                    Text("Wallet backup")
-                }
-                NavigationLink(destination: Text("Network")) {
-                    Text("Network")
-                }
-                NavigationLink(destination: Text("Help & Support")) {
-                    Text("Help & Support")
-                }
-                 */
+                .padding(16)
+                .listStyle(.plain)
+                .navigationTitle("Settings")
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .padding(16)
-            .listStyle(.plain)
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
-        }.accentColor(.black)
+        }
+        .accentColor(.black)
     }
 }
+
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
