@@ -82,7 +82,7 @@ struct ScannerView: View {
             
             if metadataObj.type == AVMetadataObject.ObjectType.qr,
                let result = metadataObj.stringValue {
-                
+                // Check if result is valid invoice or bitcoin address
                 scanResult = result
                 print(scanResult)
                 

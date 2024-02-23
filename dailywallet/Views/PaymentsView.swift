@@ -76,7 +76,7 @@ struct PaymentsView: View {
                     }
                     .buttonStyle(BitcoinFilled(width: 110))
                     .sheet(isPresented: $showSendSheet) {
-                        SendView(amount: UInt64(numpadAmount)!).environmentObject(ldkNodeManager)
+                        SendView(amount: UInt64(numpadAmount)!, invoice: scanResult != "No QR code detected" ? scanResult : nil).environmentObject(ldkNodeManager)
                     }
                     Spacer()
                 }.padding(.bottom, 32)
@@ -85,6 +85,9 @@ struct PaymentsView: View {
             .onChange(of: scanResult) {
                 if scanResult != "No QR code detected" {
                     isShowingScanner.toggle()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        showSendSheet.toggle()
+                    }
                 }
             }
     }
