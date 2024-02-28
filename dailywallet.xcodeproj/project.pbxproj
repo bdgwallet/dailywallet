@@ -58,6 +58,7 @@
 		6541A541282E71B60051B2B0 /* CreateWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateWalletView.swift; sourceTree = "<group>"; };
 		6541A542282E71B60051B2B0 /* ImportWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportWalletView.swift; sourceTree = "<group>"; };
 		6541A543282E71B60051B2B0 /* AdvancedCreateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedCreateView.swift; sourceTree = "<group>"; };
+		658F1B4A2B8F4AE2003CA81B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		658FA38928CB924F00196EF9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		658FA38B28CB931200196EF9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		658FA38D28CB950A00196EF9 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
@@ -104,6 +105,7 @@
 		6541A522282E69600051B2B0 /* dailywallet */ = {
 			isa = PBXGroup;
 			children = (
+				658F1B4A2B8F4AE2003CA81B /* Info.plist */,
 				6541A531282E69DD0051B2B0 /* App */,
 				6541A532282E69EE0051B2B0 /* Views */,
 				6541A539282E6FE50051B2B0 /* Backup */,
@@ -435,6 +437,7 @@
 				DEVELOPMENT_TEAM = L4RFWDVWLF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dailywallet/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "BDG Daily";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is required to scan QR codes.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -471,6 +474,7 @@
 				DEVELOPMENT_TEAM = L4RFWDVWLF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dailywallet/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "BDG Daily";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is required to scan QR codes.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
