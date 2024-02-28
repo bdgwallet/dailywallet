@@ -27,6 +27,11 @@ struct SettingsView: View {
                     .tint(.blue)
                     .padding(.horizontal, 32)
                 List {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text(appVersion())
+                    }
                     NavigationLink(destination: NodeInfoView()) {
                         Text("Node details")
                     }
@@ -54,7 +59,7 @@ struct SettingsView: View {
                     }
                      */
                 }
-                .padding(16)
+                .padding(8)
                 .listStyle(.plain)
                 .navigationTitle("Settings")
                 .navigationBarTitleDisplayMode(.inline)
@@ -217,4 +222,14 @@ func stringValue(for network: Network) -> String {
     case .regtest:
         return "regtest"
     }
+}
+
+func appVersion(in bundle: Bundle = .main) -> String {
+    guard let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else {
+        fatalError("CFBundleShortVersionString should not be missing from info dictionary")
+    }
+    guard let build = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String else {
+        fatalError("CFBundleVersion should not be missing from info dictionary")
+    }
+    return version + "\(version)(\(build))"
 }
