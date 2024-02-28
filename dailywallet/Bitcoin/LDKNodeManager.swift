@@ -29,19 +29,8 @@ public class LDKNodeManager: ObservableObject {
     
     // Start LDK Node
     public func start(mnemonic: Mnemonic, passphrase: String?) throws {
-        let nodeConfig = Config(
-            storageDirPath: storagePath(network: network),
-            logDirPath: storagePath(network: network),
-            network: self.network,
-            listeningAddresses: nil,
-            defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
-            onchainWalletSyncIntervalSecs: 30,
-            walletSyncIntervalSecs: 15,
-            feeRateCacheUpdateIntervalSecs: 60,
-            trustedPeers0conf: [LSP_NODEID_MUTINY],
-            probingLiquidityLimitMultiplier: 100,
-            logLevel: LogLevel.debug
-        )
+        var nodeConfig = defaultConfig()
+        nodeConfig.storageDirPath = storagePath(network: network)
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
@@ -52,11 +41,9 @@ public class LDKNodeManager: ObservableObject {
             let node = try nodeBuilder.build()
             try node.start()
             self.node = node
+            debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
             updateBalance()
             listenForEvents()
-            debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
-            // Connect to Mutiny
-            try self.node?.connect(nodeId: "02465ed5be53d04fde66c9418ff14a5f2267723810176c9212b722e542dc1afb1b", address: "45.79.52.207:9735", persist: true)
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
         }

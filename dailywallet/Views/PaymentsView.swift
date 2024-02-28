@@ -95,6 +95,11 @@ struct PaymentsView: View {
                     self.numpadAmount = "0"
                 }
             }
+            .onChange(of: showRequestSheet) {
+                if showRequestSheet == false {
+                    self.numpadAmount = "0"
+                }
+            }
     }
     
     struct NumpadButton: View {
