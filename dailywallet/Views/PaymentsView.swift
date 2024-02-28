@@ -22,8 +22,12 @@ struct PaymentsView: View {
             VStack (spacing: 50){
                 Spacer()
                 VStack(spacing: 4) {
-                    Text(Double(numpadAmount)!.formatted() + " sats")
-                        .textStyle(BitcoinTitle1())
+                    HStack(alignment: VerticalAlignment.firstTextBaseline, spacing: 8) {
+                        Text(Double(numpadAmount)!.formatted())
+                            .textStyle(BitcoinTitle1())
+                        Text("sats")
+                            .textStyle(BitcoinTitle4())
+                    }
                     //Text("$0").textStyle(BitcoinBody4()) TODO: show fiat value
                 }
                 Spacer()
