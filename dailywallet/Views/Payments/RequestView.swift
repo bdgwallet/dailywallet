@@ -22,6 +22,8 @@ struct RequestView: View {
     @State private var qrType = QRType.onchain
     @State private var copied = false
     
+    private let nodeQueue = DispatchQueue (label: "ldkNodeQueue", qos: .userInitiated)
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -57,7 +59,7 @@ struct RequestView: View {
     }
     
     func getUnifiedAddress() {
-        DispatchQueue.global(qos: .background).async {
+        nodeQueue.async {
             do {
                 let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
                 let onchainString = "bitcoin:" + onchainAddress.uppercased() + "?amount=" + amount.satsToBitcoin.description
@@ -73,16 +75,21 @@ struct RequestView: View {
                         maxReceiveCapacity = channel.inboundCapacityMsat
                     }
                 }
-                debugPrint("Amount to send: " + mSatAmount.description)
-                debugPrint("Max receive: " + maxReceiveCapacity.description)
                 if maxReceiveCapacity > mSatAmount {
-                    self.lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
-                    self.qrType = .lightning
+                    let lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
+                    DispatchQueue.main.async {
+                        self.lightningInvoice = lightningInvoice
+                        self.qrType = .lightning
+                    }
                     debugPrint("LDKNodeManager: Lightning invoice : \(self.lightningInvoice ?? "")")
                 } else {
                     // Else, create a JIT invoice
-                    self.jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: amount * 1000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
-                    self.qrType = .jit
+                    let jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: amount * 1000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
+                    DispatchQueue.main.async {
+                        self.jitInvoice = jitInvoice
+                        self.qrType = .jit
+                    }
+                    
                     debugPrint("LDKNodeManager: JIT invoice : \(self.jitInvoice ?? "")")
                 }
                 

@@ -85,7 +85,6 @@ struct TransactionsListView: View {
     var transactions: [PaymentDetails]
     
     var body: some View {
-        Divider()
         if transactions.count != 0 {
             List {
                 ForEach(transactions, id: \.self) {transaction in
