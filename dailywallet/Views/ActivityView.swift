@@ -45,17 +45,28 @@ struct BalanceHeaderView: View {
             VStack(spacing: 4) {
                 Text("Your balance")
                     .textStyle(BitcoinBody4())
-                Text("\((ldkNodeManager.balanceDetails.totalOnchainBalanceSats + ldkNodeManager.balanceDetails.totalLightningBalanceSats).formatted()) sats")
-                    .textStyle(BitcoinTitle1())
-                HStack(spacing: 4) {
-                    Text("Lightning: ").textStyle(BitcoinBody4())
-                    Text(ldkNodeManager.balanceDetails.totalLightningBalanceSats.formatted())
-                        .textStyle(BitcoinBody4())
-                }
-                HStack(spacing: 4) {
-                    Text("Onchain: ").textStyle(BitcoinBody4())
-                    Text(ldkNodeManager.balanceDetails.totalOnchainBalanceSats.formatted())
-                        .textStyle(BitcoinBody4())
+                if ldkNodeManager.balanceDetails != nil {
+                    VStack {
+                        HStack(alignment: VerticalAlignment.firstTextBaseline, spacing: 8) {
+                            Text((ldkNodeManager.balanceDetails!.totalOnchainBalanceSats + ldkNodeManager.balanceDetails!.totalLightningBalanceSats).formatted())
+                                .textStyle(BitcoinTitle1())
+                            Text("sats")
+                                .textStyle(BitcoinTitle4())
+                        }.padding(4)
+                        HStack(spacing: 4) {
+                            Text("Lightning: ").textStyle(BitcoinBody4())
+                            Text(ldkNodeManager.balanceDetails!.totalLightningBalanceSats.formatted())
+                                .textStyle(BitcoinBody4())
+                        }
+                        HStack(spacing: 4) {
+                            Text("Onchain: ").textStyle(BitcoinBody4())
+                            Text(ldkNodeManager.balanceDetails!.totalOnchainBalanceSats.formatted())
+                                .textStyle(BitcoinBody4())
+                        }
+                    }
+                } else {
+                    ProgressView()
+                        .padding()
                 }
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
             /*

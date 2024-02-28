@@ -12,7 +12,7 @@ public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     @Published public var node: LdkNode?
-    @Published public var balanceDetails: BalanceDetails
+    @Published public var balanceDetails: BalanceDetails?
     @Published public var channels: [ChannelDetails]
     @Published public var transactions: [PaymentDetails]
     
@@ -22,7 +22,6 @@ public class LDKNodeManager: ObservableObject {
     // Initialize a LDKNodeManager instance on the specified network
     public init(network: Network) {
         self.network = network
-        self.balanceDetails = BalanceDetails(totalOnchainBalanceSats: 0, spendableOnchainBalanceSats: 0, totalLightningBalanceSats: 0, lightningBalances: [], pendingBalancesFromChannelClosures: [])
         self.channels = []
         self.transactions = []
     }
