@@ -12,7 +12,7 @@ public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     @Published public var node: LdkNode?
-    @Published public var balance: Balance
+    @Published public var balanceDetails: BalanceDetails
     @Published public var channels: [ChannelDetails]
     @Published public var transactions: [PaymentDetails]
     
@@ -22,7 +22,7 @@ public class LDKNodeManager: ObservableObject {
     // Initialize a LDKNodeManager instance on the specified network
     public init(network: Network) {
         self.network = network
-        self.balance = Balance(combined: 0, onchain: 0, onchainSpendable: 0, lightning: 0)
+        self.balanceDetails = BalanceDetails(totalOnchainBalanceSats: 0, spendableOnchainBalanceSats: 0, totalLightningBalanceSats: 0, lightningBalances: [], pendingBalancesFromChannelClosures: [])
         self.channels = []
         self.transactions = []
     }
@@ -31,10 +31,16 @@ public class LDKNodeManager: ObservableObject {
     public func start(mnemonic: Mnemonic, passphrase: String?) throws {
         let nodeConfig = Config(
             storageDirPath: storagePath(network: network),
+            logDirPath: storagePath(network: network),
             network: self.network,
             listeningAddresses: nil,
-            defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA
-            //trustedPeers0conf: network == .bitcoin ? [VOLTAGE_PUBKEY_BITCOIN] : [VOLTAGE_PUBKEY_TESTNET]
+            defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
+            onchainWalletSyncIntervalSecs: 30,
+            walletSyncIntervalSecs: 15,
+            feeRateCacheUpdateIntervalSecs: 60,
+            trustedPeers0conf: [LSP_NODEID_MUTINY],
+            probingLiquidityLimitMultiplier: 100,
+            logLevel: LogLevel.debug
         )
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
@@ -90,59 +96,15 @@ public class LDKNodeManager: ObservableObject {
     // Update Balance
     private func updateBalance() {
         if self.node != nil {
-            getLightningBalance()
-            getOnchainBalance()
-            DispatchQueue.main.async {
-                self.channels = self.node!.listChannels()
-                self.transactions = self.node!.listPayments()
-            }
-            
-            for channel in self.channels {
-                debugPrint("Channel: " + channel.nextOutboundHtlcLimitMsat.description)
-            }
-        }
-    }
-    
-    
-    // Update .onchainBalance
-    private func getOnchainBalance() {
-        if self.node != nil {
             nodeQueue.async {
-                do {
-                    let onchainTotal = try self.node!.totalOnchainBalanceSats()
-                    let onchainSpendable = try self.node!.spendableOnchainBalanceSats()
-                    
-                    DispatchQueue.main.async {
-                        let newCombined = self.balance.combined + onchainTotal
-                        self.balance = Balance(combined: newCombined, onchain: onchainTotal, onchainSpendable: onchainSpendable, lightning: self.balance.combined)
-                        debugPrint("LDKNodeManager: Combined: \(self.balance.combined)")
-                        debugPrint("LDKNodeManager: Onchain: \(self.balance.onchain)")
-                        debugPrint("LDKNodeManager: OnchainSpendable: \(self.balance.onchainSpendable)")
-                    }
-                    
-                } catch let error {
-                    debugPrint("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-    
-    // Update .lightningBalance
-    private func getLightningBalance() {
-        if self.node != nil {
-            nodeQueue.async {
-                var iteratedBalance = UInt64(0)
-                for channel in self.node!.listChannels() {
-                    iteratedBalance = iteratedBalance + channel.balanceMsat
-                }
-                
+                let balanceDetails = self.node!.listBalances()
+                let channels = self.node!.listChannels()
+                let transactions = self.node!.listPayments()
+
                 DispatchQueue.main.async {
-                    let lightningBalance = iteratedBalance / 1000
-                    
-                    let newCombined = self.balance.combined + lightningBalance
-                    self.balance = Balance(combined: newCombined, onchain: self.balance.onchain, onchainSpendable: self.balance.onchainSpendable, lightning: lightningBalance)
-                    debugPrint("LDKNodeManager: Combined: \(self.balance.combined)")
-                    debugPrint("LDKNodeManager: Lightning: \(self.balance.lightning)")
+                    self.balanceDetails = balanceDetails
+                    self.channels = channels
+                    self.transactions = transactions
                 }
             }
         }
@@ -193,18 +155,3 @@ let ESPLORA_URL_SIGNET = "https://mutinynet.com/api/"
 let LSP_ADDRESS_MUTINY = "3.84.56.108:39735"
 let LSP_NODEID_MUTINY = "0371d6fd7d75de2d0372d03ea00e8bacdacb50c27d0eaea0a76a0622eff1f5ef2b"
 let LSP_TOKEN_MUTINY = "4GH1W3YW"
-
-// Struct for holding the different balances
-public struct Balance: Codable {
-    public var combined: UInt64
-    public var onchain: UInt64
-    public var onchainSpendable: UInt64
-    public var lightning: UInt64
-
-    public init(combined: UInt64, onchain: UInt64, onchainSpendable: UInt64, lightning: UInt64) {
-        self.combined = combined
-        self.onchain = onchain
-        self.onchainSpendable = onchainSpendable
-        self.lightning = lightning
-    }
-}
