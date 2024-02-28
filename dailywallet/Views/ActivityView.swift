@@ -57,11 +57,6 @@ struct BalanceHeaderView: View {
                     Text(ldkNodeManager.balanceDetails.totalOnchainBalanceSats.formatted())
                         .textStyle(BitcoinBody4())
                 }
-                HStack(spacing: 4) {
-                    Text("Channels: ").textStyle(BitcoinBody4())
-                    Text(ldkNodeManager.channels.count.formatted())
-                        .textStyle(BitcoinBody4())
-                }
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
             /*
             HStack {
@@ -110,7 +105,7 @@ struct TransactionItemView: View {
                             .foregroundColor(.bitcoinGreen)
                     }
                     VStack (alignment: .leading) {
-                        Text("Received").textStyle(BitcoinTitle5())
+                        Text("Received").textStyle(BitcoinBody3())
                         //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
                     }
                     Spacer()
@@ -127,7 +122,7 @@ struct TransactionItemView: View {
                             .foregroundColor(.bitcoinOrange)
                     }
                     VStack (alignment: .leading) {
-                        Text("Pending").textStyle(BitcoinTitle5())
+                        Text("Pending").textStyle(BitcoinBody3())
                         //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
                     }
                     Spacer()
@@ -142,7 +137,7 @@ struct TransactionItemView: View {
                             .foregroundColor(.bitcoinRed)
                     }
                     VStack (alignment: .leading) {
-                        Text("Failed").textStyle(BitcoinTitle5())
+                        Text("Failed").textStyle(BitcoinBody3())
                         //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
                     }
                     Spacer()
@@ -158,7 +153,7 @@ struct TransactionItemView: View {
                             .foregroundColor(.bitcoinBlack)
                     }
                     VStack (alignment: .leading) {
-                        Text("Sent").textStyle(BitcoinTitle5())
+                        Text("Sent").textStyle(BitcoinBody3())
                         //Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
                     }
                     Spacer()
@@ -172,7 +167,7 @@ struct TransactionItemView: View {
                             .foregroundColor(.bitcoinOrange)
                     }
                     VStack (alignment: .leading) {
-                        Text("Pending").textStyle(BitcoinTitle5())
+                        Text("Pending").textStyle(BitcoinBody3())
                         //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
                     }
                     Spacer()
@@ -186,7 +181,7 @@ struct TransactionItemView: View {
                             .foregroundColor(.bitcoinRed)
                     }
                     VStack (alignment: .leading) {
-                        Text("Failed").textStyle(BitcoinTitle5())
+                        Text("Failed").textStyle(BitcoinBody3())
                         //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
                     }
                     Spacer()
