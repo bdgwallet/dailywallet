@@ -1,22 +1,25 @@
 #  BDG Daily Wallet - Swift
 
-A bitcoin wallet app template for iOS. 
+An open source bitcoin wallet app template for iOS. 
+Based on the [Bitcoin Design Guide - Daily wallet reference design](https://bitcoin.design/guide/daily-spending-wallet/). 
 
-Intended as a good starting point for new bitcoin wallet projects.
 This is WORK IN PROGRESS.
+Currently works on the [MutinyNet](https://www.mutinynet.com) Signet.
 
 ### Dependencies
-- LDK Node - to handle both onchain and lightning bitcoin needs
-- KeychainAccess - to store encrypted data in keychain
+- [LDK Node](https://github.com/tnull/ldk-node) - to handle both onchain and lightning bitcoin needs
+- [KeychainAccess](https://github.com/kishikawakatsumi/KeychainAccess) - to store encrypted data in keychain
+- [Bitcoin UI](https://github.com/reez/WalletUI) - swift implentation of the [Bitcoin UI Kit](https://www.bitcoinuikit.com)
 
 ### Implemented features
-- Create new LDK Node started from mnemonic (12 words, no pass-phrase)
-- Backup encrypted mnemonic info to iOS keychain
+- Create new wallet for both onchain and lightning
+- Backup encrypted mnemonic to iOS keychain
 - Start from said backup if present
-
-### Wallet types
-Currently only supports single key HD segwit/bech32 wallets with BIP84 derivation paths
-Descriptors created by the app will look like: `wpkh([extended private key]/84'/1'/0'/0/*)` 
+- Receive bitcoin onchain
+- Receive bitcoin with lightning with JUST-IN-TIME channels provided by LSPS2 provider
+- Send bitcoin onchain
+- Send bitcoin with lightning 
 
 ### Backup schemes
-Currently only encrypted backup to the iOS keychain is supported. At the moment it uses a static encryption key.
+Currently only encrypted backup of mnemonic to the iOS keychain is supported. At the moment it uses a static encryption key.
+No lightning node data is currently backed up. Deleting the app WILL LEAD TO LOSS OF FUNDS.
