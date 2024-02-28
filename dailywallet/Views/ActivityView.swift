@@ -24,7 +24,7 @@ struct ActivityView: View {
                     .environmentObject(ldkNodeManager)
                     .frame(minHeight: headerHeight, alignment: .center)
                     .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-                TransactionsListView(transactions: ldkNodeManager.transactions)
+                TransactionsListView(transactions: filteredTransactions(transactions: ldkNodeManager.transactions))
                     .environmentObject(ldkNodeManager)
             }
         }
@@ -104,25 +104,27 @@ struct TransactionItemView: View {
                 if (transaction.status == PaymentStatus.succeeded) {
                     ZStack {
                         Circle()
-                            .fill(Color.bitcoinGreen)
+                            .fill(Color.bitcoinNeutral1)
                             .frame(width: 40, height: 40)
                         Image(systemName: "arrow.down")
-                            .foregroundColor(.bitcoinWhite)
+                            .foregroundColor(.bitcoinGreen)
                     }
                     VStack (alignment: .leading) {
                         Text("Received").textStyle(BitcoinTitle5())
                         //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
                     }
                     Spacer()
-                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
+                    Text("+ " + ((transaction.amountMsat ?? 0) / 1000).formatted())
+                        .font(.system(size: 18, weight: .regular))
+                        .foregroundColor(.bitcoinGreen)
                 }
                 else if (transaction.status == PaymentStatus.pending) {
                     ZStack {
                         Circle()
-                            .fill(Color.bitcoinOrange)
+                            .fill(Color.bitcoinNeutral1)
                             .frame(width: 40, height: 40)
                         Image(systemName: "clock")
-                            .foregroundColor(.bitcoinWhite)
+                            .foregroundColor(.bitcoinOrange)
                     }
                     VStack (alignment: .leading) {
                         Text("Pending").textStyle(BitcoinTitle5())
@@ -134,10 +136,10 @@ struct TransactionItemView: View {
                 else if (transaction.status == PaymentStatus.failed) {
                     ZStack {
                         Circle()
-                            .fill(Color.bitcoinRed.opacity(50))
+                            .fill(Color.bitcoinNeutral1)
                             .frame(width: 40, height: 40)
                         Image(systemName: "arrow.down")
-                            .foregroundColor(.bitcoinWhite)
+                            .foregroundColor(.bitcoinRed)
                     }
                     VStack (alignment: .leading) {
                         Text("Failed").textStyle(BitcoinTitle5())
@@ -150,24 +152,24 @@ struct TransactionItemView: View {
                 if (transaction.status == PaymentStatus.succeeded) {
                     ZStack {
                         Circle()
-                            .fill(Color.bitcoinGreen)
+                            .fill(Color.bitcoinNeutral1)
                             .frame(width: 40, height: 40)
                         Image(systemName: "arrow.up")
-                            .foregroundColor(.bitcoinWhite)
+                            .foregroundColor(.bitcoinBlack)
                     }
                     VStack (alignment: .leading) {
                         Text("Sent").textStyle(BitcoinTitle5())
                         //Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
                     }
                     Spacer()
-                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
+                    Text("- " + ((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
                 } else if (transaction.status == PaymentStatus.pending) {
                     ZStack {
                         Circle()
-                            .fill(Color.bitcoinOrange)
+                            .fill(Color.bitcoinNeutral1)
                             .frame(width: 40, height: 40)
                         Image(systemName: "clock")
-                            .foregroundColor(.bitcoinWhite)
+                            .foregroundColor(.bitcoinOrange)
                     }
                     VStack (alignment: .leading) {
                         Text("Pending").textStyle(BitcoinTitle5())
@@ -178,10 +180,10 @@ struct TransactionItemView: View {
                 } else if (transaction.status == PaymentStatus.failed) {
                     ZStack {
                         Circle()
-                            .fill(Color.bitcoinRed.opacity(50))
+                            .fill(Color.bitcoinNeutral1)
                             .frame(width: 40, height: 40)
                         Image(systemName: "arrow.up")
-                            .foregroundColor(.bitcoinWhite)
+                            .foregroundColor(.bitcoinRed)
                     }
                     VStack (alignment: .leading) {
                         Text("Failed").textStyle(BitcoinTitle5())
@@ -201,6 +203,8 @@ public func filteredTransactions(transactions: [PaymentDetails]) -> [PaymentDeta
 
     for transaction in transactions {
         if transaction.status != .pending {
+            filtered.append(transaction)
+        } else if transaction.status == .pending && transaction.direction == .outbound {
             filtered.append(transaction)
         }
     }
