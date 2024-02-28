@@ -157,7 +157,7 @@ struct ChannelListView: View {
             .navigationBarTitleDisplayMode(.inline)
         } else {
             Spacer()
-            Text("No transactions")
+            Text("No channels")
             Spacer()
         }
     }
