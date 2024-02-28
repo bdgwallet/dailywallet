@@ -45,8 +45,9 @@ public class LDKNodeManager: ObservableObject {
             debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
             updateBalance()
             listenForEvents()
+            try self.node?.connect(nodeId: "02465ed5be53d04fde66c9418ff14a5f2267723810176c9212b722e542dc1afb1b", address: "45.79.52.207:9735", persist: true)
         } catch {
-            debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
+            debugPrint("LDKNodeManager: Error starting node: \(error)")
         }
     }
     
@@ -69,6 +70,7 @@ public class LDKNodeManager: ObservableObject {
                 let balanceDetails = self.node!.listBalances()
                 let channels = self.node!.listChannels()
                 let transactions = self.node!.listPayments()
+                debugPrint(transactions)
 
                 DispatchQueue.main.async {
                     self.balanceDetails = balanceDetails
