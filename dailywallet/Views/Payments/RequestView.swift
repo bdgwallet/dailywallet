@@ -28,10 +28,7 @@ struct RequestView: View {
                 Spacer()
                 QRView(qrString: getQRString(), qrType: qrType)
                 Picker("QR type?", selection: $qrType) {
-                    if jitInvoice != nil {
-                        Text("JIT").tag(QRType.jit)
-                    }
-                    Text("Lightning").tag(QRType.lightning)
+                    jitInvoice != nil ? Text("JIT").tag(QRType.jit) : Text("Lightning").tag(QRType.lightning)
                     Text("Onchain").tag(QRType.onchain)
                 }
                 .frame(maxWidth: 250)
@@ -69,18 +66,32 @@ struct RequestView: View {
                 let mSatAmount = amount * 1000
                 debugPrint("LDKNodeManager: Invoice amount : \(mSatAmount.description)")
                 
-                self.lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
-                self.qrType = .lightning
-                self.jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: amount * 1000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
-
-                debugPrint("LDKNodeManager: Lightning invoice : \(self.lightningInvoice ?? "")")
-                debugPrint("LDKNodeManager: JIT invoice : \(self.jitInvoice ?? "")")
-                
-                //self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
-                debugPrint(unifiedAddress?.description ?? "No address")
-                if self.unifiedAddress == nil {
-                    self.qrType = QRType.lightning
+                // If user has channel with enough capacity, create Bolt11
+                var maxReceiveCapacity = UInt64(0)
+                for channel in ldkNodeManager.channels {
+                    if channel.inboundCapacityMsat > maxReceiveCapacity {
+                        maxReceiveCapacity = channel.inboundCapacityMsat
+                    }
                 }
+                debugPrint("Amount to send: " + mSatAmount.description)
+                debugPrint("Max receive: " + maxReceiveCapacity.description)
+                if maxReceiveCapacity > mSatAmount {
+                    self.lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
+                    self.qrType = .lightning
+                    debugPrint("LDKNodeManager: Lightning invoice : \(self.lightningInvoice ?? "")")
+                } else {
+                    // Else, create a JIT invoice
+                    self.jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: amount * 1000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
+                    self.qrType = .jit
+                    debugPrint("LDKNodeManager: JIT invoice : \(self.jitInvoice ?? "")")
+                }
+                
+                // Unified QR
+                //self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
+                //debugPrint(unifiedAddress?.description ?? "No address")
+                //if self.unifiedAddress == nil {
+                //    self.qrType = QRType.lightning
+                //}
             } catch (let error){
                 print(error)
             }
