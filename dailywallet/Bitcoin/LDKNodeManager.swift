@@ -42,10 +42,9 @@ public class LDKNodeManager: ObservableObject {
             let node = try nodeBuilder.build()
             try node.start()
             self.node = node
-            debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
-            updateBalance()
+            getChannelsAndTransactions()
             listenForEvents()
-            try self.node?.connect(nodeId: "02465ed5be53d04fde66c9418ff14a5f2267723810176c9212b722e542dc1afb1b", address: "45.79.52.207:9735", persist: true)
+            updateBalance()
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error)")
         }
@@ -63,19 +62,30 @@ public class LDKNodeManager: ObservableObject {
         }
     }
     
+    // Get Channels and Transactions
+    private func getChannelsAndTransactions() {
+        if self.node != nil {
+            nodeQueue.async {
+                let channels = self.node!.listChannels()
+                let transactions = self.node!.listPayments()
+                //debugPrint(transactions)
+
+                DispatchQueue.main.async {
+                    self.channels = channels
+                    self.transactions = transactions
+                }
+            }
+        }
+    }
+    
     // Update Balance
     private func updateBalance() {
         if self.node != nil {
             nodeQueue.async {
                 let balanceDetails = self.node!.listBalances()
-                let channels = self.node!.listChannels()
-                let transactions = self.node!.listPayments()
-                debugPrint(transactions)
 
                 DispatchQueue.main.async {
                     self.balanceDetails = balanceDetails
-                    self.channels = channels
-                    self.transactions = transactions
                 }
             }
         }
