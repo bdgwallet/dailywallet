@@ -22,7 +22,7 @@ Currently works on the [MutinyNet](https://www.mutinynet.com) Signet.
 - Send bitcoin with lightning
 
 ### Known issues / missing features
-Please see this issue that tracks known issues. Comment if you find new ones.
+Please see this [issue that tracks known issues](https://github.com/bdgwallet/dailywallet/issues/18). Comment if you find new ones.
 
 ### Backup schemes
 Currently only encrypted backup of mnemonic to the iOS keychain is supported. At the moment it uses a static encryption key.
