@@ -85,11 +85,6 @@ struct NodeInfoView: View {
                             .textStyle(BitcoinBody5())
                     }
                     Spacer()
-                    Button {
-                        UIPasteboard.general.string = ldkNodeManager.node?.nodeId() ?? "No id"
-                    } label: {
-                        Image(systemName: "doc.on.doc")
-                    }.padding()
                 }
                 HStack {
                     VStack(alignment: .leading) {
@@ -114,7 +109,7 @@ struct NodeInfoView: View {
                     }
                     Spacer()
                     Button {
-                        UIPasteboard.general.string = ldkNodeManager.node?.nodeId() ?? "No id"
+                        UIPasteboard.general.string = ldkNodeManager.node!.nodeId() + "@0.0.0.0:9735"
                     } label: {
                         Image(systemName: "doc.on.doc")
                     }.padding()
