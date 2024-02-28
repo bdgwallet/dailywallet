@@ -7,12 +7,20 @@
 
 import SwiftUI
 import WalletUI
+import LDKNode
 
 struct SendView: View {
+    @EnvironmentObject var ldkNodeManager: LDKNodeManager
     @Environment(\.presentationMode) var presentationMode
+    
     let amount: UInt64
-    @State private var address: String = ""
+    @State private var recipient: String = ""
     @State private var submitted: Bool?
+
+    init(amount: UInt64, invoice: String? = nil) {
+        self.amount = amount
+        self._recipient = State(initialValue: invoice ?? "")
+    }
     
     var body: some View {
         NavigationView {
@@ -24,44 +32,91 @@ struct SendView: View {
                         .aspectRatio(contentMode: .fit)
                         .foregroundColor(.bitcoinWhite)
                 }.frame(width: 60, height: 60, alignment: .center)
-                    .padding(16)
+                    .padding(32)
+                HStack {
+                    VStack (alignment: .leading) {
+                        Text("Amount").textStyle(BitcoinTitle5())
+                        Text(amount.formatted() + " sats")
+                    }
+                    Spacer()
+                }.padding(.vertical)
                 Divider()
-                Text("Amount")
-                Text("10,000")
-                Divider()
-                Text("To")
-                TextField("Enter address", text: $address).padding(32)
-                    .textFieldStyle(.roundedBorder)
-                    .tint(Color.bitcoinOrange)
-                Divider()
-                Text("Fee")
-                Divider()
+                HStack {
+                    VStack (alignment: .leading) {
+                        Text("To").textStyle(BitcoinTitle5())
+                        TextField("Bitcoin address or invoice", text: $recipient)
+                            .textFieldStyle(.roundedBorder)
+                            .tint(Color.bitcoinOrange)
+                    }
+                    Spacer()
+                }.padding(.vertical)
                 Spacer()
-                Button("Send bitcoin") {
-                    sendBitcoin()
+                Button(recipient.isValidBitcoinAddress() ? "Send bitcoin" : recipient.isValidBolt11Invoice() ? "Pay invoice" : "Send") {
+                    if self.recipient.isValidBolt11Invoice() {
+                        sendLightning()
+                    } else if self.recipient.isValidBitcoinAddress() {
+                        sendBitcoin()
+                    }
                 }
                 .buttonStyle(BitcoinFilled())
-                .disabled(self.address == "").padding(16)
+                .disabled(!recipient.isValidBitcoinAddress() && !recipient.isValidBolt11Invoice()).padding(16)
             }
             .navigationTitle("Send bitcoin")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 Button("Done") {
+                    self.recipient = ""
                     presentationMode.wrappedValue.dismiss()
                 }
-            }
+            }.padding(24)
         }.accentColor(.black)
     }
     
     func sendBitcoin() {
         do {
-            /* TODO: replace with ldknode code
-            let addressScript = try Address(address: address).scriptPubkey()
-            let success = bdkManager.sendBitcoin(script: addressScript, amount: amount, feeRate: 1000)
-            print("Send success:" + success.description)
-            */
+            debugPrint("Address: " + self.recipient)
+            let success = try ldkNodeManager.node?.sendToOnchainAddress(address: self.recipient, amountMsat: amount)
+            submitted = success != nil ? true : false
         } catch let error {
             debugPrint(error)
         }
+    }
+    
+    func sendLightning() {
+        do {
+            let success = try ldkNodeManager.node?.sendPayment(invoice: recipient)
+            submitted = success != nil ? true : false
+        } catch let error {
+            debugPrint(error)
+        }
+    }
+}
+
+extension String {
+    func isValidPaymentString() -> Bool {
+        if self.isValidBolt11Invoice() {
+            debugPrint("recipient is valid Bolt11: " + self)
+            return true
+        } else if self.isValidBitcoinAddress() {
+            debugPrint("recipient is valid address: " + self)
+            return true
+        } else {
+            return false
+        }
+    }
+    func isValidBitcoinAddress() -> Bool {
+        return (self.hasPrefix("bitcoin:") || self.hasPrefix("tb"))
+        /*
+        let bitcoinAddressRegex = try! NSRegularExpression(pattern: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$", options: .caseInsensitive)
+        return bitcoinAddressRegex.firstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count)) != nil
+        */
+    }
+    func isValidBolt11Invoice() -> Bool {
+        return self.hasPrefix("ln")
+        /*
+        let bolt11Regex = try! NSRegularExpression(pattern: "^ln([a-z0-9]*[02468][a-z0-9]*){1,90}$", options: .caseInsensitive)
+        let matches = bolt11Regex.matches(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
+        return matches.count > 0
+        */
     }
 }

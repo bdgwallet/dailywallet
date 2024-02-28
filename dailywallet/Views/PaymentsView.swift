@@ -12,7 +12,7 @@ struct PaymentsView: View {
     @EnvironmentObject var ldkNodeManager: LDKNodeManager
     
     @State var numpadAmount = "0"
-    @State var scanResult : String?
+    @State var scanResult = "No QR code detected"
     @State private var showRequestSheet = false
     @State private var showSendSheet = false
     @State private var isShowingScanner = false
@@ -22,28 +22,28 @@ struct PaymentsView: View {
             VStack (spacing: 50){
                 Spacer()
                 VStack(spacing: 4) {
-                    Text("\(numpadAmount) sats")
+                    Text(Double(numpadAmount)!.formatted() + " sats")
                         .textStyle(BitcoinTitle1())
-                    Text("$0").textStyle(BitcoinBody4())
+                    //Text("$0").textStyle(BitcoinBody4()) TODO: show fiat value
                 }
                 Spacer()
                 VStack (spacing: 50) {
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: "1")
                         NumpadButton(numpadAmount:$numpadAmount, character: "2")
                         NumpadButton(numpadAmount:$numpadAmount, character: "3")
                     }
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: "4")
                         NumpadButton(numpadAmount:$numpadAmount, character: "5")
                         NumpadButton(numpadAmount:$numpadAmount, character: "6")
                     }
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: "7")
                         NumpadButton(numpadAmount:$numpadAmount, character: "8")
                         NumpadButton(numpadAmount:$numpadAmount, character: "9")
                     }
-                    HStack (spacing: 100) {
+                    HStack (spacing: 80) {
                         NumpadButton(numpadAmount:$numpadAmount, character: " ")
                         NumpadButton(numpadAmount:$numpadAmount, character: "0")
                         NumpadButton(numpadAmount:$numpadAmount, character: "<")
@@ -58,30 +58,43 @@ struct PaymentsView: View {
                     .sheet(isPresented: $showRequestSheet) {
                         RequestView(amount: UInt64(numpadAmount)!).environmentObject(ldkNodeManager)
                     }
-                    Spacer()
+                    //Spacer()
                     Button {
                         isShowingScanner.toggle()
                     } label: {
                         Image(systemName: "qrcode.viewfinder")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
+                            .font(.system(size: 24, weight: .semibold, design: .rounded))
+                            .foregroundColor(.bitcoinOrange)
                     }
-                    .buttonStyle(BitcoinFilled(width: 60))
+                    .buttonStyle(BitcoinFilled(width: 60, tintColor: .bitcoinWhite))
                     .sheet(isPresented: $isShowingScanner) {
-                        ScannerView(result: $scanResult)
+                        ScannerView(scanResult: $scanResult)
                     }
-                    Spacer()
+                    //Spacer()
                     Button("Pay") {
                         showSendSheet.toggle()
                     }
                     .buttonStyle(BitcoinFilled(width: 110))
                     .sheet(isPresented: $showSendSheet) {
-                        SendView(amount: UInt64(numpadAmount)!).environmentObject(ldkNodeManager)
+                        SendView(amount: UInt64(numpadAmount)!, invoice: scanResult != "No QR code detected" ? scanResult : nil).environmentObject(ldkNodeManager)
                     }
                     Spacer()
                 }.padding(.bottom, 32)
             }
         }.accentColor(.black)
+            .onChange(of: scanResult) {
+                if scanResult != "No QR code detected" {
+                    isShowingScanner.toggle()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        showSendSheet.toggle()
+                    }
+                }
+            }
+            .onChange(of: showSendSheet) {
+                if showSendSheet == false {
+                    self.numpadAmount = "0"
+                }
+            }
     }
     
     struct NumpadButton: View {
@@ -113,13 +126,8 @@ struct PaymentsView: View {
                 } else {
                     Text(character).textStyle(BitcoinTitle3())
                 }
-            }
+            }.frame(minWidth: 32)
         }
-    }
-    
-    func handleScan(result: Result<ScanResult, ScanError>) {
-       isShowingScanner = false
-       // more code to come
     }
 }
 

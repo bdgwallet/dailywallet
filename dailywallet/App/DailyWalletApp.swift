@@ -14,7 +14,7 @@ struct DailyWalletApp: App {
     @ObservedObject var backupManager: BackupManager
     
     init() {
-        ldkNodeManager = LDKNodeManager(network: Network.bitcoin)
+        ldkNodeManager = LDKNodeManager(network: Network.signet)
         
         // Initialize BackupManager
         let encryptionKey = "d5a423f64b607ea7c65b311d855dc48f36114b227bd0c7a3d403f6158a9e4412" // Use your own unique 256-bit / 64 character string
@@ -22,6 +22,7 @@ struct DailyWalletApp: App {
         
         // Warning, only use in development
         //backupManager.deleteBackupInfo()
+        //backupManager.deleteAllFiles()
         
         // Check if user already has a node seed
         if backupManager.backupInfo != nil {

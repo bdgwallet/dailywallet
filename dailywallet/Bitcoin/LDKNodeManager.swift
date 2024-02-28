@@ -12,9 +12,9 @@ public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
     @Published public var node: LdkNode?
-    @Published public var onchainBalanceTotal: UInt64?
-    @Published public var onchainBalanceSpendable: UInt64?
-    @Published public var lightningBalance: UInt64?
+    @Published public var balanceDetails: BalanceDetails
+    @Published public var channels: [ChannelDetails]
+    @Published public var transactions: [PaymentDetails]
     
     // Private variables
     private let nodeQueue = DispatchQueue (label: "ldkNodeQueue", qos: .userInitiated)
@@ -22,32 +22,41 @@ public class LDKNodeManager: ObservableObject {
     // Initialize a LDKNodeManager instance on the specified network
     public init(network: Network) {
         self.network = network
+        self.balanceDetails = BalanceDetails(totalOnchainBalanceSats: 0, spendableOnchainBalanceSats: 0, totalLightningBalanceSats: 0, lightningBalances: [], pendingBalancesFromChannelClosures: [])
+        self.channels = []
+        self.transactions = []
     }
     
     // Start LDK Node
     public func start(mnemonic: Mnemonic, passphrase: String?) throws {
         let nodeConfig = Config(
-            storageDirPath: network == .bitcoin ? DEFAULT_STORAGE_PATH + "/bitcoin/" : DEFAULT_STORAGE_PATH,
+            storageDirPath: storagePath(network: network),
+            logDirPath: storagePath(network: network),
             network: self.network,
             listeningAddresses: nil,
             defaultCltvExpiryDelta: DEFAULT_CLTV_EXPIRY_DELTA,
-            trustedPeers0conf: network == .bitcoin ? [VOLTAGE_PUBKEY_BITCOIN] : [VOLTAGE_PUBKEY_TESTNET]
+            onchainWalletSyncIntervalSecs: 30,
+            walletSyncIntervalSecs: 15,
+            feeRateCacheUpdateIntervalSecs: 60,
+            trustedPeers0conf: [LSP_NODEID_MUTINY],
+            probingLiquidityLimitMultiplier: 100,
+            logLevel: LogLevel.debug
         )
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
-        nodeBuilder.setEsploraServer(esploraServerUrl: self.network == Network.bitcoin ? ESPLORA_URL_BITCOIN : ESPLORA_URL_TESTNET)
+        nodeBuilder.setEsploraServer(esploraServerUrl: esploraServerURL(network: self.network))
+        nodeBuilder.setLiquiditySourceLsps2(address: LSP_ADDRESS_MUTINY, nodeId: LSP_NODEID_MUTINY, token: LSP_TOKEN_MUTINY)
         
         do {
             let node = try nodeBuilder.build()
             try node.start()
             self.node = node
-            getOnchainBalance()
-            getLightningBalance()
-            // Test Voltage JIT Channel creation
-            connectToVoltage(node: self.node!, network: network)
+            updateBalance()
             listenForEvents()
             debugPrint("LDKNodeManager: Started with nodeId: \(node.nodeId())")
+            // Connect to Mutiny
+            try self.node?.connect(nodeId: "02465ed5be53d04fde66c9418ff14a5f2267723810176c9212b722e542dc1afb1b", address: "45.79.52.207:9735", persist: true)
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
         }
@@ -60,7 +69,7 @@ public class LDKNodeManager: ObservableObject {
                 do {
                     try self.node!.syncWallets()
                     DispatchQueue.main.async {
-                        self.getOnchainBalance()
+                        self.updateBalance()
                         // Test Voltage JIT Channel creation
                         //connectToVoltage(node: self.node!)
                     }
@@ -74,49 +83,28 @@ public class LDKNodeManager: ObservableObject {
     
     // Listen for events
     public func listenForEvents() {
-        nodeQueue.async {
-            let event = self.node!.waitNextEvent()
-            // TODO: Handle event, upate on main queue when finished
-            self.getOnchainBalance()
-            self.getLightningBalance()
-            self.node!.eventHandled()
-        }
-    }
-    
-    // Update .onchainBalance
-    private func getOnchainBalance() {
-        if self.node != nil {
-            nodeQueue.async {
-                do {
-                    let onchainBalanceTotal = try self.node!.totalOnchainBalanceSats()
-                    let onchainBalanceSpendable = try self.node!.spendableOnchainBalanceSats()
-                    
-                    DispatchQueue.main.async {
-                        self.onchainBalanceTotal = onchainBalanceTotal
-                        self.onchainBalanceSpendable = onchainBalanceSpendable
-                        debugPrint("LDKNodeManager: Onchain balance total: \(self.onchainBalanceTotal!)")
-                        debugPrint("LDKNodeManager: Onchain balance spendable: \(self.onchainBalanceSpendable!)")
-                    }
-                    
-                } catch let error {
-                    debugPrint("LDKNodeManager: Error getting onchain balance: \(error.localizedDescription)")
-                }
+        Task {
+            while true {
+                let event = self.node!.waitNextEvent()
+                debugPrint("EVENT: \(event)")
+                self.updateBalance()
+                self.node!.eventHandled()
             }
         }
     }
     
-    // Update .lightningBalance
-    private func getLightningBalance() {
+    // Update Balance
+    private func updateBalance() {
         if self.node != nil {
             nodeQueue.async {
-                var iteratedBalance = UInt64(0)
-                for channel in self.node!.listChannels() {
-                    iteratedBalance = iteratedBalance + channel.balanceMsat
-                }
-                
+                let balanceDetails = self.node!.listBalances()
+                let channels = self.node!.listChannels()
+                let transactions = self.node!.listPayments()
+
                 DispatchQueue.main.async {
-                    self.lightningBalance = iteratedBalance
-                    debugPrint("LDKNodeManager: Lightning balance: \(self.lightningBalance!)")
+                    self.balanceDetails = balanceDetails
+                    self.channels = channels
+                    self.transactions = transactions
                 }
             }
         }
@@ -132,9 +120,23 @@ public class LDKNodeManager: ObservableObject {
                 return ESPLORA_URL_TESTNET
             case Network.bitcoin:
                 return ESPLORA_URL_BITCOIN
-            // TODO: Add signet case
-            default:
-                return ESPLORA_URL_TESTNET
+            case Network.signet:
+                return ESPLORA_URL_SIGNET
+        }
+    }
+    
+    // Return storage path for network
+    private func storagePath(network: Network) -> String {
+            
+        switch network { // Update when Network type is enum instead of string
+        case Network.regtest:
+                return DEFAULT_STORAGE_PATH + "/regtest/"
+            case Network.testnet:
+                return DEFAULT_STORAGE_PATH + "/testnet/"
+            case Network.bitcoin:
+                return DEFAULT_STORAGE_PATH + "/bitcoin/"
+            case Network.signet:
+                return DEFAULT_STORAGE_PATH + "/signet/"
         }
     }
 }
@@ -147,3 +149,9 @@ let DEFAULT_STORAGE_PATH = FileManager.default.urls(for: .documentDirectory, in:
 // Public APIs
 let ESPLORA_URL_BITCOIN = "https://esplora.kuutamo.cloud" //"https://blockstream.info/api/"
 let ESPLORA_URL_TESTNET = "https://esplora.testnet.kuutamo.cloud" //https://blockstream.info/testnet/api"
+let ESPLORA_URL_SIGNET = "https://mutinynet.com/api/"
+
+// LSPs
+let LSP_ADDRESS_MUTINY = "3.84.56.108:39735"
+let LSP_NODEID_MUTINY = "0371d6fd7d75de2d0372d03ea00e8bacdacb50c27d0eaea0a76a0622eff1f5ef2b"
+let LSP_TOKEN_MUTINY = "4GH1W3YW"
