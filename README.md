@@ -1,6 +1,7 @@
 #  BDG Daily Wallet - Swift
 
-An open source bitcoin wallet app template for iOS. 
+An open source bitcoin wallet app template for iOS.
+
 Based on the [Bitcoin Design Guide - Daily wallet reference design](https://bitcoin.design/guide/daily-spending-wallet/). 
 
 This is WORK IN PROGRESS.
@@ -18,7 +19,10 @@ Currently works on the [MutinyNet](https://www.mutinynet.com) Signet.
 - Receive bitcoin onchain
 - Receive bitcoin with lightning with JUST-IN-TIME channels provided by LSPS2 provider
 - Send bitcoin onchain
-- Send bitcoin with lightning 
+- Send bitcoin with lightning
+
+### Known issues / missing features
+Please see this issue that tracks known issues. Comment if you find new ones.
 
 ### Backup schemes
 Currently only encrypted backup of mnemonic to the iOS keychain is supported. At the moment it uses a static encryption key.
