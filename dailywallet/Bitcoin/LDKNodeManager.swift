@@ -31,6 +31,7 @@ public class LDKNodeManager: ObservableObject {
     public func start(mnemonic: Mnemonic, passphrase: String?) throws {
         var nodeConfig = defaultConfig()
         nodeConfig.storageDirPath = storagePath(network: network)
+        nodeConfig.network = self.network
             
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
@@ -46,25 +47,6 @@ public class LDKNodeManager: ObservableObject {
             listenForEvents()
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error.localizedDescription)")
-        }
-    }
-    
-    // Sync once
-    public func sync() {
-        if self.node != nil {
-            nodeQueue.async {
-                do {
-                    try self.node!.syncWallets()
-                    DispatchQueue.main.async {
-                        self.updateBalance()
-                        // Test Voltage JIT Channel creation
-                        //connectToVoltage(node: self.node!)
-                    }
-                    debugPrint("LDKNodeManager: Synced")
-                } catch let error {
-                    debugPrint("LDKNodeManager: Error syncing \(error.localizedDescription)")
-                }
-            }
         }
     }
     
