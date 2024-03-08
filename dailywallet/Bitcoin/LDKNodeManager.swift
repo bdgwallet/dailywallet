@@ -56,6 +56,7 @@ public class LDKNodeManager: ObservableObject {
                 let event = self.node!.waitNextEvent()
                 debugPrint("EVENT: \(event)")
                 self.updateBalance()
+                self.getChannelsAndTransactions()
                 self.node!.eventHandled()
             }
         }
