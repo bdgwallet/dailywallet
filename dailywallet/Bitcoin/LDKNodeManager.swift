@@ -28,22 +28,28 @@ public class LDKNodeManager: ObservableObject {
     
     // Start LDK Node
     public func start(mnemonic: Mnemonic, passphrase: String?) throws {
+        // Set config parameters
         var nodeConfig = defaultConfig()
         nodeConfig.storageDirPath = storagePath(network: network)
         nodeConfig.network = self.network
             
+        // Set builder parameters
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
         nodeBuilder.setEsploraServer(esploraServerUrl: esploraServerURL(network: self.network))
         nodeBuilder.setLiquiditySourceLsps2(address: LSP_ADDRESS_CEQUAL, nodeId: LSP_NODEID_CEQUAL, token: LSP_TOKEN_CEQUAL)
         
         do {
+            // Build and start node
             let node = try nodeBuilder.build()
             try node.start()
             self.node = node
-            getChannelsAndTransactions()
             listenForEvents()
-            updateBalance()
+            
+            // Get balance, channels and transactions
+            getBalanceDetails()
+            getTransactions()
+            getChannels()
         } catch {
             debugPrint("LDKNodeManager: Error starting node: \(error)")
         }
@@ -55,31 +61,18 @@ public class LDKNodeManager: ObservableObject {
             while true {
                 let event = self.node!.waitNextEvent()
                 debugPrint("EVENT: \(event)")
-                self.updateBalance()
-                self.getChannelsAndTransactions()
+                
+                // TODO - handle events differently, for now all are treated equal
+                self.getBalanceDetails()
+                self.getTransactions()
+                self.getChannels()
                 self.node!.eventHandled()
             }
         }
     }
     
-    // Get Channels and Transactions
-    private func getChannelsAndTransactions() {
-        if self.node != nil {
-            nodeQueue.async {
-                let channels = self.node!.listChannels()
-                let transactions = self.node!.listPayments()
-                //debugPrint(transactions)
-
-                DispatchQueue.main.async {
-                    self.channels = channels
-                    self.transactions = transactions
-                }
-            }
-        }
-    }
-    
-    // Update Balance
-    private func updateBalance() {
+    // Get BalanceDetails
+    private func getBalanceDetails() {
         if self.node != nil {
             nodeQueue.async {
                 let balanceDetails = self.node!.listBalances()
@@ -91,10 +84,35 @@ public class LDKNodeManager: ObservableObject {
         }
     }
     
+    // Get Transactions
+    private func getTransactions() {
+        if self.node != nil {
+            nodeQueue.async {
+                let transactions = self.node!.listPayments()
+
+                DispatchQueue.main.async {
+                    self.transactions = transactions
+                }
+            }
+        }
+    }
+    
+    // Get Channels
+    private func getChannels() {
+        if self.node != nil {
+            nodeQueue.async {
+                let channels = self.node!.listChannels()
+
+                DispatchQueue.main.async {
+                    self.channels = channels
+                }
+            }
+        }
+    }
+    
     // Return esplora url for network
     private func esploraServerURL(network: Network) -> String {
-            
-        switch network { // Update when Network type is enum instead of string
+        switch network {
         case Network.regtest:
                 return "http://127.0.0.1:3002"
             case Network.testnet:
@@ -108,8 +126,7 @@ public class LDKNodeManager: ObservableObject {
     
     // Return storage path for network
     private func storagePath(network: Network) -> String {
-            
-        switch network { // Update when Network type is enum instead of string
+        switch network {
         case Network.regtest:
                 return DEFAULT_STORAGE_PATH + "/regtest/"
             case Network.testnet:
