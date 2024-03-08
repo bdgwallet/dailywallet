@@ -35,7 +35,7 @@ public class LDKNodeManager: ObservableObject {
         let nodeBuilder = Builder.fromConfig(config: nodeConfig)
         nodeBuilder.setEntropyBip39Mnemonic(mnemonic: mnemonic, passphrase: passphrase)
         nodeBuilder.setEsploraServer(esploraServerUrl: esploraServerURL(network: self.network))
-        nodeBuilder.setLiquiditySourceLsps2(address: LSP_ADDRESS_MUTINY, nodeId: LSP_NODEID_MUTINY, token: LSP_TOKEN_MUTINY)
+        nodeBuilder.setLiquiditySourceLsps2(address: LSP_ADDRESS_CEQUAL, nodeId: LSP_NODEID_CEQUAL, token: LSP_TOKEN_CEQUAL)
         
         do {
             let node = try nodeBuilder.build()
@@ -133,6 +133,6 @@ let ESPLORA_URL_TESTNET = "https://esplora.testnet.kuutamo.cloud" //https://bloc
 let ESPLORA_URL_SIGNET = "https://mutinynet.com/api/"
 
 // LSPs
-let LSP_ADDRESS_MUTINY = "3.84.56.108:39735"
-let LSP_NODEID_MUTINY = "0371d6fd7d75de2d0372d03ea00e8bacdacb50c27d0eaea0a76a0622eff1f5ef2b"
-let LSP_TOKEN_MUTINY = "4GH1W3YW"
+let LSP_ADDRESS_CEQUAL = "3.84.56.108:39735"
+let LSP_NODEID_CEQUAL = "0371d6fd7d75de2d0372d03ea00e8bacdacb50c27d0eaea0a76a0622eff1f5ef2b"
+let LSP_TOKEN_CEQUAL = "4GH1W3YW"
