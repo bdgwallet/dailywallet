@@ -231,5 +231,5 @@ func appVersion(in bundle: Bundle = .main) -> String {
     guard let build = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String else {
         fatalError("CFBundleVersion should not be missing from info dictionary")
     }
-    return version + "\(version)(\(build))"
+    return version + "(\(build))"
 }
