@@ -53,11 +53,13 @@ struct CreateWalletView: View {
                     */
                 }.buttonStyle(BitcoinFilled())
                     .disabled(confirmationOne == false || confirmationTwo == false)
+                /* TODO: Advanced create wallet settings
                 NavigationLink(destination: AdvancedCreateView(), tag: NavigateTo.createWalletAdvanced, selection: $navigateTo) {
                     Button("Advanced settings") {
                         self.navigateTo = .createWalletAdvanced
                     }.buttonStyle(BitcoinPlain())
                 }
+                */
             }
         }.padding(EdgeInsets(top: 32, leading: 32, bottom: 16, trailing: 32))
         .navigationBarTitleDisplayMode(.inline)
