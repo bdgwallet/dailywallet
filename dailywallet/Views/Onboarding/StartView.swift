@@ -38,11 +38,13 @@ struct StartView: View {
                             self.navigateTo = .createWallet
                         }.buttonStyle(BitcoinFilled())
                     }
+                    /* TODO: Implement restore wallet
                     NavigationLink(destination: ImportWalletView(), tag: NavigateTo.restoreWallet, selection: $navigateTo) {
                         Button("Restore existing wallet") {
                             self.navigateTo = .restoreWallet
                         }.buttonStyle(BitcoinPlain())
                     }
+                     */
                 }.padding(16)
                 Text("Your wallet, your coins \n 100% open-source & open-design")
                     .textStyle(BitcoinBody4())
