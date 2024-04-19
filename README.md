@@ -1,6 +1,6 @@
 # BDG Daily Wallet - Swift
 
-An open source bitcoin wallet app template for iOS based on the [Bitcoin Design Guide - Daily wallet reference design](https://bitcoin.design/guide/daily-spending-wallet/).
+An open source bitcoin wallet app template for iOS based on the [Daily wallet reference design](https://bitcoin.design/guide/daily-spending-wallet/) from the Bitcoin Design Guide.
 
 You can try a [Testflight version](https://testflight.apple.com/join/1yaYqZzz) of the app, and interact with the faucet over at [MutinyNet](https://faucet.mutinynet.com)
 
