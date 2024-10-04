@@ -105,7 +105,7 @@ extension String {
         }
     }
     func isValidBitcoinAddress() -> Bool {
-        return (self.hasPrefix("bitcoin:") || self.hasPrefix("tb"))
+        return (self.lowercased().hasPrefix("bitcoin:") || self.lowercased().hasPrefix("tb"))
         /*
         let bitcoinAddressRegex = try! NSRegularExpression(pattern: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$", options: .caseInsensitive)
         return bitcoinAddressRegex.firstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count)) != nil
