@@ -11,14 +11,14 @@ import LDKNode
 // Experimental Lightning Service Provider code3
 
 // Connect to node (Voltage on testnet)
-public func connectToVoltage(node: LdkNode, network: Network) {
-    do {
-        try node.connect(nodeId: network == .bitcoin ? VOLTAGE_PUBKEY_BITCOIN : VOLTAGE_PUBKEY_TESTNET, address: network == .bitcoin ? VOLTAGE_ADDRESS_BITCOIN : VOLTAGE_ADDRESS_TESTNET, persist: true)
-        debugPrint("LDKNodeManager: Connected to Voltage node")
-    } catch let error {
-        debugPrint("LDKNodeManager: Error connecting to Voltage node: \(error.localizedDescription)")
-    }
-}
+//public func connectToVoltage(node: LdkNode, network: Network) {
+//    do {
+//        try node.connect(nodeId: network == .bitcoin ? VOLTAGE_PUBKEY_BITCOIN : VOLTAGE_PUBKEY_TESTNET, address: network == .bitcoin ? VOLTAGE_ADDRESS_BITCOIN : VOLTAGE_ADDRESS_TESTNET, persist: true)
+//        debugPrint("LDKNodeManager: Connected to Voltage node")
+//    } catch let error {
+//        debugPrint("LDKNodeManager: Error connecting to Voltage node: \(error.localizedDescription)")
+//    }
+//}
 
 func getWrappedInvoice(invoice: String, network: Network, completion: @escaping (String) -> ()) {
     do {

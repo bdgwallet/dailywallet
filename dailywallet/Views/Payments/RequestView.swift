@@ -61,7 +61,14 @@ struct RequestView: View {
     func getUnifiedAddress() {
         nodeQueue.async {
             do {
-                let onchainAddress = try ldkNodeManager.node!.newOnchainAddress()
+                // Unified QR
+//                self.unifiedAddress = try ldkNodeManager.node!.
+//                debugPrint(unifiedAddress?.description ?? "No address")
+//                if self.unifiedAddress == nil {
+//                    self.qrType = QRType.lightning
+//                }
+                
+                let onchainAddress = try ldkNodeManager.node!.onchainPayment().newAddress()
                 let onchainString = "bitcoin:" + onchainAddress.uppercased() + "?amount=" + amount.satsToBitcoin.description
                 self.onchainAddress = onchainString
                 
@@ -76,7 +83,7 @@ struct RequestView: View {
                     }
                 }
                 if maxReceiveCapacity > mSatAmount {
-                    let lightningInvoice = try ldkNodeManager.node?.receivePayment(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
+                    let lightningInvoice = try ldkNodeManager.node?.bolt11Payment().receive(amountMsat: amount * 1000, description: "Test JIT channel", expirySecs: 599)
                     DispatchQueue.main.async {
                         self.lightningInvoice = lightningInvoice
                         self.qrType = .lightning
@@ -84,7 +91,7 @@ struct RequestView: View {
                     debugPrint("LDKNodeManager: Lightning invoice : \(self.lightningInvoice ?? "")")
                 } else {
                     // Else, create a JIT invoice
-                    let jitInvoice = try ldkNodeManager.node?.receivePaymentViaJitChannel(amountMsat: amount * 1000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
+                    let jitInvoice = try ldkNodeManager.node?.bolt11Payment().receiveViaJitChannel(amountMsat: amount * 1000, description: "", expirySecs: 3600, maxLspFeeLimitMsat: nil)
                     DispatchQueue.main.async {
                         self.jitInvoice = jitInvoice
                         self.qrType = .jit
@@ -92,13 +99,6 @@ struct RequestView: View {
                     
                     debugPrint("LDKNodeManager: JIT invoice : \(self.jitInvoice ?? "")")
                 }
-                
-                // Unified QR
-                //self.unifiedAddress = "\(onchainString)&lightning=\((bolt11! as String).uppercased())"
-                //debugPrint(unifiedAddress?.description ?? "No address")
-                //if self.unifiedAddress == nil {
-                //    self.qrType = QRType.lightning
-                //}
             } catch (let error){
                 print(error)
             }

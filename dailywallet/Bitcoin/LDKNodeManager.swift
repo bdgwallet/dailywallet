@@ -11,7 +11,7 @@ import LDKNode
 public class LDKNodeManager: ObservableObject {
     // Public variables
     public var network: Network
-    @Published public var node: LdkNode?
+    @Published public var node: LDKNode.Node?
     @Published public var balanceDetails: BalanceDetails?
     @Published public var channels: [ChannelDetails]
     @Published public var transactions: [PaymentDetails]
