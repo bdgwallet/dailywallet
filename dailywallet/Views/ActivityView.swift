@@ -111,9 +111,9 @@ struct TransactionItemView: View {
                 Text(date.formatted(date: .abbreviated, time: .shortened)).textStyle(BitcoinBody5())
             }
             Spacer()
-            Text("+ " + ((transaction.amountMsat ?? 0) / 1000).formatted())
+            Text((transaction.direction == .inbound ? "+ " : "- ") + ((transaction.amountMsat ?? 0) / 1000).formatted())
                 .font(.system(size: 18, weight: .regular))
-                .foregroundColor(.bitcoinGreen)
+                .foregroundColor(transaction.status == PaymentStatus.failed ? .bitcoinRed : transaction.direction == .inbound ? .bitcoinGreen : .bitcoinBlack)
         }
     }
 }
@@ -121,6 +121,7 @@ struct TransactionItemView: View {
 public func filteredTransactions(transactions: [PaymentDetails]) -> [PaymentDetails] {
     var filtered: [PaymentDetails] = []
 
+    // Filter out pending transactions that are inbound, basically an unused invoice. Make smarter by looking at expiration date etc.
     for transaction in transactions {
         //debugPrint(transaction)
         if transaction.status != .pending {
