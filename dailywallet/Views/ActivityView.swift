@@ -69,13 +69,6 @@ struct BalanceHeaderView: View {
                         .padding()
                 }
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 32, trailing: 0))
-            /*
-            HStack {
-                Text("Activity")
-                    .textStyle(BitcoinTitle5())
-                Spacer()
-            }
-            */
         }
     }
 }
@@ -105,100 +98,22 @@ struct TransactionItemView: View {
     
     var body: some View {
         HStack {
-            if transaction.direction == .inbound {
-                if (transaction.status == PaymentStatus.succeeded) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.bitcoinNeutral1)
-                            .frame(width: 40, height: 40)
-                        Image(systemName: "arrow.down")
-                            .foregroundColor(.bitcoinGreen)
-                    }
-                    VStack (alignment: .leading) {
-                        Text("Received").textStyle(BitcoinBody3())
-                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
-                    }
-                    Spacer()
-                    Text("+ " + ((transaction.amountMsat ?? 0) / 1000).formatted())
-                        .font(.system(size: 18, weight: .regular))
-                        .foregroundColor(.bitcoinGreen)
-                }
-                else if (transaction.status == PaymentStatus.pending) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.bitcoinNeutral1)
-                            .frame(width: 40, height: 40)
-                        Image(systemName: "clock")
-                            .foregroundColor(.bitcoinOrange)
-                    }
-                    VStack (alignment: .leading) {
-                        Text("Pending").textStyle(BitcoinBody3())
-                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
-                    }
-                    Spacer()
-                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
-                }
-                else if (transaction.status == PaymentStatus.failed) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.bitcoinNeutral1)
-                            .frame(width: 40, height: 40)
-                        Image(systemName: "arrow.down")
-                            .foregroundColor(.bitcoinRed)
-                    }
-                    VStack (alignment: .leading) {
-                        Text("Failed").textStyle(BitcoinBody3())
-                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
-                    }
-                    Spacer()
-                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
-                }
-            } else {
-                if (transaction.status == PaymentStatus.succeeded) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.bitcoinNeutral1)
-                            .frame(width: 40, height: 40)
-                        Image(systemName: "arrow.up")
-                            .foregroundColor(.bitcoinBlack)
-                    }
-                    VStack (alignment: .leading) {
-                        Text("Sent").textStyle(BitcoinBody3())
-                        //Text(transaction.confirmationTime?.timestamp.description != nil ? transaction.txid : "Pending").textStyle(BitcoinBody5())
-                    }
-                    Spacer()
-                    Text("- " + ((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
-                } else if (transaction.status == PaymentStatus.pending) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.bitcoinNeutral1)
-                            .frame(width: 40, height: 40)
-                        Image(systemName: "clock")
-                            .foregroundColor(.bitcoinOrange)
-                    }
-                    VStack (alignment: .leading) {
-                        Text("Pending").textStyle(BitcoinBody3())
-                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
-                    }
-                    Spacer()
-                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
-                } else if (transaction.status == PaymentStatus.failed) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.bitcoinNeutral1)
-                            .frame(width: 40, height: 40)
-                        Image(systemName: "arrow.up")
-                            .foregroundColor(.bitcoinRed)
-                    }
-                    VStack (alignment: .leading) {
-                        Text("Failed").textStyle(BitcoinBody3())
-                        //Text(transaction.preimage ?? "").textStyle(BitcoinBody5())
-                    }
-                    Spacer()
-                    Text(((transaction.amountMsat ?? 0) / 1000).formatted()).textStyle(BitcoinBody3())
-                }
-                
+            let date = Date(timeIntervalSince1970: TimeInterval(transaction.latestUpdateTimestamp))
+            ZStack {
+                Circle()
+                    .fill(Color.bitcoinNeutral1)
+                    .frame(width: 40, height: 40)
+                Image(systemName: transaction.status == PaymentStatus.pending ? "clock": transaction.direction == .inbound ? "arrow.down" : "arrow.up")
+                    .foregroundColor(transaction.status == PaymentStatus.failed ? .bitcoinRed : transaction.status == PaymentStatus.pending ? .bitcoinOrange : transaction.direction == .inbound ? .bitcoinGreen : .bitcoinBlack)
             }
+            VStack (alignment: .leading) {
+                Text(transaction.status == PaymentStatus.failed ? "Failed" : transaction.status == PaymentStatus.pending ? "Pending" : transaction.direction == .inbound ? "Received" : "Sent").textStyle(BitcoinBody3())
+                Text(date.formatted(date: .abbreviated, time: .shortened)).textStyle(BitcoinBody5())
+            }
+            Spacer()
+            Text("+ " + ((transaction.amountMsat ?? 0) / 1000).formatted())
+                .font(.system(size: 18, weight: .regular))
+                .foregroundColor(.bitcoinGreen)
         }
     }
 }
@@ -207,11 +122,12 @@ public func filteredTransactions(transactions: [PaymentDetails]) -> [PaymentDeta
     var filtered: [PaymentDetails] = []
 
     for transaction in transactions {
+        //debugPrint(transaction)
         if transaction.status != .pending {
             filtered.append(transaction)
         } else if transaction.status == .pending && transaction.direction == .outbound {
             filtered.append(transaction)
         }
     }
-    return filtered
+    return filtered.sorted(by: {$0.latestUpdateTimestamp > $1.latestUpdateTimestamp})
 }
